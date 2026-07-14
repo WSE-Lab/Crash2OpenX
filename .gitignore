@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Run artifacts
+runs/
+output/
+outputs/
+tmp/
+*.log
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+
+# Secrets
+.env

@@ -1,0 +1,9 @@
+[submodule "external/scenariogeneration"]
+	path = external/scenariogeneration
+	url = https://github.com/pyoscx/scenariogeneration
+[submodule "external/PCLA"]
+	path = external/PCLA
+	url = https://github.com/MasoudJTehrani/PCLA
+[submodule "external/scenario_runner"]
+	path = external/scenario_runner
+	url = https://github.com/carla-simulator/scenario_runner

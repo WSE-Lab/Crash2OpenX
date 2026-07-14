@@ -1,0 +1,36 @@
+[project]
+name = "crash2openx"
+version = "0.1.0"
+description = "Crash2OpenX: natural-language crash reports -> RoadSeed/SceneSeed models -> OpenDRIVE/OpenSCENARIO -> CARLA execution"
+requires-python = ">=3.9"
+dependencies = [
+    # Vendored OpenDRIVE/OpenSCENARIO generator (editable submodule, pinned debb300 / v0.16.5).
+    # Brings numpy, scipy, pyclothoids, lxml, xmlschema transitively.
+    "scenariogeneration",
+    # LLM/VLM inference for seed extraction + QA judge (OpenAI-compatible endpoints).
+    "openai",
+    # Browser demo (tools/web_app.py, SSE).
+    "flask",
+    # PDF text extraction (tools/extract_source.py imports fitz).
+    "pymupdf",
+    # DOCX input normalization.
+    "python-docx",
+    "pillow>=11.3.0",
+    "matplotlib>=3.9.4",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff",
+]
+
+[tool.uv]
+# Script collection (tools/), not an installable package: manage env only.
+package = false
+
+[tool.uv.sources]
+scenariogeneration = { path = "external/scenariogeneration", editable = true }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
