@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OpenScenario.xsd">
-    <FileHeader description="scene_seed_block_scenario" author="ads_testing" revMajor="1" revMinor="0" date="2026-07-02T16:13:56.487945" />
+    <FileHeader description="scene_seed_block_scenario" author="ads_testing" revMajor="1" revMinor="0" date="2026-07-15T07:03:26.813395" />
     <CatalogLocations>
         <VehicleCatalog>
             <Directory path="openscenarios/catalogs" />
@@ -113,7 +113,7 @@
                     <PrivateAction>
                         <TeleportAction>
                             <Position>
-                                <RelativeLanePosition entityRef="hero" ds="25.0" offset="0.0" dLane="0" />
+                                <RelativeLanePosition entityRef="hero" ds="20.0" offset="0.0" dLane="0" />
                             </Position>
                         </TeleportAction>
                     </PrivateAction>
@@ -185,6 +185,28 @@
                         <EntityRef entityRef="v2" />
                     </Actors>
                     <Maneuver name="v2_man">
+                        <Event name="v2_follow_lane" priority="overwrite" maximumExecutionCount="1">
+                            <Action name="v2_follow_lane">
+                                <PrivateAction>
+                                    <RoutingAction>
+                                        <AcquirePositionAction>
+                                            <Position>
+                                                <LanePosition roadId="1" laneId="-1" s="195.0" offset="0.0" />
+                                            </Position>
+                                        </AcquirePositionAction>
+                                    </RoutingAction>
+                                </PrivateAction>
+                            </Action>
+                            <StartTrigger>
+                                <ConditionGroup>
+                                    <Condition name="v2_trig" delay="0.0" conditionEdge="rising">
+                                        <ByValueCondition>
+                                            <SimulationTimeCondition value="0.0" rule="greaterThan" />
+                                        </ByValueCondition>
+                                    </Condition>
+                                </ConditionGroup>
+                            </StartTrigger>
+                        </Event>
                         <Event name="v2_brake" priority="overwrite" maximumExecutionCount="1">
                             <Action name="v2_brake">
                                 <PrivateAction>

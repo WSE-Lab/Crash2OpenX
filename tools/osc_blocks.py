@@ -212,6 +212,16 @@ CRUISE_BLOCKS = {"front_brake", "cut_in"}
 # PCLA's training distribution for "following slower lead".
 HERO_CLOSING_DELTA_MPS = 4.0
 
+# Takeover speed for scenes that declare a collision into a static same-lane
+# lead. The 6 m/s fallback lets every PCLA agent stop comfortably inside the
+# 23 m stopped_ahead spawn gap, so the declared rear-end could never be
+# realized (observed 2026-07-15 across the 42-medoid batch: uniform
+# "min_distance≈14 m over 9 s" deadlocks). 12 m/s puts the gap at the edge of
+# the braking envelope — the declared impact becomes kinematically possible
+# while an attentive ADS can still avoid it, which is exactly what the
+# execution gate is meant to discriminate.
+HERO_STATIC_LEAD_TAKEOVER_MPS = 12.0
+
 
 def _hero_cruise(scene: dict) -> float:
     # PCLA-style learned planners regress badly when handed off at 0 m/s with a static
@@ -224,6 +234,15 @@ def _hero_cruise(scene: dict) -> float:
               for n in (scene.get("npcs") or [])
               if (n.get("behavior") or {}).get("block") in CRUISE_BLOCKS]
     if not speeds:
+        # Declared rear-end into a static same-lane lead: see
+        # HERO_STATIC_LEAD_TAKEOVER_MPS above.
+        static_lead = any(
+            (n.get("behavior") or {}).get("block") in ("stopped_ahead", "static_block", "static_hold")
+            and n.get("position") == "ahead_same_lane"
+            for n in (scene.get("npcs") or [])
+        )
+        if static_lead and scene.get("collision"):
+            return HERO_STATIC_LEAD_TAKEOVER_MPS
         return 6.0
     return max(speeds) + HERO_CLOSING_DELTA_MPS
 

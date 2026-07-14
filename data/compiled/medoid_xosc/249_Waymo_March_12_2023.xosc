@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OpenScenario.xsd">
-    <FileHeader description="scene_seed_block_scenario" author="ads_testing" revMajor="1" revMinor="0" date="2026-07-02T16:13:56.596814" />
+    <FileHeader description="scene_seed_block_scenario" author="ads_testing" revMajor="1" revMinor="0" date="2026-07-15T07:03:26.871876" />
     <CatalogLocations>
         <VehicleCatalog>
             <Directory path="openscenarios/catalogs" />
@@ -103,7 +103,7 @@
                             <SpeedAction>
                                 <SpeedActionDynamics dynamicsShape="linear" value="0.0" dynamicsDimension="time" />
                                 <SpeedActionTarget>
-                                    <AbsoluteTargetSpeed value="6.0" />
+                                    <AbsoluteTargetSpeed value="12.0" />
                                 </SpeedActionTarget>
                             </SpeedAction>
                         </LongitudinalAction>
@@ -113,7 +113,7 @@
                     <PrivateAction>
                         <TeleportAction>
                             <Position>
-                                <RelativeLanePosition entityRef="hero" ds="25.0" offset="0.0" dLane="0" />
+                                <RelativeLanePosition entityRef="hero" ds="23.0" offset="0.0" dLane="0" />
                             </Position>
                         </TeleportAction>
                     </PrivateAction>

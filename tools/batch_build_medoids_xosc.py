@@ -25,9 +25,9 @@ from tools import osc_blocks  # noqa: E402
 
 
 def _load_inputs(cid: str) -> tuple[dict, dict, Path] | None:
-    scene_path = ROOT / f"outputs/scene_seed/{cid}.json"
-    road_path = ROOT / f"outputs/road_seed/{cid}.json"
-    xodr_path = ROOT / f"outputs/opendrive_seed/{cid}.xodr"
+    scene_path = ROOT / f"data/seeds/scene_seed/{cid}.json"
+    road_path = ROOT / f"data/seeds/road_seed/{cid}.json"
+    xodr_path = ROOT / f"data/compiled/opendrive_seed/{cid}.xodr"
     if not (scene_path.is_file() and xodr_path.is_file()):
         return None
     seed = json.loads(scene_path.read_text())
@@ -40,8 +40,8 @@ def _load_inputs(cid: str) -> tuple[dict, dict, Path] | None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--medoids", type=Path, default=ROOT / "paper/eval_medoids_n100.json")
-    ap.add_argument("--out-dir", type=Path, default=ROOT / "outputs/medoid_xosc")
+    ap.add_argument("--medoids", type=Path, default=ROOT / "data/eval/eval_medoids_top42.json")
+    ap.add_argument("--out-dir", type=Path, default=ROOT / "data/compiled/medoid_xosc")
     ap.add_argument("--cases", nargs="+", default=[],
                     help="explicit case_ids (overrides the medoids file)")
     args = ap.parse_args()
@@ -50,7 +50,7 @@ def main() -> int:
         cases = args.cases
     else:
         meta = json.loads(args.medoids.read_text())
-        cases = [m["medoid"] for m in meta["medoids"]]
+        cases = [m.get("case_id") or m["medoid"] for m in meta["medoids"]]
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     print(f"=== batch_build_medoids_xosc ({len(cases)} cases) ===")

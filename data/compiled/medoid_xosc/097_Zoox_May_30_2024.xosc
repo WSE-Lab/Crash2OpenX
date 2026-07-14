@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OpenScenario.xsd">
-    <FileHeader description="scene_seed_block_scenario" author="ads_testing" revMajor="1" revMinor="0" date="2026-07-02T16:13:56.500619" />
+    <FileHeader description="scene_seed_block_scenario" author="ads_testing" revMajor="1" revMinor="0" date="2026-07-15T07:03:26.817998" />
     <CatalogLocations>
         <VehicleCatalog>
             <Directory path="openscenarios/catalogs" />
