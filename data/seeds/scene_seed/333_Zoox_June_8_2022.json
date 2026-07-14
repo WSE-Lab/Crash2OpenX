@@ -1,0 +1,17 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "报告仅包含一个骑车人与自动驾驶车辆接触的指控，但Zoox未能在传感器数据中找到任何相关事件，没有提供任何碰撞的具体描述、车辆移动、位置或环境信息，无法构建测试场景。",
+  "reason": "属于无法确定具体碰撞场景的事故，缺少必要的参与者行为描述，无法抽取关键机动。",
+  "evidence": {
+    "source_snippets": [
+      "Zoox received an allegation regarding contact between a bicyclist and a Zoox vehicle... Zoox was not able to identify any such incident"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "333_Zoox_June_8_2022.pdf"
+  }
+}

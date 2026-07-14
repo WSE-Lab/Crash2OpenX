@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "cut_in",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "SUV在左车道直行，右侧中间车道的一辆Waymo AV突然向左变道，与SUV右前部发生侧碰；场景选SUV为ego测试应对侧方切入的能力。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was traveling northeast bound on Venice Boulevard in the middle of three lanes when a passenger car in the rightmost lane and in front of the Waymo AV began to change lanes to the middle lane. The test driver of the Waymo AV transitioned to manual mode, and began to change lanes into the leftmost lane to avoid the passenger car ahead. During this lane change maneuver, the rear driver side of the Waymo AV made contact with the front passenger side of an SUV that was traveling in the leftmost lane, positioned slightly behind the Waymo AV."
+    ],
+    "reason": "Waymo AV 从相邻车道切入左车道导致侧碰，现有 cut_in 原语可直接表达。选左车道直行的 SUV 为 ego，其被动接受切入，测试场景完整。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "042_Waymo_January_11_2025_(2).pdf"
+  }
+}

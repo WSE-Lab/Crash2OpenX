@@ -1,0 +1,22 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "Waymo 自动驾驶车辆在停车场内手动模式下加速撞上便携式金属护栏，无其他车辆或道路使用者参与，属于单车撞静止物体事故。",
+  "reason": "事故发生在停车场（私有区域），且仅有一辆车撞上静止的金属护栏，无其他移动的车辆或道路使用者参与，符合“停车场/私有区域、单车冲出路缘/失控（无第二参与者）”的排除条件。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was in autonomous mode traveling west through a section of a parking lot at 280 E. Street, which was being rented by Waymo for driver training and closed off to the public by portable metal barriers.",
+      "the test driver transitioned to manual mode and began to accelerate forward towards a portal metal barrier separating a section of the parking lot.",
+      "the front and the passenger side of the Waymo AV made contact with the portable metal barrier.",
+      "NUMBER OF VEHICLES INVOLVED: 1",
+      "TYPE OF COLLISION: E (HIT OBJECT)"
+    ],
+    "reason": "场景中唯一的移动车辆是 Waymo AV（手动模式），其碰撞对象为静止的金属护栏，无其他移动的车辆、骑行者或行人。事故发生在停车场内，属于非公共道路的单车撞静止物体事件，不在本 DSL 的目标交互范围内。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "025_Waymo_March_14_2025.pdf"
+  }
+}

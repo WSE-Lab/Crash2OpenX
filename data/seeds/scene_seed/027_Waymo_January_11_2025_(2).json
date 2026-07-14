@@ -1,0 +1,48 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "cut_in",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "Waymo AV 在中间车道测试员手动向左变道避让前车时，与左车道后方行驶的 SUV 发生侧碰，选择 SUV 为 ego 测试其对侧向切入的应对能力。",
+  "evidence": {
+    "source_snippets": [
+      "On January 11, 2025 at 4:41 PM PT a Waymo Autonomous Vehicle (“Waymo AV”) ... was in a collision involving an SUV on Venice Boulevard near National Boulevard.",
+      "The Waymo AV was traveling northeast bound on Venice Boulevard in the middle of three lanes when a passenger car in the rightmost lane and in front of the Waymo AV began to change lanes to the middle lane. The test driver of the Waymo AV transitioned to manual mode, and began to change lanes into the leftmost lane to avoid the passenger car ahead. During this lane change maneuver, the rear driver side of the Waymo AV made contact with the front passenger side of an SUV that was traveling in the leftmost lane, positioned slightly behind the Waymo AV.",
+      "MOVEMENT PRECEDING COLLISION: VEH 1: J. CHANGING LANES; VEH 2: B. PROCEEDING STRAIGHT.",
+      "TYPE OF COLLISION: SIDE SWIPE."
+    ],
+    "reason": "SUV 在左车道直线行驶，具备测试价值，其前方遭右侧相邻车辆突然变道切入（cut-in）导致侧碰，可用 cut_in block 表达，无量化或定性词，走默认参数。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "027_Waymo_January_11_2025_(2).pdf"
+  }
+}

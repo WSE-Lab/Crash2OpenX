@@ -1,0 +1,50 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "behind_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "rear_hit",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "一辆Waymo自动驾驶汽车在直行时被后方车辆追尾，后车随后从左侧超车时再次碰撞，选取追尾冲突作为核心测试场景。",
+  "evidence": {
+    "source_snippets": [
+      "a passenger vehicle struck the Waymo AV from behind two times.",
+      "The Waymo AV was proceeding straight westbound on Clement Street.",
+      "TIME OF ACCIDENT: 04:47 PM",
+      "WEATHER: CLEAR",
+      "LIGHTING: DAYLIGHT",
+      "ROADWAY SURFACE: DRY"
+    ],
+    "reason": "报告描述后车首先追尾两次，虽然后续有左侧碰撞，但可提取追尾作为关键双方交互；ego为被追尾的AV，NPC为后车，行为可用rear_hit表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "488_Waymo_July_14_2021.pdf"
+  }
+}

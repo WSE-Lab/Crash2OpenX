@@ -1,0 +1,19 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "前车在车道内倒车平行泊车，与静止的 Waymo AV 发生碰撞，因核心机动涉及倒车/后退，排除。",
+  "reason": "核心机动涉及倒车/后退（reverse/backing），CARLA 无法实现，且属于 NHTSA 非 V2V 子集，因此排除。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was traveling northbound on Larkin Street when a passenger car traveling directly in front of the Waymo AV stopped in lane, and began to reverse to parallel park at the curb.",
+      "While the passenger car was reversing, the rear driver side of the passenger car made contact with the front passenger side of the stationary Waymo AV.",
+      "MOVEMENT PRECEDING COLLISION VEH 2: BACKING"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "032_Waymo_December_27_2024.pdf"
+  }
+}

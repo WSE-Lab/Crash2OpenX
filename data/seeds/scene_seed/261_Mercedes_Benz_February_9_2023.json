@@ -1,0 +1,49 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "front_brake",
+          "params": {
+            "brake_t": 10.0
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "高速公路上，前车（Mercedes）因准备变道而持续减速，约10秒后被后车（Jeep SUV）追尾；ego选为未及时刹车的后车，测试其对前车减速的反应能力。",
+  "evidence": {
+    "source_snippets": [
+      "the driver … applied the brakes, and slowed the vehicle down",
+      "The SUV following the Mercedes-Benz vehicle did not respond in time to the vehicle's braking and contacted the rear … approximately 10 seconds after the L3 ADS was deactivated",
+      "CLEAR weather, DAYLIGHT lighting, DRY roadway"
+    ],
+    "reason": "量化语‘10 seconds’直接换算为前车制动持续时间brake_t=10；前车一直在减速，后车未及时反应，构成典型追尾冲突，ego选为后车（主动追尾方）。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "261_Mercedes_Benz_February_9_2023.pdf"
+  }
+}

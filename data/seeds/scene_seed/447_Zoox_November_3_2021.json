@@ -1,0 +1,49 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "left",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "oncoming",
+        "side": "none",
+        "behavior": {
+          "block": "junction_cross",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "stop_sign",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "Zoox 车辆（ego）在交叉口左转，对向车（v2）闯 stop sign 直行，撞击 ego 左后侧。选择 ego 进行左转决策测试，control 设为 stop_sign 以反映违规直行冲突。",
+  "evidence": {
+    "source_snippets": [
+      "A Zoox vehicle was in manual mode making a left turn from Lemon St. onto Oakdell St.",
+      "A passenger vehicle passed through a stop sign without slowing and made contact with the rear and left side of the Zoox vehicle.",
+      "TIME OF ACCIDENT: 04:09 PM",
+      "WEATHER: A. CLEAR",
+      "Vehicle 1 Movement Preceding Collision: E. MAKING LEFT TURN"
+    ],
+    "reason": "双方均为移动车辆，存在左转 vs 闯 stop 直行的路口冲突，可用 junction_cross 表达对向车行为，stop_sign 控制违规。天气、时间明确可填。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "447_Zoox_November_3_2021.pdf"
+  }
+}

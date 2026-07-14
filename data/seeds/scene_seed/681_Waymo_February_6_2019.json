@@ -1,0 +1,50 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {
+        "speed": 1.8
+      }
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "yield",
+    "environment": {
+      "weather": "cloudy",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "一辆乘用车（ego）以约4 mph（1.8 m/s）的速度直行，追尾前方匝道上正在让行左侧来车而静止的Waymo自动驾驶车辆（NPC）。",
+  "evidence": {
+    "source_snippets": [
+      "A Waymo Autonomous Vehicle (“Waymo AV”) was stopped in autonomous mode in the slip-lane from northbound Shoreline Boulevard to northbound Central Expressway in Mountain View when it was rear-ended.",
+      "The Waymo AV was yielding to approaching traffic from the left when a passenger vehicle rear-ended the Waymo AV while travelling approximately 4 MPH.",
+      "MOVEMENT PRECEDING COLLISION: VEH 1: A. STOPPED; VEH 2: B. PROCEEDING STRAIGHT.",
+      "TYPE OF COLLISION: C. REAR END."
+    ],
+    "reason": "事故为典型的追尾场景：前车静止让行，后车低速直行追尾。选择移动的后车作为ego以测试其能否及时刹停，前车作为静止障碍物，使用stopped_ahead原语表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "681_Waymo_February_6_2019.pdf"
+  }
+}

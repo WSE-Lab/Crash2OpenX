@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "oncoming",
+        "side": "none",
+        "behavior": {
+          "block": "junction_turn",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "晴天下午，一辆直行面包车（ego）在路口遇到对向车辆（v2）左转，发生侧面碰撞。无量化细节，环境与控制信号按报告推导。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV, while in autonomous mode, was waiting to make a left turn and yielding to oncoming traffic, when the test driver ... proceeded with a left turn manually. During the left turn, an approaching van struck the right side of the Waymo AV."
+    ],
+    "reason": "ego 选为直行的面包车，测试其对向车左转的避让能力；NPC 动作为路口转弯冲突（junction_turn），可行表达该双方交互碰撞。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "489_Waymo_July_12_2021.pdf"
+  }
+}

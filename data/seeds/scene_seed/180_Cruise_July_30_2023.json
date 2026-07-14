@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "front_brake",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "夜间晴朗天气下，一辆车（ego）直行时，前方同车道车辆（v2）因让行对向车流减速准备左转，ego 未能及时刹车导致追尾。选择后车为 ego 测试其避免追尾能力，前车减速让行建模为 front_brake。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle (“AV”), operating in driverless autonomous mode, was traveling northbound on Mission Street between Virginia Avenue and 29th Street. As the AV was yielding to oncoming traffic in preparation to make a left turn onto westbound 29th Street on a green light, a dark-colored BMW Sedan traveling behind the AV failed to stop and rear-ended the AV"
+    ],
+    "reason": "后车未能停车追尾前车，选择后车为 ego 测试其避免追尾能力，前车减速让行建模为 front_brake。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "180_Cruise_July_30_2023.pdf"
+  }
+}

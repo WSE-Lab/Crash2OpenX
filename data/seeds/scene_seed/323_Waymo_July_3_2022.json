@@ -1,0 +1,50 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "junction_turn",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "一辆车在对向车道超车时，与正在左转的前车发生侧擦。ego 为超车车辆，NPC 为左转车辆。",
+  "evidence": {
+    "source_snippets": [
+      "A passenger car passed the Waymo AV and the vehicle directly behind the Waymo AV by crossing into and driving in the opposing lane of traffic.",
+      "As the passenger vehicle passed the Waymo on the left, the right side of the passenger vehicle made contact with the front left corner of the Waymo AV",
+      "TYPE OF COLLISION: B. SIDE SWIPE",
+      "WEATHER: A. CLEAR",
+      "LIGHTING: C. DARK –STREET LIGHTS",
+      "ROADWAY SURFACE: A. DRY"
+    ],
+    "reason": "超车车辆主动驶入对向车道进行超车，与正在左转的前车发生侧擦，驾驶决策具有测试价值，且可映射到现有junction_turn与adjacent组合。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "323_Waymo_July_3_2022.pdf"
+  }
+}

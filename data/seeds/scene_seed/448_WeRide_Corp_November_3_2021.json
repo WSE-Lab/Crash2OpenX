@@ -1,0 +1,50 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {
+        "speed": 2.235
+      }
+    },
+    "npcs": [
+      {
+        "id": "v1",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v1",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "一辆自动驾驶汽车在入口匝道上排队等待计流灯时静止，后方另一辆车轻微加速至约5 mph导致追尾碰撞。判断依据：后车加速后未能及时停车，应选后车为ego测试其能否检测前方静止车辆。",
+  "evidence": {
+    "source_snippets": [
+      "Our car was in the queue of traffic waiting for the metering light. While our car was stationary (0 MPH), the other car involved accelerated slightly to about 5 MPH, which resulted in a minor rear end collision.",
+      "TYPE OF COLLISION: REAR END",
+      "VEHICLE 1: Stopped in Traffic",
+      "VEHICLE 2: Moving"
+    ],
+    "reason": "后车（BMW）以约5 mph速度移动并追尾静止的前车（AV），具有测试其低速检测与制动能力的价值，因此选后车为ego，前车作为NPC静止障碍。符合前方静止车辆场景。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "448_WeRide_Corp_November_3_2021.pdf"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "overtake_oncoming",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "static_hold",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "重型卡车（ego）在故障交通灯前，进入对向车道试图超越静止的 Waymo 自动驾驶车辆（v2），在超越过程中卡车右侧与 Waymo 左后角发生侧面擦碰。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was stopped facing a malfunctioning traffic light on southbound Alabama Street at the intersection with Cesar Chavez Street.",
+      "a heavy truck that had been stopped behind the Waymo AV entered the oncoming lane of Alabama Street to maneuver around the Waymo AV.",
+      "As the heavy truck was passing the stopped Waymo AV, the passenger side of the heavy truck made contact with the rear driver side corner of the Waymo AV."
+    ],
+    "reason": "重型卡车作为移动并执行超车决策的车辆，选为 ego；Waymo AV 静止于相邻车道，作为 NPC。碰撞为双方交互，现有词汇表可表达，行为块 static_hold 与 position adjacent 准确描述 NPC 静止位置，ego 的 overtake_oncoming 机动反映其进入对向车道超越的行为。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "040_Waymo_December_14_2024.pdf"
+  }
+}

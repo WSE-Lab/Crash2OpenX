@@ -1,0 +1,18 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "单车事故：自动驾驶车辆右转时撞到路缘，无其他交通参与者，属于无第二参与者的单车失控/冲出路缘，不在两轴场景表达范围内。",
+  "reason": "单车冲出路缘/失控(无第二参与者)",
+  "evidence": {
+    "source_snippets": [
+      "A test vehicle, operating in autonomous mode in Sunnyvale and turning right from Mathilda Avenue onto Del Rey Avenue, made contact with a curb at approximately 13 miles per hour.",
+      "No other agents were involved"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "462_Apple_September_27_2021.pdf"
+  }
+}

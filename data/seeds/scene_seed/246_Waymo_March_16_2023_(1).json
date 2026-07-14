@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "debris",
+        "kind": "static",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "static_block",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "debris",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "Waymo自动驾驶车辆在高速公路出口匝道直行，碰撞前方车道上的道路碎片（轮胎碎片）。天气晴朗，夜间有路灯。",
+  "evidence": {
+    "source_snippets": [
+      "On March 16, 2023 at 2:19 AM PST ... the Waymo AV was traveling south on Interstate 280 in the rightmost exit lane ... made contact with road debris (tire scrap).",
+      "WEATHER ... CLEAR",
+      "LIGHTING ... DARK – STREET LIGHTS"
+    ],
+    "reason": "报告描述AV直行时撞击静止的道路碎片，无其他参与者，可建模为ego直行碰撞前方同车道上的static障碍物。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "246_Waymo_March_16_2023_(1).pdf"
+  }
+}

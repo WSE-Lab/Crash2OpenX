@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "cut_in",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "dawn"
+    }
+  },
+  "description_zh": "Zoox 自动驾驶车辆在车道4直行，右侧相邻车道前方一辆车为绕过骑行者突然向左变道切入，与 Zoox 车辆发生侧碰。",
+  "evidence": {
+    "source_snippets": [
+      "A Zoox vehicle (Vehicle 1) in autonomous mode was traveling in lane 4 on southwest-bound Harrison Street...",
+      "Vehicle 2, traveling in the same direction ahead of the Zoox vehicle in the right adjacent lane (lane 5), was attempting to go around a cyclist...",
+      "Vehicle 2 then swerved left into lane 4 across the path of the Zoox vehicle and the driver-side quarter panel on Vehicle 2 contacted the passenger-side fender and front door of the Zoox vehicle."
+    ],
+    "reason": "双方均为移动车辆，存在明确的侧向切入交互，且 ego 直行具有测试价值，现有词汇表可表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "013_Zoox_February_19_2025.pdf"
+  }
+}

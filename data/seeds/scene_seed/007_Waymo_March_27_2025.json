@@ -1,0 +1,42 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "traffic_light"
+  },
+  "description_zh": "Waymo AV 在红灯前停止排队，后方乘用车（ego）从同车道驶近并追尾撞击静止的 Waymo AV（v2）。将后方移动的乘用车选为 ego，测试其能否及时停车避免追尾。Waymo AV 作为静止前车 NPC（stopped_ahead）。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was traveling southbound on La Cienega Boulevard and came to a stop in a queue of traffic for a red light at the intersection at W Florence Avenue.",
+      "As the light remained red and the Waymo AV remained stopped, a passenger car approached the Waymo AV from behind and the front of the passenger car made contact with the rear of the stationary Waymo AV."
+    ],
+    "reason": "事故描述为红灯停车时后方车辆追尾，ego 须为移动的车辆（后方乘用车），前方静止的 Waymo AV 作为 NPC。符合 rear-end 碰撞积木，无倒车/全静止等情况，可以表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek-v4-pro",
+    "input": "backups/old_20260604/outputs/facts_skill/007_Waymo_March_27_2025.json"
+  }
+}

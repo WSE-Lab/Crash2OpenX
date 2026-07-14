@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "left",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "cyclist",
+        "kind": "cyclist",
+        "position": "oncoming",
+        "side": "none",
+        "behavior": {
+          "block": "junction_cross",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "cyclist",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "unknown",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "Cruise AV 在路口左转时，与对向直行的电动滑板车发生侧碰。报告显示 AV 让行后脱离自动驾驶模式进行左转，随后滑板车撞上右侧车门。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle (\"Cruise AV\"), operating in autonomous mode, was traveling northbound on 5th Street and yielding to oncoming traffic before making a left turn onto westbound Howard Street.",
+      "The Cruise AV was yielding to an oncoming electric scooterist when the light turned from green to yellow.",
+      "shortly thereafter, the electric scooterist made contact with the right side of the Cruise AV, damaging the Cruise AV's front and rear passenger doors."
+    ],
+    "reason": "选择 ego 为 Cruise AV 车辆，其左转决策具有测试价值；对向滑板车视为 cyclist，使用现有的 junction_cross 行为表达路口直行冲突。控制信号为 traffic_light，时间明确为凌晨（01:15），天气未知。现有词汇表可覆盖，故返回 supported。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "485_Cruise_July_26_2021.pdf"
+  }
+}

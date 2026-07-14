@@ -1,0 +1,49 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {
+        "speed": 0.9
+      }
+    },
+    "npcs": [
+      {
+        "id": "v1",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v1"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "一辆自动驾驶测试车在辅路让行时静止，后方一辆低速直行的乘用车（ego）未能及时停车，以约 2 mph 追尾前车后保险杠。测 ego 能否识别静止前车并避免碰撞。",
+  "evidence": {
+    "source_snippets": [
+      "A Waymo Autonomous Vehicle (“Waymo AV”) was stopped in manual mode in the slip lane... when it was rear-ended.",
+      "The Waymo AV test driver was yielding to approaching traffic when a passenger vehicle made contact with the Waymo AV’s rear bumper at approximately 2 MPH.",
+      "VEH 1: STOPPED; VEH 2: PROCEEDING STRAIGHT; TYPE OF COLLISION: REAR END"
+    ],
+    "reason": "唯一移动车辆是追尾的后车（VEH 2），选为 ego，其前方有静止车辆。静止车用 stopped_ahead 表达，ego 直行，碰撞关系清晰，现有词汇表可完整表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "583_Waymo_December_20_2019.pdf"
+  }
+}

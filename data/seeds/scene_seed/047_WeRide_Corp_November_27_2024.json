@@ -1,0 +1,51 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "left",
+      "params": {
+        "speed": 8.0
+      }
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "front_brake",
+          "params": {
+            "speed": 4.9,
+            "brake_t": 2.5
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "两车在路口均左转进入同一车道，前车（AV）以11 mph减速行驶，后车（ego）以18 mph从后方追尾。选取后车作为ego，测试其在左转跟车时能否避免追尾。",
+  "evidence": {
+    "source_snippets": [
+      "Car 1 ... performed the turn from the second lane from the left and was travelling 11 mph when Car 1 then slowed down while still in the intersection.",
+      "Car 2 (Ford f-150 XLT), traveling at 18 mph and also making a left turn from Coleman Ave within the same lane as car 1, struck and rear ended car 1 while both cars were still in the intersection."
+    ],
+    "reason": "两车均为移动的汽车，后车追尾前车。前车减速（定性为gradually），后车速度较高，适合作为ego测试跟车防追尾能力。选择后车为ego，前车作为NPC使用front_brake模拟减速。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "047_WeRide_Corp_November_27_2024.pdf"
+  }
+}

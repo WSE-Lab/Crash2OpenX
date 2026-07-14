@@ -1,0 +1,18 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "事故中唯一正在移动的具有测试价值的车辆是进行'甜甜圈'特技的Infiniti Q50，其行为属于刻意危险驾驶/特技表演，不属于可被现有通用驾驶原语（如变道、转弯冲突、刹车等）建模的正常交互场景。此外，Cruise AV在绿灯后开始左转时处于被动被撞状态，且撞击方为非正常行驶的特技车辆，无第二参与者可进行有意义的驾驶决策测试。",
+  "reason": "事故核心涉及Infiniti Q50在路口进行'甜甜圈'特技表演，属于失控/非标准驾驶行为，不构成可被现有词汇表映射的双方驾驶交互。该场景无任何一辆移动的car具备常规测试价值（唯一移动车辆的行为为特技驾驶，非标准V2V交互），因此落入可辩护的out-of-scope范围。",
+  "evidence": {
+    "source_snippets": [
+      "The Cruise AV began to proceed as the light turned green when an Infiniti Q50 passed the Cruise AV in the oncoming traffic lane and began performing \"donuts\" in the intersection.",
+      "The Cruise AV began to initiate a left turn onto Sutter Street when the Infiniti Q50 made contact with the Cruise AV's front driver side bumper..."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "251_Cruise_March_6_2023.pdf"
+  }
+}

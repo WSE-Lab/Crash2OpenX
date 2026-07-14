@@ -1,0 +1,46 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "oncoming",
+        "side": "none",
+        "behavior": {
+          "block": "junction_turn",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "unknown",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "在夜晚的十字路口，ego车辆（直行的van）与一辆对向左转车辆（NPC）发生碰撞，碰撞发生在ego直行、NPC左转进入ego车道的过程中。源于Waymo AV手动左转时与对向van碰撞的事故报告。",
+  "evidence": {
+    "source_snippets": [
+      "On October 28, 2021 at 9:35 PM PDT a Waymo Autonomous Vehicle... was in a collision involving a van at Silver Avenue at Bayshore Boulevard.",
+      "the test driver... proceeded with a left turn manually. During the left turn, an approaching van made contact with the front bumper of the Waymo AV."
+    ],
+    "reason": "van直行（ego）与对向左转车辆（v2）在路口冲突，可用junction_turn表达NPC行为，position为oncoming。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "450_Waymo_October_28_2021.pdf"
+  }
+}

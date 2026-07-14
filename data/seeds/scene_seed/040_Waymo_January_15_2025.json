@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "front_brake",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "跟随的SUV（ego）在Stockton Street直行，前方Waymo AV因红灯减速停车，SUV追尾前车。选择后车为ego以测试其对前车减速的应对能力。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV began slowing to stop within the crosswalk along Market Street, and the front of the trailing SUV made contact with the rear of the Waymo AV.",
+      "WEATHER (MARK 1 to 2 ITEMS) A. CLEAR: VEH 1 (X), VEH 2 (X)",
+      "TIME OF ACCIDENT: 01:12 PM"
+    ],
+    "reason": "后车追尾前车，前车减速，典型的跟车碰撞场景，选择后车为ego（主动移动方）以测试其能否及时制动。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "040_Waymo_January_15_2025.pdf"
+  }
+}

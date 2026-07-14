@@ -1,0 +1,18 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "Waymo AV 直行时，对向车辆撞飞的手推车抛射至本车道导致碰撞，碰撞对象为非标准道路使用者（手推车），无直接车辆间交互，属于 Hit Object 类型，不在当前 DSL 覆盖范围内。",
+  "reason": "碰撞对象为手推车（hand truck dolly），非车辆/行人/骑行者/静态障碍物，且无直接车辆间交互，属于可辩护排除的 out-of-scope 类型。",
+  "evidence": {
+    "source_snippets": [
+      "an oncoming vehicle in the northbound lane struck a hand truck dolly, which was then projected from the northbound lane through the median lane and into the southbound lane occupied by the Waymo AV.",
+      "TYPE OF COLLISION: Hit Object"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "018_Waymo_February_3_2025.pdf"
+  }
+}

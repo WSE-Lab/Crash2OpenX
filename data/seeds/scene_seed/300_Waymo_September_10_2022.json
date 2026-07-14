@@ -1,0 +1,19 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "事故发生在停车场，属私有区域泊车/通行机动，不在公共道路范围内，依据规则排除。",
+  "reason": "事故地点为停车场/私有区域，且涉及泊车机动（VEH 2 标记为 PARKING MANEUVER），属于可辩护的 out-of-scope 场景。",
+  "evidence": {
+    "source_snippets": [
+      "a collision involving a pickup truck in a parking lot at 2121 Evans Avenue",
+      "the oncoming pickup truck passed the Waymo AV on the left hand side, making contact with the rear left sensor",
+      "MOVEMENT PRECEDING COLLISION: VEH 1: STOPPED, VEH 2: PARKING MANEUVER"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "300_Waymo_September_10_2022.pdf"
+  }
+}

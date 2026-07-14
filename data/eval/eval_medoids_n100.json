@@ -1,0 +1,517 @@
+{
+  "version": "eval_medoids_v1",
+  "source_eval_set": "paper/eval_set_n100.json",
+  "clusterable_n": 67,
+  "skipped": [
+    {
+      "case_id": "014_Zoox_February_18_2025",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "333_Zoox_June_8_2022",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "438_Waymo_November_20_2021",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "033_Waymo_December_25_2024",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "201_Cruise_June_15_2023",
+      "reason": "scene status=needs_extension"
+    },
+    {
+      "case_id": "205_Waymo_June_9_2023",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "384_Waymo_March_9_2022",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "231_Zoox_April_11_2023_(2)",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "011_Waymo_March_12_2025",
+      "reason": "road status=unsupported"
+    },
+    {
+      "case_id": "018_Waymo_February_3_2025",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "025_Waymo_March_14_2025",
+      "reason": "road status=unsupported"
+    },
+    {
+      "case_id": "089_Waymo_July_6_2024_(B)",
+      "reason": "road status=unsupported"
+    },
+    {
+      "case_id": "206_Waymo_June_5_2023",
+      "reason": "road status=unsupported"
+    },
+    {
+      "case_id": "256_Waymo_February_25_2023_(2)",
+      "reason": "road status=unsupported"
+    },
+    {
+      "case_id": "300_Waymo_September_10_2022",
+      "reason": "road status=unsupported"
+    },
+    {
+      "case_id": "370_Waymo_April_5_2022",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "462_Apple_September_27_2021",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "020_Waymo_March_28_2025",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "032_Waymo_December_27_2024",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "204_Cruise_June_8_2023",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "377_Cruise_March_26_2022",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "391_Apple_February_22_2022",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "540_Lyft_December_2_2020",
+      "reason": "scene status=needs_extension"
+    },
+    {
+      "case_id": "586_Cruise_December_13_2019",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "603_Cruise_October_26_2019",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "600_Waymo_October_28_2019_(1)",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "353_Zoox_April_28_2022",
+      "reason": "scene status=skipped"
+    },
+    {
+      "case_id": "026_Waymo_March_12_2025",
+      "reason": "road status=unsupported"
+    },
+    {
+      "case_id": "028_Waymo_January_11_2025_(1)",
+      "reason": "road status=unsupported"
+    },
+    {
+      "case_id": "118_Waymo_March_3_2024",
+      "reason": "road status=unsupported"
+    },
+    {
+      "case_id": "280_Waymo_December_1_2022",
+      "reason": "road status=unsupported"
+    },
+    {
+      "case_id": "365_Pony.ai_April_11_2022",
+      "reason": "road status=unsupported"
+    },
+    {
+      "case_id": "583_Waymo_December_20_2019",
+      "reason": "road status=unsupported"
+    }
+  ],
+  "best_k": 18,
+  "silhouette": 0.3337988899263409,
+  "medoids": [
+    {
+      "cluster_id": 1,
+      "size": 4,
+      "medoid": "032_AutoX_February_5_2025",
+      "members": [
+        "017_AutoX_February_5_2025",
+        "032_AutoX_February_5_2025",
+        "188_Waymo_July_11_2023",
+        "615_Apple_September_19_2019"
+      ],
+      "feature_signature": {
+        "topology": "curve",
+        "lanes": "1",
+        "sut_maneuver": "right",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "roadside|static_block"
+        ],
+        "collision_pair": "ego↔v2"
+      }
+    },
+    {
+      "cluster_id": 2,
+      "size": 1,
+      "medoid": "665_GM_Cruise_April_14_2019_(2)",
+      "members": [
+        "665_GM_Cruise_April_14_2019_(2)"
+      ],
+      "feature_signature": {
+        "topology": "t_junction",
+        "lanes": "1",
+        "sut_maneuver": "right",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "oncoming|oncoming"
+        ],
+        "collision_pair": "ego↔b1"
+      }
+    },
+    {
+      "cluster_id": 3,
+      "size": 1,
+      "medoid": "021_Zoox_Inc._March_28_2025",
+      "members": [
+        "021_Zoox_Inc._March_28_2025"
+      ],
+      "feature_signature": {
+        "topology": "cross_intersection",
+        "lanes": "1",
+        "sut_maneuver": "right",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "opposing_leg|static_hold"
+        ],
+        "collision_pair": "ego↔v1"
+      }
+    },
+    {
+      "cluster_id": 4,
+      "size": 4,
+      "medoid": "153_WeRide_September_28_2023",
+      "members": [
+        "153_WeRide_September_28_2023",
+        "281_Zoox_November_28_2022",
+        "443_Apple_November_11_2021",
+        "530_Pony.ai_February_11_2021"
+      ],
+      "feature_signature": {
+        "topology": "cross_intersection",
+        "lanes": "2",
+        "sut_maneuver": "straight",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "ahead_same_lane|stopped_ahead"
+        ],
+        "collision_pair": "ego↔v1"
+      }
+    },
+    {
+      "cluster_id": 5,
+      "size": 6,
+      "medoid": "081_Zoox_July_20_2024_(A)",
+      "members": [
+        "055_Waymo_November_3_2024_(1)",
+        "081_Zoox_July_20_2024_(A)",
+        "140_Waymo_November_3_2023",
+        "149_Waymo_September_30_2023",
+        "249_Waymo_March_12_2023",
+        "549_Cruise_August_15_2020"
+      ],
+      "feature_signature": {
+        "topology": "cross_intersection",
+        "lanes": "2",
+        "sut_maneuver": "straight",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "adjacent|cut_in"
+        ],
+        "collision_pair": "ego↔v2"
+      }
+    },
+    {
+      "cluster_id": 6,
+      "size": 7,
+      "medoid": "038_Waymo_December_17_2024",
+      "members": [
+        "027_Waymo_January_11_2025_(2)",
+        "038_Waymo_December_17_2024",
+        "042_Waymo_January_11_2025_(2)",
+        "043_Zoox_December_8_2024",
+        "261_Mercedes_Benz_February_9_2023",
+        "274_Cruise_December_14_2022",
+        "610_Cruise_October_12_2019"
+      ],
+      "feature_signature": {
+        "topology": "straight",
+        "lanes": "2",
+        "sut_maneuver": "straight",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "adjacent|cut_in"
+        ],
+        "collision_pair": "ego↔v2"
+      }
+    },
+    {
+      "cluster_id": 7,
+      "size": 1,
+      "medoid": "593_Cruise_November_10_2019",
+      "members": [
+        "593_Cruise_November_10_2019"
+      ],
+      "feature_signature": {
+        "topology": "straight",
+        "lanes": "2",
+        "sut_maneuver": "straight",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "adjacent|static_hold"
+        ],
+        "collision_pair": "ego↔av"
+      }
+    },
+    {
+      "cluster_id": 8,
+      "size": 19,
+      "medoid": "193_Waymo_June_29_2023_(2)",
+      "members": [
+        "040_Waymo_January_15_2025",
+        "122_Waymo_February_18_2024",
+        "143_Apple_October_23_2023",
+        "167_Waymo_August_19_2023",
+        "180_Cruise_July_30_2023",
+        "193_Waymo_June_29_2023_(2)",
+        "208_Mercedes_Benz_May_30_2023",
+        "229_Cruise_April_22_2023",
+        "291_Apple_October_20_2022",
+        "312_Waymo_August_13_2022",
+        "330_Apple_June_14_2022",
+        "390_Waymo_February_19_2022",
+        "423_Cruise_November_15_2021",
+        "428_Waymo_December_7_2021",
+        "522_Cruise_March_12_2021",
+        "573_Zoox_January_21_2020_(2)",
+        "616_Aimotive_September_16_2019",
+        "619_GM_Cruise_September_5_2019",
+        "681_Waymo_February_6_2019"
+      ],
+      "feature_signature": {
+        "topology": "cross_intersection",
+        "lanes": "1",
+        "sut_maneuver": "straight",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "ahead_same_lane|stopped_ahead"
+        ],
+        "collision_pair": "ego↔v2"
+      }
+    },
+    {
+      "cluster_id": 9,
+      "size": 2,
+      "medoid": "161_Beep_Inc_August_23_2023",
+      "members": [
+        "161_Beep_Inc_August_23_2023",
+        "684_GM_Cruise_January_10_2019"
+      ],
+      "feature_signature": {
+        "topology": "t_junction",
+        "lanes": "1",
+        "sut_maneuver": "straight",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "cross|junction_turn"
+        ],
+        "collision_pair": "ego↔v2"
+      }
+    },
+    {
+      "cluster_id": 10,
+      "size": 4,
+      "medoid": "263_Zoox_February_8_2023",
+      "members": [
+        "263_Zoox_February_8_2023",
+        "418_Waymo_January_3_2022",
+        "488_Waymo_July_14_2021",
+        "565_Waymo_February_12_2020"
+      ],
+      "feature_signature": {
+        "topology": "straight",
+        "lanes": "1",
+        "sut_maneuver": "straight",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "behind_same_lane|rear_hit"
+        ],
+        "collision_pair": "ego↔v2"
+      }
+    },
+    {
+      "cluster_id": 11,
+      "size": 2,
+      "medoid": "322_Waymo_July_5_2022",
+      "members": [
+        "322_Waymo_July_5_2022",
+        "533_Waymo_January_22_2021"
+      ],
+      "feature_signature": {
+        "topology": "cross_intersection",
+        "lanes": "1",
+        "sut_maneuver": "straight",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "ahead_same_lane|front_brake"
+        ],
+        "collision_pair": "ego↔v1"
+      }
+    },
+    {
+      "cluster_id": 12,
+      "size": 9,
+      "medoid": "165_Mercedes_Benz_August_18_2023",
+      "members": [
+        "048_Waymo_November_27_2024",
+        "165_Mercedes_Benz_August_18_2023",
+        "351_Waymo_May_4_2022",
+        "407_Waymo_January_28_2022_(1)",
+        "448_WeRide_Corp_November_3_2021",
+        "625_Waymo_August_9_2019_(1)",
+        "648_Waymo_June_16_2019",
+        "657_Waymo_May_15_2019",
+        "676_Lyft_February_28_2019"
+      ],
+      "feature_signature": {
+        "topology": "curve",
+        "lanes": "1",
+        "sut_maneuver": "straight",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "ahead_same_lane|stopped_ahead"
+        ],
+        "collision_pair": "ego↔v1"
+      }
+    },
+    {
+      "cluster_id": 13,
+      "size": 1,
+      "medoid": "444_Waymo_November_6_2021_(1)",
+      "members": [
+        "444_Waymo_November_6_2021_(1)"
+      ],
+      "feature_signature": {
+        "topology": "straight",
+        "lanes": "1",
+        "sut_maneuver": "straight",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "oncoming|static_hold"
+        ],
+        "collision_pair": "ego↔v1"
+      }
+    },
+    {
+      "cluster_id": 14,
+      "size": 1,
+      "medoid": "246_Waymo_March_16_2023_(1)",
+      "members": [
+        "246_Waymo_March_16_2023_(1)"
+      ],
+      "feature_signature": {
+        "topology": "curve",
+        "lanes": "1",
+        "sut_maneuver": "straight",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "ahead_same_lane|static_block"
+        ],
+        "collision_pair": "ego↔debris"
+      }
+    },
+    {
+      "cluster_id": 15,
+      "size": 2,
+      "medoid": "435_Waymo_November_26_2021",
+      "members": [
+        "435_Waymo_November_26_2021",
+        "685_GM_Cruise_January_7_2019"
+      ],
+      "feature_signature": {
+        "topology": "cross_intersection",
+        "lanes": "1",
+        "sut_maneuver": "left",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "opposing_leg|static_hold"
+        ],
+        "collision_pair": "ego↔v2"
+      }
+    },
+    {
+      "cluster_id": 16,
+      "size": 1,
+      "medoid": "091_WeRide_June_21_2024",
+      "members": [
+        "091_WeRide_June_21_2024"
+      ],
+      "feature_signature": {
+        "topology": "t_junction",
+        "lanes": "1",
+        "sut_maneuver": "left",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "behind_same_lane|rear_hit"
+        ],
+        "collision_pair": "ego↔v2"
+      }
+    },
+    {
+      "cluster_id": 17,
+      "size": 1,
+      "medoid": "157_Apollo_Autonomous_Driving_September_6_2023",
+      "members": [
+        "157_Apollo_Autonomous_Driving_September_6_2023"
+      ],
+      "feature_signature": {
+        "topology": "straight",
+        "lanes": "1",
+        "sut_maneuver": "overtake_oncoming",
+        "npc_count_bin": "1",
+        "npc_sig": [
+          "adjacent|static_hold"
+        ],
+        "collision_pair": "ego↔v2"
+      }
+    },
+    {
+      "cluster_id": 18,
+      "size": 1,
+      "medoid": "273_Cruise_December_18_2022",
+      "members": [
+        "273_Cruise_December_18_2022"
+      ],
+      "feature_signature": {
+        "topology": "straight",
+        "lanes": "2",
+        "sut_maneuver": "left",
+        "npc_count_bin": "2+",
+        "npc_sig": [
+          "adjacent|cut_in",
+          "adjacent|static_hold"
+        ],
+        "collision_pair": "ego↔v_dodge"
+      }
+    }
+  ]
+}

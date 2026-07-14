@@ -1,0 +1,50 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "left",
+      "params": {
+        "speed": 2.235
+      }
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "opposing_leg",
+        "side": "none",
+        "behavior": {
+          "block": "static_hold",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "stop_sign",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "ego 车辆从 Thornton Avenue 左转进入 Scotia Avenue，以约 5 mph 速度转弯时，与停在对面停止线处的静止 Waymo AV 发生侧擦碰撞。选取转弯车辆为 ego，测试其左转时对静止车辆的避让能力。",
+  "evidence": {
+    "source_snippets": [
+      "A passenger vehicle approaching from the right of the Waymo AV on eastbound Thornton Avenue made a left turn in front of the Waymo AV to head northbound on Scotia Avenue.",
+      "At approximately 5 mph, the turning passenger vehicle made contact with Waymo AV’s sensor hardware housing on the driver side rear corner fender of the stopped Waymo AV.",
+      "VEH 1: A. STOPPED",
+      "VEH 2: E. MAKING LEFT TURN"
+    ],
+    "reason": "转弯车辆（移动）与静止的 Waymo AV 碰撞，符合 opposing_leg + static_hold 模式，ego 左转 maneuver 可表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "435_Waymo_November_26_2021.pdf"
+  }
+}

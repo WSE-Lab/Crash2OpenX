@@ -1,0 +1,50 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "cross",
+        "side": "right",
+        "behavior": {
+          "block": "junction_cross",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "Cruise AV 在传统模式下于 Haight 街与 Gough 街交叉口直行时，被右侧 Gough 街南行的 Vespa 摩托车撞击右后门。选取 AV 为 ego 测试直行过路口时对侧向直行冲突的应对能力，摩托车作为 cross 位置 NPC 以 junction_cross 行为直行穿越。",
+  "evidence": {
+    "source_snippets": [
+      "As the driver of the Cruise AV proceeded on Haight through Gough, a motor scooter, proceeding southbound on Gough through the intersection with Haight, made contact with the right rear passenger door of the Cruise AV",
+      "MOVEMENT PRECEDING COLLISION: A. STOPPED (blank), B. PROCEEDING STRAIGHT (VEH 1: X, VEH 2: X)",
+      "TYPE OF COLLISION: D. BROADSIDE (VEH 2: X)",
+      "WEATHER: A. CLEAR (VEH 1: X, VEH 2: X)",
+      "LIGHTING: A. DAYLIGHT (VEH 1: X, VEH 2: X)",
+      "TIME OF ACCIDENT: 05:33 PM"
+    ],
+    "reason": "两车均在移动、直行通过交叉口，摩托车从右侧横穿撞击 ego，构成典型的十字路口直行冲突，现有 junction_cross block 与 cross position 可准确表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "619_GM_Cruise_September_5_2019.pdf"
+  }
+}

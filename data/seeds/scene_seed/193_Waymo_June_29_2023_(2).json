@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "stop_sign",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "Waymo AV 在 stop sign 处停止，后方皮卡追尾。选皮卡为 ego，测试其能否及时刹停。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was traveling eastbound on 4th Street and stopped at a stop sign at the intersection of S. June Street when a pick-up truck approached the Waymo AV from behind and made contact with the rear of the Waymo AV.",
+      "MOVEMENT PRECEDING COLLISION: A. STOPPED: VEH 1 (X); B. PROCEEDING STRAIGHT: VEH 2 (X)",
+      "TYPE OF COLLISION: C. REAR END: VEH 2 (X)"
+    ],
+    "reason": "AV 静止在 stop sign 前，皮卡从后方直行追尾。皮卡是唯一移动的 car，选为 ego，AV 作为同车道前方静止 NPC。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "193_Waymo_June_29_2023_(2).pdf"
+  }
+}

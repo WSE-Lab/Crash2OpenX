@@ -1,0 +1,48 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "ego（后方乘用车）在同车道直行接近，前车（Waymo AV）因红灯停在路口，ego 未能及时刹停，追尾碰撞前车。",
+  "evidence": {
+    "source_snippets": [
+      "the front of the passenger car which was following behind the Waymo AV made contact with the rear of the Waymo AV.",
+      "VEH 2 (X for B. Proceeding Straight)",
+      "As the Waymo AV came to a stop for a red light",
+      "TYPE OF COLLISION: VEH 2 (X for C. Rear End)"
+    ],
+    "reason": "后车直行追尾前车，前车静止等待红灯，符合 rear-end collision 场景，可映射为 ego（后车）直行遇 ahead_same_lane 的 stopped_ahead NPC。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "149_Waymo_September_30_2023.pdf"
+  }
+}

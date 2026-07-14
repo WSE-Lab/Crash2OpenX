@@ -1,0 +1,18 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "Cruise AV 和另一辆车均从垂直停车位倒车，发生接触。核心机动为倒车，属于排除范围。",
+  "reason": "核心机动涉及倒车/后退(reverse/backing)，且为泊车机动，属于 NHTSA 非 V2V 子集，无法用 CARLA 模拟。",
+  "evidence": {
+    "source_snippets": [
+      "While the driver of the Cruise AV was reversing out of its perpendicular parking spot on Delancey, another vehicle simultaneously reversing out of its perpendicular parking spot on the opposite side of the street made contact with the rear bumper of the Cruise AV",
+      "MOVEMENT PRECEDING COLLISION: K. PARKING MANUEVER [X] (VEH 1, VEH 2)"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "586_Cruise_December_13_2019.pdf"
+  }
+}

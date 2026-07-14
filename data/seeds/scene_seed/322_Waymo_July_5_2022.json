@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v1",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "front_brake",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v1",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "Waymo AV 在前方因检测到紧急车辆警笛而减速，后方丰田普锐斯未能及时制动导致追尾，测试后车能否应对前车减速避免碰撞。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was traveling westbound on 17th Street when it detected a siren from a nearby emergency vehicle. As the Waymo AV slowed, a passenger vehicle made contact with the rear of the Waymo AV."
+    ],
+    "reason": "两辆移动车辆，后车追尾前车减速，具有测试价值。选择后车作为 ego，前车作为 NPC 减速，符合 front_brake 块。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "322_Waymo_July_5_2022.pdf"
+  }
+}

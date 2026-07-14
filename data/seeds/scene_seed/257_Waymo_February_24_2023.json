@@ -1,0 +1,48 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "left",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "cross",
+        "side": "left",
+        "behavior": {
+          "block": "junction_cross",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "AV在Toland街与Hudson大道交叉口左转时，另一辆车从左侧驶入交叉口并撞上AV左侧面。选AV为ego测其左转时检测侧向直行冲突的能力，对方为NPC，位置cross，行为junction_cross。",
+  "evidence": {
+    "source_snippets": [
+      "While the Waymo AV was making a left turn onto Hudson Avenue, a passenger vehicle proceeded into the intersection from the left and made contact with the left side of the Waymo AV.",
+      "DATE OF ACCIDENT: 02/24/2023, TIME OF ACCIDENT: 12:15 AM",
+      "WEATHER: A. CLEAR",
+      "LIGHTING: A. DAYLIGHT (但实际时间为12:15 AM，按时间推断为夜间)"
+    ],
+    "reason": "双方均为移动车辆，AV左转，另一车从左侧直行通过路口，碰撞有交互。现有词汇表可用junction_cross+ cross位置表达。时间取12:15 AM为night，天气clear。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "257_Waymo_February_24_2023.pdf"
+  }
+}

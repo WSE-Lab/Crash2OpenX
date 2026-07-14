@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "left",
+        "behavior": {
+          "block": "cut_in",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "Cruise AV 在左车道直行，Honda Accord 从右后方加速并变道至左侧停车道，随后试图并回左车道时与 Cruise AV 左前侧发生接触。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle... was traveling westbound in the left lane... A Honda Accord traveling in the right lane behind the Cruise AV increased speed and maneuvered across the AV's lane into the parking lane to the left of the Cruise AV in an attempt to pass... began to merge back... contact was made with the Cruise AV's front left quarter panel and front driver side mirror."
+    ],
+    "reason": "选择 Cruise AV 作为 ego，Honda 作为 NPC 执行 cut_in 从左侧，符合现有词汇表。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "274_Cruise_December_14_2022.pdf"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "right",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "cut_in",
+          "params": {
+            "trig_ttc": 1.5
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "Cruise AV减速准备向右变道时，一辆车道分割车辆从右侧突然切入，碰撞其右后角。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle… was traveling southeast bound… slowed down to change into the right adjacent lane due to traffic cones ahead. The driver… disengaged from autonomous mode and, shortly thereafter, a lane-splitting car made contact with the right rear corner of the Cruise AV, damaging the Cruise AV’s right lower tail lamp."
+    ],
+    "reason": "报告描述Cruise AV减速并准备向右变道，随后一辆车道分割车辆从右侧撞击其右后角，可建模为ego向右变道，NPC从右侧相邻车道突然切入。鉴于“shortly thereafter”暗示突然性，trig_ttc取1.5；天气晴朗、下午，控制信号未知。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "610_Cruise_October_12_2019.pdf"
+  }
+}

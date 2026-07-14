@@ -1,0 +1,51 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "right",
+      "params": {
+        "speed": 7.15
+      }
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "right",
+        "behavior": {
+          "block": "static_hold",
+          "params": {
+            "lateral": 0.1
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "cloudy",
+      "time_of_day": "evening"
+    }
+  },
+  "description_zh": "自动驾驶汽车在进行右转时因地图错误过于靠近路边，与右侧路旁停放的车辆左后视镜发生擦碰。ego速度约7.15 m/s，NPC在右侧路边静止，横向间距仅0.1米。",
+  "evidence": {
+    "source_snippets": [
+      "On Feb 5, 2025 at 06:31 PM PT, the blind spot sensor pod of our autonomous vehicle (AV) made contact with a parked passenger car on 2132 Kingsbury Cir, Santa Clara, CA.",
+      "The AV was making a right turn along the Kingsbury Cir, traveling at 16 mph.",
+      "Due to an inaccurate map version downloaded on the AV causing the AV to drive close to the parked vehicles on the side of the street... the right side sensor pod of the AV made contact with the left side rear view mirror of a passenger vehicle parked on the side of the Kingsbury Cir."
+    ],
+    "reason": "ego为右转的AV（速度16 mph→7.15 m/s），因靠近路边停放车辆发生侧碰。NPC为静止车辆在路边，lateral 0.1模拟侧镜擦碰。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "017_AutoX_February_5_2025.pdf"
+  }
+}

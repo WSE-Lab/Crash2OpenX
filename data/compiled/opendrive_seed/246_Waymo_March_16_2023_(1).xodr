@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenDRIVE>
+    <header name="246_Waymo_March_16_2023_(1)" revMajor="1" revMinor="5" date="2025-01-01T00:00:00" north="671.300" south="-671.300" east="671.300" west="-671.300">
+        <geoReference>+proj=tmerc +lat_0=0 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs</geoReference>
+    </header>
+    <road rule="RHT" id="1" junction="-1" length="500.0">
+        <link>
+            <successor elementType="junction" elementId="100" />
+        </link>
+        <type s="0" type="motorway"><speed max="30" unit="m/s" /></type><planView>
+            <geometry s="0" x="0" y="0" hdg="0" length="500.0">
+                <line />
+            </geometry>
+        </planView>
+        <lanes>
+            <laneSection s="0">
+                <center>
+                    <lane id="0" type="none" level="false">
+                        <roadMark sOffset="0" type="broken" weight="standard" color="yellow" width="0.25">
+                            <type name="broken" width="0.25">
+                                <line length="4" space="8" tOffset="0" width="0.2" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                </center>
+                <right>
+                    <lane id="-1" type="driving" level="false">
+                        <link />
+                        <width a="3.7" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.2" />
+                    </lane>
+                    <lane id="-2" type="shoulder" level="false">
+                        <link />
+                        <width a="10" b="0.0" c="0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="none" weight="standard" color="standard" width="0.0" />
+                    </lane>
+                </right>
+            </laneSection>
+        </lanes>
+    </road>
+    <road rule="RHT" id="2" junction="-1" length="500.0">
+        <link>
+            <predecessor elementType="junction" elementId="100" />
+        </link>
+        <type s="0" type="motorway"><speed max="30" unit="m/s" /></type><planView>
+            <geometry s="0" x="500.0" y="0.0" hdg="0.0" length="500.0">
+                <line />
+            </geometry>
+        </planView>
+        <lanes>
+            <laneSection s="0">
+                <center>
+                    <lane id="0" type="none" level="false">
+                        <roadMark sOffset="0" type="broken" weight="standard" color="yellow" width="0.25">
+                            <type name="broken" width="0.25">
+                                <line length="4" space="8" tOffset="0" width="0.2" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                </center>
+                <right>
+                    <lane id="-1" type="driving" level="false">
+                        <link />
+                        <width a="3.7" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.2" />
+                    </lane>
+                    <lane id="-2" type="shoulder" level="false">
+                        <link />
+                        <width a="10" b="0.0" c="0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="none" weight="standard" color="standard" width="0.0" />
+                    </lane>
+                </right>
+            </laneSection>
+        </lanes>
+    </road>
+    <road rule="RHT" id="10" junction="-1" length="300.0">
+        <link>
+            <predecessor elementType="junction" elementId="100" />
+        </link>
+        <type s="0" type="motorway"><speed max="30" unit="m/s" /></type><planView>
+            <geometry s="0" x="500.0" y="0.0" hdg="0.0" length="300.0">
+                <spiral curvStart="-1e-05" curvEnd="-0.01" />
+            </geometry>
+        </planView>
+        <lanes>
+            <laneSection s="0">
+                <center>
+                    <lane id="0" type="none" level="false">
+                        <roadMark sOffset="0" type="broken" weight="standard" color="yellow" width="0.25" />
+                    </lane>
+                </center>
+                <right>
+                    <lane id="-1" type="driving" level="false">
+                        <link />
+                        <width a="3.7" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.2" />
+                    </lane>
+                    <lane id="-2" type="shoulder" level="false">
+                        <link />
+                        <width a="10" b="0.0" c="0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="none" weight="standard" color="standard" width="0.0" />
+                    </lane>
+                </right>
+            </laneSection>
+        </lanes>
+    </road>
+    </OpenDRIVE>

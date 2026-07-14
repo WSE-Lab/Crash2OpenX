@@ -1,0 +1,50 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "后方车辆（ego）直行接近前方静止在车道中的车辆（v2，Waymo AV）时发生追尾，测试ego能否及时刹停避免碰撞。",
+  "evidence": {
+    "source_snippets": [
+      "the Waymo AV was traveling south westbound on Mission Street in the left lane and came to a stop in a queue of traffic.",
+      "While the Waymo AV remained stationary, a passenger car approached the Waymo AV from behind and the front bumper of the passenger car made contact with the rear bumper of the Waymo AV.",
+      "TIME OF ACCIDENT 01:35 PM",
+      "WEATHER A. CLEAR",
+      "LIGHTING A. DAYLIGHT",
+      "ROADWAY SURFACE A. DRY"
+    ],
+    "reason": "主动移动的后方车辆（passenger car）具有测试价值，应选为ego，其前方同车道有静止的前车（Waymo AV），构成典型的rear-end碰撞测试场景。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "065_Waymo_September_29_2024.pdf"
+  }
+}

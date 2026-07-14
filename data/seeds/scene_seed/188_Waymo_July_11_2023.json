@@ -1,0 +1,53 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "right",
+      "params": {
+        "speed": 5
+      }
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "static",
+        "position": "roadside",
+        "side": "right",
+        "behavior": {
+          "block": "static_block",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "Waymo AV 在右转进入 Mullen Avenue 时，缓慢前行驶向狭窄道路，与右侧停放的一辆乘用车发生侧擦。事故时 AV 在手动模式下由测试驾驶员操纵，但可作为右转避让路边静止障碍物的测试场景。",
+  "evidence": {
+    "source_snippets": [
+      "While completing a right turn from Martin Avenue onto Mullen Avenue in autonomous mode, the Waymo AV slowed to a stop while entering a narrow roadway. As the Waymo AV started to slowly proceed forward, the test driver transitioned the vehicle to manual mode and proceeded forward, making contact with a parked passenger vehicle.",
+      "MOVEMENT PRECEDING COLLISION VEH 1: D. MAKING RIGHT TURN  VEH 2: O. PARKED",
+      "TYPE OF COLLISION B. SIDE SWIPE",
+      "WEATHER VEH 1/2: A. CLEAR",
+      "LIGHTING VEH 1/2: A. DAYLIGHT",
+      "ROADWAY SURFACE VEH 1/2: A. DRY",
+      "TIME OF ACCIDENT: 10:13 AM"
+    ],
+    "reason": "主动移动的 ego（AV）在右转过程中低速前进，与停在右侧路边的车辆发生侧擦。适用 static_block 原语，位置 roadside 可表达路边停放障碍物。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "188_Waymo_July_11_2023.pdf"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "right",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "zoox",
+        "kind": "vehicle",
+        "position": "opposing_leg",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "zoox"
+    },
+    "control": "stop_sign"
+  },
+  "description_zh": "一辆乘用车（ego）从支路右转时，因转弯过宽与对向支路上一辆停在停车标志处的静止车辆发生正面碰撞。选择转弯车辆作为 ego，测试其在路口右转时能否避免与对向支路的静止车辆相撞。",
+  "evidence": {
+    "source_snippets": [
+      "Vehicle 2 (…) making a wide right turn from Treat Avenue onto westbound Alameda Street, collided head-on with the front of the stopped Zoox vehicle.",
+      "Zoox vehicle (…) was stopped in lane at a stop sign on eastbound Alameda"
+    ],
+    "reason": "主动移动的车辆为转弯的 Vehicle 2，具备测试价值，选为 ego；静止的 Zoox 车辆位于对向支路，构成路口转弯冲突。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek-v4-pro",
+    "input": "backups/old_20260604/outputs/facts_skill/006_Zoox_Inc._March_28_2025.json"
+  }
+}

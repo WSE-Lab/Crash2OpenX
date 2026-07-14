@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v1",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v1",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "unknown",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "前方Cruise自动驾驶汽车在红灯时停在路口，ego从后方驶来发生追尾，测试后车能否避免碰撞。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle (\"Cruise AV\"), operating in autonomous mode, was at a complete stop in response to a red light on southbound 4th Avenue at the intersection with Geary Boulevard. Another vehicle approaching from the rear made contact with the Cruise AV's rear bumper, damaging the rear bumper."
+    ],
+    "reason": "移动的后车作为ego，静止前车为NPC，测试追尾场景。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "440_Cruise_November_14_2021.pdf"
+  }
+}

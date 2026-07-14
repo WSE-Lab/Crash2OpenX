@@ -1,0 +1,17 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "输入数据缺乏具体事故信息，事件描述仅为空白表格模板，无法提取参与者、动作、环境或碰撞等关键要素，无法形成任何场景。",
+  "reason": "缺少可提取的事故事实，参与者动作、环境、碰撞细节均为null，无任何实质内容供推理。",
+  "evidence": {
+    "source_snippets": [
+      "Instructions: Please print within the spaces and boxes on this form."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "370_Waymo_April_5_2022.pdf"
+  }
+}

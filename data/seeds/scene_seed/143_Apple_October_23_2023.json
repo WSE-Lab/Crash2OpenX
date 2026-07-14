@@ -1,0 +1,49 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "left",
+        "behavior": {
+          "block": "static_hold",
+          "params": {
+            "lateral": 0.1
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "evening"
+    }
+  },
+  "description_zh": "一辆雷克萨斯RX300在自行车道试图超车，与停在红灯处的测试车（静止）侧视镜擦碰，选择移动的雷克萨斯为ego，测试其通过狭窄空间时避免与静止车辆碰撞的能力。",
+  "evidence": {
+    "source_snippets": [
+      "On October 23rd, a test vehicle operating in manual driving mode was stopped at a red light in the righthand lane of Lawrence Expressway at the intersection with Kifer Road in Santa Clara. A Lexus RX300 attempted to pass through traffic in the adjacent bike lane, and made contact with the test vehicle's side mirror.",
+      "MOVEMENT PRECEDING COLLISION: STOPPED (Marked for VEH 1), PASSING OTHER VEHICLE (Marked for VEH 2)",
+      "TYPE OF COLLISION: SIDE SWIPE"
+    ],
+    "reason": "事故涉及一辆移动的车辆（雷克萨斯）在自行车道超车，与静止的测试车侧镜擦碰，属于双方交互碰撞，可用现有词汇表表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "143_Apple_October_23_2023.pdf"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "status": "needs_extension",
+  "scene": null,
+  "description_zh": "一辆 Lyft AV（手动模式）在红灯处静止，被一辆 aggressively 从后方绕行并试图切到前方去的第三方车辆擦碰左前 Lidar 单元。",
+  "reason": "现有词汇表中 ego 的 maneuver 选项缺少‘cut_in’或‘变道切入’行为，无法表达 ego 从后方同车道变道至相邻车道超车并切回原车道导致侧碰的交互碰撞。",
+  "proposed": "需要一种 ego 的行为原语，如‘cut_in’或‘lane_change_cut_in’，允许 ego 从相邻车道切入至前方静止车辆的车道，或扩展 maneuver 选项支持右侧/左侧变道切入。",
+  "evidence": {
+    "source_snippets": [
+      "The third party vehicle aggressively came around from behind of Lyft AV A102 and attempted to cut in front of AV A102.",
+      "The third party made contact with the Lyft AV leaving visible minor damage to the exterior casing of the Lyft AV's front left lidar unit."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "540_Lyft_December_2_2020.pdf"
+  }
+}

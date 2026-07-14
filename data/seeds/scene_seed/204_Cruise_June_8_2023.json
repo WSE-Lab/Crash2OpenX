@@ -1,0 +1,18 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "Cruise AV 停在车道内，前方 GMC Yukon 斜停后开始倒车，撞到 AV 前部。核心机动为倒车（backing），属于 CARLA 无法实现且 NHTSA 非 V2V 子集，排除。",
+  "reason": "核心机动涉及倒车/后退（GMC Yukon reversing），命中淘汰规则1。",
+  "evidence": {
+    "source_snippets": [
+      "After the Cruise AV came to a complete stop, the GMC Yukon began reversing further into the Cruise AV’s lane and made contact with the Cruise AV",
+      "MOVEMENT PRECEDING COLLISION: VEH 2: BACKING (G)"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "204_Cruise_June_8_2023.pdf"
+  }
+}

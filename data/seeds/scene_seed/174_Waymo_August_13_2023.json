@@ -1,0 +1,46 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "left",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "left",
+        "behavior": {
+          "block": "junction_cross",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "unknown",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "乘客车在直行专用车道违规左转，与左侧相邻车道直行的Waymo AV发生碰撞。选取左转的乘客车为ego，测试其违规左转决策。",
+  "evidence": {
+    "source_snippets": [
+      "the passenger car in the right adjacent lane made a left turn from a straight-only lane onto southeastbound Fourth Street. The rear of the passenger car made contact with the front of the Waymo AV.",
+      "TIME OF ACCIDENT 09:01 PM"
+    ],
+    "reason": "两车均移动，乘客车违规左转具有测试价值，选其作为ego，与相邻车道直行的Waymo AV（NPC）发生路口转向冲突，现有position和block可表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "174_Waymo_August_13_2023.pdf"
+  }
+}

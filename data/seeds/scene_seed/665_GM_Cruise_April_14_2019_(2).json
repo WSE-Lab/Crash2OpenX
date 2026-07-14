@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "right",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "b1",
+        "kind": "cyclist",
+        "position": "oncoming",
+        "side": "none",
+        "behavior": {
+          "block": "oncoming",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "b1"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "ego 车辆（Cruise AV）右转进入无标记道路时，与对向直行的骑行者相撞。选取转弯车辆为 ego 以测试路口转弯让行对向直行骑行车的能力。",
+  "evidence": {
+    "source_snippets": [
+      "While making a right turn onto an unmarked road, the driver of the Cruise AV made contact with a bicyclist traveling in the eastbound, unprotected bicycle lane on Mason Street.",
+      "MOVEMENT PRECEDING COLLISION VEH 1: D. MAKING RIGHT TURN, VEH 2: B. PROCEEDING STRAIGHT",
+      "TYPE OF COLLISION VEH 1: D. BROADSIDE"
+    ],
+    "reason": "ego 车辆右转，骑行者在对向自行车道直行，构成路口转弯冲突，现有 junction_turn 及 oncoming 原语可表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "665_GM_Cruise_April_14_2019_(2).pdf"
+  }
+}

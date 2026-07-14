@@ -1,0 +1,51 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {
+        "speed": 5
+      }
+    },
+    "npcs": [
+      {
+        "id": "v1",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v1",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "2019年2月28日下午2:06，一辆Lyft自动驾驶车辆在手动模式下于Mountain View等待保护左转时，被后方车辆以极低速度追尾。后车驾驶员同时踩下油门和刹车。选择后车作为自车（ego），前车为静止车辆NPC，测试在有交通信号灯的路口后车能否避免追尾。",
+  "evidence": {
+    "source_snippets": [
+      "a Lyft Autonomous Vehicle (“Lyft AV”), operating in manual mode, was struck at very low speed from behind by a 3rd party passenger vehicle while waiting to make a protected left turn",
+      "The driver of the Lyft AV had been inched forward after being stopped at a red light for approximately 105 seconds",
+      "The driver of the 3rd party passenger vehicle verbally stated that she had pressed both the accelerator and the brake pedal simultaneously",
+      "MOVEMENT PRECEDING COLLISION: VEH 1: STOPPED (checked), VEH 2: PROCEEDING STRAIGHT (checked)",
+      "TYPE OF COLLISION: VEH 1: REAR END (checked), VEH 2: HEAD-ON (checked)"
+    ],
+    "reason": "后车（VEH2）移动且主动追尾，有测试价值；前车静止，场景适合用stopped_ahead表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "676_Lyft_February_28_2019.pdf"
+  }
+}

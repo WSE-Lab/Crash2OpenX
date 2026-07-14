@@ -1,0 +1,38 @@
+# case_ids to exclude from baseline_42 (one per line, comments allowed)
+# Reason column for audit.
+
+020_Zoox_January_26_2025
+# ↑ osc_blocks KeyError 'r2:sec0:l1:s89.81'
+
+671_GM_Cruise_March_24_2019
+# ↑ WF10: sut.maneuver=left on cross_intersection cannot collide with NPC at position=oncoming
+
+025_Waymo_January_15_2025
+# ↑ v2 road_seed inference returned status=unsupported
+
+040_Waymo_January_15_2025
+# ↑ v2 road_seed inference returned status=unsupported
+
+253_WeRide_Corp_March_9_2023
+# ↑ v2 road_seed inference returned status=unsupported (WF8 downstream)
+
+143_Apple_October_23_2023
+# ↑ WF8: NPC v2 uses 'adjacent/left' but road.lanes.forward=1
+
+047_WeRide_Corp_November_27_2024
+# ↑ osc_blocks KeyError 'r2:sec0:l1:s77.81'
+
+309_Waymo_August_16_2022_(1)
+# ↑ v2 scene_seed inference returned status=needs_extension
+
+064_Waymo_October_3_2024
+# ↑ WF8: signature-level conflict (adjacent NPC on 1-lane road)
+
+466_Waymo_September_17_2021_(1)
+# ↑ bucket-mate of 064, same WF8 issue → entire bucket #42 skipped
+
+052_Waymo_November_5_2024
+# ↑ requires roadgraph_map_cache (CARLA server offline at 2026-07-02 15:00)
+
+668_GM_Cruise_April_10_2019_(2)
+# ↑ requires roadgraph_map_cache (CARLA server offline at 2026-07-02 15:00)

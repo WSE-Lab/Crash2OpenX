@@ -1,0 +1,43 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown"
+  },
+  "description_zh": "一辆公交车（ego）因前方排队停车，越过双黄线进入对向车道企图超车，并排时右侧车身擦碰原车道静止Waymo车辆左后侧。选择公交车为ego，其主动越线超车具测试价值。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was traveling north ... and came to a stop in a queue of traffic.",
+      "a bus traveling directly behind the Waymo AV attempted to maneuver around the stopped Waymo AV by crossing the double yellow center line, entering the opposing lane of travel.",
+      "As the bus proceeded alongside the stationary Waymo AV, the passenger side of the bus made contact with the rear driver side of the Waymo AV."
+    ],
+    "reason": "公交车是唯一主动移动且做出越线超车危险行为的车辆，Waymo AV静止无测试价值，故选公交车为ego；NPC静止在前方原车道，ego变道至对向车道后二者并排接触，用stopped_ahead表达前方静止车辆，adjacent right表达并排关系。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek-v4-pro",
+    "input": "backups/old_20260604/outputs/facts_skill/008_Waymo_March_20_2025.json"
+  }
+}

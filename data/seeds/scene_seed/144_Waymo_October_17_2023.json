@@ -1,0 +1,48 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "right",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "cyclist",
+        "kind": "cyclist",
+        "position": "roadside",
+        "side": "right",
+        "behavior": {
+          "block": "cross",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "cyclist",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "Waymo AV 在 Market Street 与 Gough Street 交叉口准备右转，测试驾驶员手动接管后加速右转时，一名骑行者从后方人行道横穿 Gough Street，与 AV 右后侧碰撞。选取 AV 为 ego，骑行者从路边横穿，符合两方交互。",
+  "evidence": {
+    "source_snippets": [
+      "On October 17, 2023 at 9:24 AM PT a Waymo Autonomous Vehicle (\"Waymo AV\") operating in San Francisco, California was in a collision involving a cyclist on Market Street at Gough Street.",
+      "The Waymo AV was in autonomous mode on eastbound Market Street preparing to make a right turn onto southbound Gough Street and had stopped to yield, first for pedestrians to cross Gough Street and then for a cyclist approaching from behind traveling eastbound on the sidewalk of Market Street.",
+      "As the pedestrians finished crossing Gough Street but before the cyclist had reached Gough Street, the Waymo AV test driver took manual control of the Waymo AV and began to accelerate and perform the right turn onto Gough Street.",
+      "After the Waymo AV entered the crosswalk, the cyclist entered the crosswalk and made contact with the passenger’s rear quarter panel of the Waymo AV."
+    ],
+    "reason": "骑行者从 ego 右后方人行道横穿路口，与右转 ego 发生碰撞，属于双方移动交互，可用 cyclist cross 原语表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "144_Waymo_October_17_2023.pdf"
+  }
+}

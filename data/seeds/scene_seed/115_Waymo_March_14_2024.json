@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v1",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "left",
+        "behavior": {
+          "block": "static_hold",
+          "params": {
+            "lateral": 0.5
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "v1",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "一辆乘用车在公交专用道行驶时，从右侧超越左侧相邻车道停止的Waymo自动驾驶车辆，并发生侧面刮擦。将移动的乘用车选为ego，Waymo AV作为静止的NPC置于left adjacent车道，使用static_hold表达静止状态。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was traveling northeast on S Figueroa Street in the lane adjacent to the rightmost, bus-only lane. As the Waymo AV approached the intersection with 7th Street, it came to a stop behind another vehicle stopped in traffic. As a passenger car was passing the Waymo AV in the bus lane to the right of the Waymo AV, the passenger car made contact with the passenger side of the Waymo AV."
+    ],
+    "reason": "passenger car为移动车辆，在超越左侧静止的Waymo AV时发生侧面接触，符合双方交互碰撞，现有词汇表可表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "115_Waymo_March_14_2024.pdf"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "Waymo AV 停在路边，另一辆SUV在倒车进行平行泊车时与其发生碰撞，核心机动为倒车，属于可辩护排除的倒车场景。",
+  "reason": "核心机动涉及倒车/后退——CARLA无法实现，且属NHTSA非V2V子集。所有移动车辆为倒车状态，无一辆car类型移动车辆具备测试价值。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was parked at the curb facing south on Fillmore Street when an SUV attempting to parallel park in front of the Waymo AV reversed, and the rear of the SUV made contact with the front of the stationary Waymo AV.",
+      "VEH 1: A. STOPPED (X)",
+      "VEH 2: G. BACKING (X)"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "020_Waymo_March_28_2025.pdf"
+  }
+}

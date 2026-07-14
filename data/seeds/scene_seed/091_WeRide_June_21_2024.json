@@ -1,0 +1,50 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "left",
+      "params": {
+        "speed": 2.68
+      }
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "behind_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "rear_hit",
+          "params": {
+            "speed": 10.28,
+            "closing_speed": 7.6
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "WeRide 车辆以 6 mph 在 Northwestern Parkway 上尝试 U 形转弯（左转）时，后方一辆雪佛兰 Cruze 以 23 mph 接近，避让不及导致右前侧擦撞前车左前保险杠。",
+  "evidence": {
+    "source_snippets": [
+      "a WeRide vehicle (Car1) was attempting to make a u-turn at 6 mph on Northwestern parkway. During the u-turn maneuver, a white chevy cruze (Car 2) traveling at 23 mph, having just made a right turn off of Walsh Ave., approached from behind on northwestern parkway. Car 2 steered left just before the impact but still clipped the front left side bumper of Car 1 with its (car2's) right side."
+    ],
+    "reason": "选取正在进行 U 形转弯的 Car1 为 ego，测试其转弯决策；后方快速接近的 Car2 为 NPC，发生类似追尾的侧面碰撞，可用 rear_hit 行为表达。天气晴朗、白天，控制信号未见说明，设为 unknown。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "091_WeRide_June_21_2024.pdf"
+  }
+}

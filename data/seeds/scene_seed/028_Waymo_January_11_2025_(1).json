@@ -1,0 +1,17 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "碰撞发生在停车场内，对方车辆倒车时与直行的 Waymo AV 发生侧擦，倒车机动超出当前场景表达范围。",
+  "reason": "核心机动涉及倒车（reverse/backing），属于可辩护排除的类型，且发生在停车场内。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was traveling in a parking garage off of Mission Street and approached a passenger car that was stopped, facing the wrong direction in the opposing lane of travel. The Waymo AV began to proceed straight, passing the passenger car, when the passenger car began to reverse, maneuvering into the Waymo AV’s lane of travel, and the front passenger side of the passenger car made contact with the driver side of the Waymo AV."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "028_Waymo_January_11_2025_(1).pdf"
+  }
+}

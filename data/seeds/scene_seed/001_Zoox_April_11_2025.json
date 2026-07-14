@@ -1,0 +1,53 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "behind_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "rear_hit",
+          "params": {}
+        }
+      },
+      {
+        "id": "p1",
+        "kind": "pedestrian",
+        "position": "roadside",
+        "side": "right",
+        "behavior": {
+          "block": "cross",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown"
+  },
+  "description_zh": "Zoox 自动驾驶车直行接近路口减速让行右侧斑马线行人时，被后方跟车追尾，适用后车追尾+行人横穿的组合测试场景。",
+  "evidence": {
+    "source_snippets": [
+      "traveling northwest in the right lane of 9th Street and preparing to turn right onto Folsom Street",
+      "gradually slowed; its operator disengaged from autonomy and continued to slow to yield to a pedestrian with the right-of-way entering the crosswalk",
+      "a passenger car (Vehicle 2), traveling directly behind the Zoox vehicle, struck the left rear corner of the Zoox vehicle"
+    ],
+    "reason": "Ego 直行减速让行人（有驾驶决策），后车追尾符合 rear_hit，行人从路侧横穿符合 cross，无倒车/连环碰撞，可表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek-v4-pro",
+    "input": "backups/old_20260604/outputs/facts_skill/001_Zoox_April_11_2025.json"
+  }
+}

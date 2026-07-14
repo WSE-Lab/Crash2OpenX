@@ -1,0 +1,48 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {
+        "speed": 2.24
+      }
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "梅赛德斯-奔驰在并线处停车等待让行，后方马自达低速（<5mph）未能及时停下发生追尾；选后车马自达为ego，测试其对前方静止车辆的制动能力。",
+  "evidence": {
+    "source_snippets": [
+      "The Mercedes-Benz was traveling eastbound on Condensa Street at the merge of the eastbound Central Expressway. The driver of the Mercedes-Benz was yielding to cross-traffic and came to a complete stop as he waited for an opening to merge.",
+      "The driver of the Mazda following the Mercedes-Benz did not come to a stop and contacted the Mercedes-Benz at the rear bumper. The Mazda was travel <5mph at the time of contact with the Mercedes-Benz."
+    ],
+    "reason": "后方车辆（Mazda）处于移动状态并追尾静止前车，具有测试价值，选为ego；前车静止在同车道前方，用stopped_ahead表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "208_Mercedes_Benz_May_30_2023.pdf"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "junction_turn",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "Waymo AV 在 Cesar Chavez Street 东行，黄灯时通过 Guerrero Street 路口；一辆未开启警报的救护车从 Guerrero Street 右转进入同向车道，侵入 AV 车道并与 AV 右侧后门发生侧碰。选 AV 为 ego 直行，救护车作为 NPC 进行路口右转冲突。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was traveling east in the leftmost of two lanes on Cesar Chavez Street. While the traffic light was yellow, the Waymo AV began to cross the intersection with Guerrero Street. … an ambulance traveling north on Guerrero Street (without lights and sirens activated) began to make a right turn onto eastbound Cesar Chavez Street. While the ambulance completed its right turn it crossed into the lane the Waymo AV was traveling in and the front driver side of the ambulance then made contact with the rear passenger side door of the Waymo AV."
+    ],
+    "reason": "碰撞双方均为移动车辆，在信号交叉口发生右转车辆侵入直行车辆车道的侧碰，可用 junction_turn 表达救护车的转向侵入行为。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "055_Waymo_November_3_2024_(1).pdf"
+  }
+}

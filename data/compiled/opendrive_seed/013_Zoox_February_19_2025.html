@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>013_Zoox_February_19_2025 road-only preview</title>
+  <style>
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #17202a; background: #f7f8fa; }
+    header { padding: 18px 24px; background: #ffffff; border-bottom: 1px solid #d8dee8; }
+    h1 { margin: 0 0 8px; font-size: 20px; }
+    .meta { display: flex; gap: 16px; flex-wrap: wrap; color: #4e5968; font-size: 13px; }
+    main { display: grid; grid-template-columns: minmax(520px, 1fr) 420px; gap: 18px; padding: 18px; }
+    .panel { background: #ffffff; border: 1px solid #d8dee8; border-radius: 8px; overflow: hidden; }
+    .panel h2 { margin: 0; padding: 12px 14px; font-size: 15px; border-bottom: 1px solid #e5e9f0; }
+    .canvas { aspect-ratio: 1 / 1; background: #eef2f6; }
+    svg { width: 100%; height: 100%; display: block; }
+    .road-ref { stroke: #202b3a; stroke-width: 4; stroke-linecap: round; opacity: 0.9; }
+    .road-ref.junction { stroke: #6f4bd8; stroke-width: 3; }
+    .lane-boundary { stroke: #7c8794; stroke-width: 1.2; stroke-linecap: round; opacity: 0.72; }
+    .lane-boundary.center { stroke: #c8a018; stroke-width: 1.6; stroke-dasharray: 8 7; opacity: 0.9; }
+    .lane { stroke: #15926f; stroke-width: 1.7; stroke-dasharray: 6 5; stroke-linecap: round; opacity: 0.85; }
+    .lane.connector { stroke: #d07819; stroke-width: 1.5; stroke-dasharray: 4 4; }
+    pre { margin: 0; padding: 14px; overflow: auto; font-size: 12px; line-height: 1.45; }
+    .legend { display: flex; gap: 14px; padding: 10px 14px; border-top: 1px solid #e5e9f0; color: #4e5968; font-size: 12px; }
+    .key { display: inline-flex; align-items: center; gap: 6px; }
+    .swatch { width: 24px; height: 3px; display: inline-block; border-radius: 2px; }
+    .ref { background: #202b3a; }
+    .boundary { background: #7c8794; }
+    .junction { background: #6f4bd8; }
+    .lane-s { background: #15926f; }
+    .connector { background: #d07819; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Road-only OpenDRIVE Preview</h1>
+    <div class="meta">
+      <span>XODR: outputs/opendrive_seed/013_Zoox_February_19_2025.xodr</span>
+      <span>roads: 1</span>
+      <span>junctions: 0</span>
+      <span>connections: 0</span>
+      <span>laneLinks: 0</span>
+      <span>lanes: 5/direction, 6 total</span>
+    </div>
+  </header>
+  <main>
+    <section class="panel">
+      <h2>Road Geometry</h2>
+      <div class="canvas">
+        <svg viewBox="0 0 1000 1000" role="img" aria-label="OpenDRIVE road geometry preview">
+          <line class="lane-boundary" x1="710.84" y1="931.03" x2="710.84" y2="68.97" />
+<line class="lane-boundary" x1="640.56" y1="931.03" x2="640.56" y2="68.97" />
+<line class="lane-boundary" x1="570.28" y1="931.03" x2="570.28" y2="68.97" />
+<line class="lane-boundary" x1="500.00" y1="931.03" x2="500.00" y2="68.97" />
+<line class="lane-boundary" x1="429.72" y1="931.03" x2="429.72" y2="68.97" />
+<line class="lane-boundary center" x1="359.44" y1="931.03" x2="359.44" y2="68.97" />
+<line class="lane-boundary" x1="289.16" y1="931.03" x2="289.16" y2="68.97" />
+          <line class="road-ref" x1="359.44" y1="931.03" x2="359.44" y2="68.97" />
+          <line class="lane" x1="394.58" y1="931.03" x2="394.58" y2="68.97" />
+<line class="lane" x1="464.86" y1="931.03" x2="464.86" y2="68.97" />
+<line class="lane" x1="535.14" y1="931.03" x2="535.14" y2="68.97" />
+<line class="lane" x1="605.42" y1="931.03" x2="605.42" y2="68.97" />
+<line class="lane" x1="675.70" y1="931.03" x2="675.70" y2="68.97" />
+<line class="lane" x1="324.30" y1="931.03" x2="324.30" y2="68.97" />
+        </svg>
+      </div>
+      <div class="legend">
+        <span class="key"><span class="swatch ref"></span>road reference</span>
+        <span class="key"><span class="swatch boundary"></span>lane boundary</span>
+        <span class="key"><span class="swatch junction"></span>junction connector</span>
+        <span class="key"><span class="swatch lane-s"></span>driving lane center</span>
+        <span class="key"><span class="swatch connector"></span>connector sample</span>
+      </div>
+    </section>
+    <section class="panel">
+      <h2>Road Seed</h2>
+      <pre>{
+  &quot;road&quot;: {
+    &quot;topology&quot;: &quot;straight&quot;,
+    &quot;type&quot;: &quot;town&quot;,
+    &quot;lanes&quot;: {
+      &quot;forward&quot;: 5,
+      &quot;backward&quot;: 1
+    },
+    &quot;center_line&quot;: &quot;broken&quot;
+  }
+}</pre>
+      <h2>OpenDRIVE Summary</h2>
+      <pre>{
+  &quot;road_count&quot;: 1,
+  &quot;junction_count&quot;: 0,
+  &quot;connection_count&quot;: 0,
+  &quot;lane_link_count&quot;: 0,
+  &quot;driving_lanes_per_direction&quot;: 5,
+  &quot;total_driving_lanes_on_approach&quot;: 6,
+  &quot;road_ids&quot;: [
+    &quot;1&quot;
+  ],
+  &quot;junction_ids&quot;: [],
+  &quot;xodr_schema_valid&quot;: true
+}</pre>
+    </section>
+  </main>
+</body>
+</html>

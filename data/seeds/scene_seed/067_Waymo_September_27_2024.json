@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "left",
+        "behavior": {
+          "block": "cut_in",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "Waymo AV 在路口红灯停止后绿灯起步直行，相邻左转车道的一辆乘用车直行切入 AV 前方，乘用车右侧与 AV 左侧发生侧碰。选择 AV 为 ego 测试其起步阶段对相邻车道违规直行车辆的应对能力。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was stopped in traffic for a red light in the leftmost through lane... When the light turned green, the Waymo AV proceeded into the intersection. Simultaneously, a passenger car traveling in the rightmost dedicated left turn lane (the left adjacent lane to the Waymo AV) proceeded straight into the intersection and partially entered the leftmost through lane ahead of the Waymo AV. The passenger side of the passenger car then made contact with the driver side of the Waymo AV."
+    ],
+    "reason": "事故中两车均为移动车辆，乘用车从相邻左转车道切入 AV 前方导致侧面碰撞，可用 cut_in 原语表达；AV 从红灯起步直行符合 ego 测试价值。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "067_Waymo_September_27_2024.pdf"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "Zoox 自动驾驶车辆在解除自动驾驶后倒车，与后方试图超车右转的来车发生接触，核心机动为倒车，不在场景 DSL 覆盖范围内。",
+  "reason": "核心机动涉及倒车（reverse/backing），属于 CARLA 无法实现且 NHTSA 非 V2V 子集，按规则排除。",
+  "evidence": {
+    "source_snippets": [
+      "the driver then disengaged autonomous mode and reversed, making contact with a vehicle that had approached from the rear and was attempting to pass the Zoox vehicle to make a right turn",
+      "MOVEMENT PRECEDING COLLISION: VEH 2: G. BACKING; I. PASSING OTHER VEHICLE"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "353_Zoox_April_28_2022.pdf"
+  }
+}

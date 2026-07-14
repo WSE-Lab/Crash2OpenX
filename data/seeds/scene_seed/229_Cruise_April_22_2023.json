@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "夜间信号灯路口，前车（AV）因让行行人而停止，后车直行追尾前车；将后车选为ego测试其能否及时刹停",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle ... was at a complete stop in response to a red light ... began to make a right turn ... before yielding to a pedestrian.",
+      "Shortly thereafter, a silver Infiniti Sedan traveling behind the Cruise AV made contact with the Cruise AV’s rear bumper.",
+      "VEH 1: A. STOPPED (X), D. MAKING RIGHT TURN (X); VEH 2: B. PROCEEDING STRAIGHT (X); TYPE OF COLLISION: REAR END."
+    ],
+    "reason": "两车均在移动（后车直行，前车因让行由停变动后又减速至停），后车追尾前车。按规则被撞方静止时选后车为ego，后车具有测试价值（能否及时刹停）。前车静止行为用stopped_ahead，碰撞关系为v2被ego追尾。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "229_Cruise_April_22_2023.pdf"
+  }
+}

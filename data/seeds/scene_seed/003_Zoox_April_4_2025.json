@@ -1,0 +1,44 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "oncoming",
+        "side": "none",
+        "behavior": {
+          "block": "junction_turn",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown"
+  },
+  "description_zh": "Zoox 自动驾驶车在路口直行时，一辆对向电动自行车左转侵入其车道，发生角度碰撞，ego 前部受损。",
+  "evidence": {
+    "source_snippets": [
+      "vehicle_1 Proceeding straight",
+      "vehicle_2 Making left turn",
+      "collision type: angle",
+      "ego impact area: front"
+    ],
+    "reason": "参与者动作显示 ego 直行、对方左转，碰撞类型为角度且 ego 前部受损，符合路口转弯冲突场景。ego 移动且有测试价值，无倒车或多连环碰撞等情况。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek-v4-pro",
+    "input": "backups/old_20260604/outputs/facts_skill/003_Zoox_April_4_2025.json"
+  }
+}

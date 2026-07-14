@@ -1,0 +1,1205 @@
+{
+  "version": "top_medoids_v1",
+  "source_eval_set": "paper/working/eval_set_full.json",
+  "coverage_target": 0.8,
+  "clusterable_total": 490,
+  "distinct_signatures": 120,
+  "K": 42,
+  "cumulative_covered": 393,
+  "cumulative_pct": 0.802,
+  "prior_carla_reused": 27,
+  "medoids": [
+    {
+      "rank": 1,
+      "case_id": "122_Waymo_February_18_2024",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 87,
+      "cumulative_covered": 87,
+      "cumulative_pct": 0.1776,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "ahead_same_lane|stopped_ahead"
+        ]
+      },
+      "members": [
+        "001_Zoox_April_11_2025",
+        "012_Zoox_February_23_2025",
+        "016_Zoox_April_11_2025",
+        "024_Zoox_January_17_2025",
+        "027_Zoox_February_23_2025",
+        "071_Waymo_September_3_2024",
+        "087_Zoox_July_11_2024",
+        "093_WeRide_June_10_2024",
+        "110_Waymo_March_30_2024",
+        "117_Waymo_March_8_2024",
+        "122_Waymo_February_18_2024",
+        "128_WeRide_January_17_2024",
+        "130_Nuro_January_12_2024",
+        "139_Waymo_November_22_2023",
+        "160_Zoox_September_11_2023",
+        "178_Waymo_August_2_2023",
+        "184_Waymo_July_21_2023",
+        "185_Nuro_July_24_2023",
+        "192_Waymo_June_29_2023_(1)",
+        "193_Waymo_June_29_2023_(2)",
+        "198_Zoox_June_18_2023",
+        "199_Waymo_June_18_2023",
+        "210_Pony.ai_June_5_2023",
+        "216_Apple_May_11_2023",
+        "229_Cruise_April_22_2023",
+        "266_Zoox_January_30_2023",
+        "282_Zoox_November_20_2022",
+        "289_Zoox_November_4_2022",
+        "292_Apple_October_10_2022",
+        "298_Waymo_September_15_2022",
+        "312_Waymo_August_13_2022",
+        "339_Zoox_June_1_2022_(2)",
+        "346_Waymo_May_17_2022",
+        "349_Cruise_May_13_2022",
+        "358_Waymo_April_24_2022",
+        "366_Cruise_April_9_2022",
+        "370_Waymo_April_5_2022",
+        "375_Zoox_March_29_2022",
+        "393_Waymo_February_14_2022",
+        "403_Zoox_February_5_2022",
+        "413_Zoox_January_16_2022",
+        "423_Cruise_November_15_2021",
+        "428_Waymo_December_7_2021",
+        "432_Cruise_December_1_2021_(2)",
+        "434_Waymo_November_28_2021",
+        "439_Waymo_November_15_2021",
+        "445_Waymo_November_6_2021_(2)",
+        "451_Waymo_October_27_2021",
+        "452_Argo_AI_October_19_2021",
+        "456_Waymo_October_18_2021",
+        "459_Waymo_October_7_2021",
+        "464_Waymo_September_22_2021",
+        "476_Waymo_August_27_2021",
+        "478_Waymo_August_21_2021",
+        "487_Cruise_July_15_2021",
+        "494_Argo_AI_July_1_2021",
+        "497_Waymo_June_25_2021",
+        "501_Waymo_June_3_2021",
+        "505_Waymo_May_23_2021",
+        "507_Cruise_May_11_2021",
+        "509_Cruise_April_21_2021",
+        "516_Cruise_March_30_2021",
+        "522_Cruise_March_12_2021",
+        "524_Waymo_March_5_2021",
+        "528_Waymo_February_17_2021",
+        "529_Waymo_February_16_2021",
+        "530_Pony.ai_February_11_2021",
+        "538_Pony.ai_December_19_2020",
+        "544_Zoox_October_6_2020",
+        "547_Waymo_September_5_2020",
+        "550_Cruise_August_9_2020",
+        "558_Pony.ai_May_30_2020",
+        "568_Cruise_January_31_2020",
+        "576_Zoox_January_13_2020",
+        "598_Cruise_October_29_2019",
+        "608_Waymo_October_14_2019",
+        "618_GM_Cruise_September_9_2019",
+        "634_Waymo_July_16_2019",
+        "645_GM_Cruise_June_23_2019",
+        "655_Waymo_May_22_2019",
+        "656_GM_Cruise_May_18_2019",
+        "660_GM_Cruise_May_4_2019_(1)",
+        "663_GM_Cruise_May_2_2019",
+        "676_Lyft_February_28_2019",
+        "678_Waymo_February_26_2019",
+        "682_Waymo_January_26_2019",
+        "683_Aurora_Innovation_January_10_2019"
+      ]
+    },
+    {
+      "rank": 2,
+      "case_id": "007_Waymo_March_27_2025",
+      "prior_carla_run": false,
+      "scene_seed_status": "supported",
+      "bucket_size": 30,
+      "cumulative_covered": 117,
+      "cumulative_pct": 0.2388,
+      "signature": {
+        "topology": "straight",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "ahead_same_lane|stopped_ahead"
+        ]
+      },
+      "members": [
+        "007_Waymo_March_27_2025",
+        "022_Waymo_March_27_2025",
+        "039_Zoox_January_17_2025",
+        "044_Waymo_December_2_2024_(2)",
+        "053_Waymo_November_4_2024",
+        "129_Zoox_January_15_2024",
+        "137_Mercedes_Benz_November_29_2023",
+        "154_Apple_September_26_2023",
+        "187_Cruise_July_21_2023_(B)",
+        "240_Cruise_March_22_2023_(3)",
+        "242_Cruise_March_23_2023",
+        "276_Waymo_December_17_2022",
+        "278_Waymo_December_13_2022_(2)",
+        "302_Cruise_September_4_2022",
+        "305_Zoox_August_30_2022",
+        "337_Waymo_June_1_2022",
+        "341_Cruise_May_25_2022",
+        "344_Zoox_May_20_2022",
+        "362_Waymo_April_18_2022_(2)",
+        "367_Waymo_April_11_2022",
+        "431_Cruise_December_1_2021_(1)",
+        "442_Waymo_November_12_2021",
+        "461_Waymo_October_1_2021",
+        "463_Cruise_September_25_2021",
+        "474_Cruise_August_30_2021",
+        "482_Waymo_August_5_2021",
+        "556_Waymo_June_15_2020",
+        "567_Cruise_February_5_2020",
+        "662_Lyft_May_2_2019",
+        "675_Lyft_March_6_2019"
+      ]
+    },
+    {
+      "rank": 3,
+      "case_id": "135_Zoox_January_1_2024_(A)",
+      "prior_carla_run": false,
+      "scene_seed_status": "supported",
+      "bucket_size": 25,
+      "cumulative_covered": 142,
+      "cumulative_pct": 0.2898,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "cross|junction_cross"
+        ]
+      },
+      "members": [
+        "135_Zoox_January_1_2024_(A)",
+        "136_Zoox_January_1_2024_(B)",
+        "141_Cruise_October_27_2023",
+        "158_Apollo_Autonomous_Driving_June_29_2023",
+        "169_Cruise_August_18_2023",
+        "186_Cruise_July_21_2023_(A)",
+        "233_Cruise_April_9_2023",
+        "250_Cruise_March_18_2023",
+        "268_Waymo_January_22_2023",
+        "319_Cruise_July_16_2022",
+        "380_Zoox_March_22_2022",
+        "409_Cruise_January_26_2022",
+        "414_Waymo_January_18_2022",
+        "421_Waymo_December_22_2021",
+        "483_Cruise_August_2_2021",
+        "484_Waymo_August_1_2021",
+        "490_Cruise_July_10_2021",
+        "552_Zoox_August_6_2020",
+        "585_Cruise_December_19_2019",
+        "596_Cruise_November_7_2019_(2)",
+        "614_GM_Cruise_September_27_2019",
+        "619_GM_Cruise_September_5_2019",
+        "647_Zoox_Inc_June_19_2019",
+        "651_Zoox_Inc_June_11_2019",
+        "658_GM_Cruise_May_13_2019"
+      ]
+    },
+    {
+      "rank": 4,
+      "case_id": "162_Waymo_September_3_2023",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 17,
+      "cumulative_covered": 159,
+      "cumulative_pct": 0.3245,
+      "signature": {
+        "topology": "straight",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "roadside|static_block"
+        ]
+      },
+      "members": [
+        "004_Pony.ai_March_29_2025",
+        "019_Pony.ai_March_29_2025",
+        "066_Zoox_September_29_2024",
+        "147_Zoox_October_12_2023",
+        "151_Cruise_September_25_2023",
+        "162_Waymo_September_3_2023",
+        "190_Waymo_July_3_2023",
+        "212_Cruise_May_21_2023",
+        "331_Cruise_June_17_2022",
+        "392_Apple_February_17_2022",
+        "433_Waymo_November_30_2021",
+        "481_Waymo_August_14_2021",
+        "513_Waymo_April_4_2021",
+        "526_Waymo_February_25_2021_(2)",
+        "541_Cruise_October_25_2020",
+        "565_Waymo_February_12_2020",
+        "664_GM_Cruise_April_14_2019_(1)"
+      ]
+    },
+    {
+      "rank": 5,
+      "case_id": "113_Waymo_March_19_2024",
+      "prior_carla_run": false,
+      "scene_seed_status": "supported",
+      "bucket_size": 17,
+      "cumulative_covered": 176,
+      "cumulative_pct": 0.3592,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "behind_same_lane|rear_hit"
+        ]
+      },
+      "members": [
+        "040_Waymo_January_15_2025",
+        "113_Waymo_March_19_2024",
+        "181_Cruise_July_28_2023",
+        "222_Cruise_May_4_2023",
+        "355_Cruise_April_24_2022",
+        "396_Waymo_February_11_2022_(2)",
+        "408_Waymo_January_28_2022_(2)",
+        "412_Waymo_January_20_2022_(2)",
+        "469_Waymo_August_13_2021",
+        "492_Argo_AI_July_8_2021",
+        "511_Waymo_April_17_2021",
+        "517_Cruise_March_29_2021",
+        "557_Cruise_June_1_2020",
+        "623_Waymo_August_12_2019",
+        "652_GM_Cruise_June_8_2019",
+        "672_GM_Cruise_March_23_2019",
+        "679_GM_Cruise_February_14_2019"
+      ]
+    },
+    {
+      "rank": 6,
+      "case_id": "263_Zoox_February_8_2023",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 17,
+      "cumulative_covered": 193,
+      "cumulative_pct": 0.3939,
+      "signature": {
+        "topology": "straight",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "behind_same_lane|rear_hit"
+        ]
+      },
+      "members": [
+        "112_Waymo_March_22_2024",
+        "168_Zoox_August_16_2023",
+        "182_Waymo_July_25_2023",
+        "215_Zoox_May_17_2023",
+        "263_Zoox_February_8_2023",
+        "286_Zoox_November_14_2022",
+        "306_Zoox_August_23_2022",
+        "315_Cruise_August_2_2022",
+        "345_Mercedes_Benz_May_19_2022",
+        "373_Waymo_March_31_2022",
+        "378_Waymo_March_26_2022",
+        "407_Waymo_January_28_2022_(1)",
+        "486_WeRide_Corp_July_16_2021",
+        "488_Waymo_July_14_2021",
+        "594_Cruise_November_9_2019",
+        "632_GM_Cruise_July_20_2019",
+        "677_GM_Cruise_February_27_2019"
+      ]
+    },
+    {
+      "rank": 7,
+      "case_id": "038_Waymo_December_17_2024",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 16,
+      "cumulative_covered": 209,
+      "cumulative_pct": 0.4265,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "2",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "adjacent|cut_in"
+        ]
+      },
+      "members": [
+        "002_Zoox_April_4_2025_Narrative",
+        "038_Waymo_December_17_2024",
+        "067_Waymo_September_27_2024",
+        "072_Zoox_September_3_2024",
+        "081_Zoox_July_20_2024_(A)",
+        "082_Zoox_July_20_2024_(B)",
+        "159_Cruise_September_11_2023",
+        "325_Waymo_July_2_2022_(2)",
+        "359_Zoox_April_22_2022",
+        "416_Waymo_January_6_2022",
+        "453_Zoox_October_21_2021",
+        "500_Waymo_June_4_2021",
+        "549_Cruise_August_15_2020",
+        "569_Cruise_January_29_2020",
+        "581_Cruise_December_27_2019",
+        "667_GM_Cruise_April_10_2019_(1)"
+      ]
+    },
+    {
+      "rank": 8,
+      "case_id": "274_Cruise_December_14_2022",
+      "prior_carla_run": false,
+      "scene_seed_status": "supported",
+      "bucket_size": 16,
+      "cumulative_covered": 225,
+      "cumulative_pct": 0.4592,
+      "signature": {
+        "topology": "straight",
+        "lanes_bin": "2",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "adjacent|cut_in"
+        ]
+      },
+      "members": [
+        "100_Waymo_May_17_2024",
+        "142_Waymo_October_26_2023",
+        "173_Waymo_August_17_2023",
+        "270_Cruise_December_28_2022",
+        "274_Cruise_December_14_2022",
+        "295_Ghost_Autonomy_Inc_October_7_2022",
+        "363_Cruise_April_16_2022",
+        "455_Waymo_October_19_2021",
+        "521_Zoox_March_18_2021",
+        "595_Cruise_November_7_2019_(1)",
+        "613_GM_Cruise_October_3_2019",
+        "621_GM_Cruise_August_22_2019",
+        "628_GM_Cruise_August_4_2019",
+        "633_GM_Cruise_July_17_2019",
+        "650_GM_Cruise_June_12_2019",
+        "666_Lyft_April_11_2019"
+      ]
+    },
+    {
+      "rank": 9,
+      "case_id": "448_WeRide_Corp_November_3_2021",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 14,
+      "cumulative_covered": 239,
+      "cumulative_pct": 0.4878,
+      "signature": {
+        "topology": "merge",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "ahead_same_lane|stopped_ahead"
+        ]
+      },
+      "members": [
+        "208_Mercedes_Benz_May_30_2023",
+        "226_Mercedes_Benz_April_26_2023",
+        "313_Waymo_August_10_2022",
+        "351_Waymo_May_4_2022",
+        "364_Waymo_April_13_2022",
+        "390_Waymo_February_19_2022",
+        "418_Waymo_January_3_2022",
+        "448_WeRide_Corp_November_3_2021",
+        "559_Waymo_March_10_2020",
+        "560_Waymo_February_26_2020",
+        "597_Waymo_November_4_2019",
+        "600_Waymo_October_28_2019_(1)",
+        "605_Waymo_October_18_2019",
+        "622_Waymo_August_13_2019"
+      ]
+    },
+    {
+      "rank": 10,
+      "case_id": "140_Waymo_November_3_2023",
+      "prior_carla_run": false,
+      "scene_seed_status": "supported",
+      "bucket_size": 13,
+      "cumulative_covered": 252,
+      "cumulative_pct": 0.5143,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "2",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "ahead_same_lane|stopped_ahead"
+        ]
+      },
+      "members": [
+        "085_Waymo_July_18_2024",
+        "095_Waymo_June_4_2024",
+        "140_Waymo_November_3_2023",
+        "230_Waymo_April_12_2023",
+        "236_Waymo_April_5_2023",
+        "281_Zoox_November_28_2022",
+        "308_Cruise_August_16_2022",
+        "311_Waymo_August_14_2022",
+        "324_Waymo_July_2_2022_(1)",
+        "340_Waymo_May_27_2022",
+        "545_Cruise_September_16_2020",
+        "566_Cruise_February_9_2020",
+        "572_Zoox_January_21_2020"
+      ]
+    },
+    {
+      "rank": 11,
+      "case_id": "444_Waymo_November_6_2021_(1)",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 8,
+      "cumulative_covered": 260,
+      "cumulative_pct": 0.5306,
+      "signature": {
+        "topology": "straight",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "oncoming|static_hold"
+        ]
+      },
+      "members": [
+        "029_Zoox_January_8_2025",
+        "051_Waymo_November_8_2024",
+        "090_Waymo_July_2_2024",
+        "134_Waymo_January_8_2024",
+        "171_Cruise_August_14_2023",
+        "237_Waymo_April_3_2023",
+        "444_Waymo_November_6_2021_(1)",
+        "496_Waymo_June_26_2021"
+      ]
+    },
+    {
+      "rank": 12,
+      "case_id": "323_Waymo_July_3_2022",
+      "prior_carla_run": false,
+      "scene_seed_status": "supported",
+      "bucket_size": 8,
+      "cumulative_covered": 268,
+      "cumulative_pct": 0.5469,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "left",
+        "npc_sig": [
+          "oncoming|oncoming"
+        ]
+      },
+      "members": [
+        "251_Cruise_March_6_2023",
+        "323_Waymo_July_3_2022",
+        "450_Waymo_October_28_2021",
+        "468_Waymo_September_16_2021",
+        "485_Cruise_July_26_2021",
+        "489_Waymo_July_12_2021",
+        "590_Zoox_November_22_2019",
+        "671_GM_Cruise_March_24_2019"
+      ]
+    },
+    {
+      "rank": 13,
+      "case_id": "097_Zoox_May_30_2024",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 7,
+      "cumulative_covered": 275,
+      "cumulative_pct": 0.5612,
+      "signature": {
+        "topology": "straight",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "adjacent|cut_in"
+        ]
+      },
+      "members": [
+        "097_Zoox_May_30_2024",
+        "296_Argo_AI_September_22_2022",
+        "304_Cruise_September_1_2022",
+        "332_Zoox_June_11_2022",
+        "637_GM_Cruise_July_10_2019",
+        "641_GM_Cruise_June_29_2019",
+        "649_GM_Cruise_June_13_2019"
+      ]
+    },
+    {
+      "rank": 14,
+      "case_id": "013_Zoox_February_19_2025",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 6,
+      "cumulative_covered": 281,
+      "cumulative_pct": 0.5735,
+      "signature": {
+        "topology": "straight",
+        "lanes_bin": "3+",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "adjacent|cut_in"
+        ]
+      },
+      "members": [
+        "013_Zoox_February_19_2025",
+        "028_Zoox_February_19_2025",
+        "191_Cruise_July_2_2023",
+        "267_Cruise_January_25_2023",
+        "285_Cruise_November_16_2022",
+        "429_Waymo_December_4_2021"
+      ]
+    },
+    {
+      "rank": 15,
+      "case_id": "035_Zoox_January_26_2025",
+      "prior_carla_run": false,
+      "scene_seed_status": "supported",
+      "bucket_size": 6,
+      "cumulative_covered": 287,
+      "cumulative_pct": 0.5857,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "left",
+        "npc_sig": [
+          "cross|junction_cross"
+        ]
+      },
+      "members": [
+        "020_Zoox_January_26_2025",
+        "035_Zoox_January_26_2025",
+        "099_Waymo_May_20_2024",
+        "257_Waymo_February_24_2023",
+        "447_Zoox_November_3_2021",
+        "646_GM_Cruise_June_20_2019"
+      ]
+    },
+    {
+      "rank": 16,
+      "case_id": "273_Cruise_December_18_2022",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 6,
+      "cumulative_covered": 293,
+      "cumulative_pct": 0.598,
+      "signature": {
+        "topology": "straight",
+        "lanes_bin": "2",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "ahead_same_lane|stopped_ahead"
+        ]
+      },
+      "members": [
+        "114_Zoox_March_18_2024",
+        "247_Waymo_March_16_2023_(2)",
+        "265_Mercedes_Benz_February_2_2023",
+        "273_Cruise_December_18_2022",
+        "279_Waymo_December_12_2022",
+        "603_Cruise_October_26_2019"
+      ]
+    },
+    {
+      "rank": 17,
+      "case_id": "157_Apollo_Autonomous_Driving_September_6_2023",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 6,
+      "cumulative_covered": 299,
+      "cumulative_pct": 0.6102,
+      "signature": {
+        "topology": "straight",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "ahead_same_lane|static_hold"
+        ]
+      },
+      "members": [
+        "138_Nuro_November_27_2023",
+        "157_Apollo_Autonomous_Driving_September_6_2023",
+        "196_Cruise_June_24_2023",
+        "415_Zoox_January_11_2022",
+        "510_Waymo_April_18_2021",
+        "612_Waymo_October_10_2019"
+      ]
+    },
+    {
+      "rank": 18,
+      "case_id": "165_Mercedes_Benz_August_18_2023",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 6,
+      "cumulative_covered": 305,
+      "cumulative_pct": 0.6224,
+      "signature": {
+        "topology": "curve",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "ahead_same_lane|stopped_ahead"
+        ]
+      },
+      "members": [
+        "165_Mercedes_Benz_August_18_2023",
+        "167_Waymo_August_19_2023",
+        "625_Waymo_August_9_2019_(1)",
+        "648_Waymo_June_16_2019",
+        "657_Waymo_May_15_2019",
+        "681_Waymo_February_6_2019"
+      ]
+    },
+    {
+      "rank": 19,
+      "case_id": "203_Cruise_June_9_2023",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 6,
+      "cumulative_covered": 311,
+      "cumulative_pct": 0.6347,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "ahead_same_lane|front_brake"
+        ]
+      },
+      "members": [
+        "203_Cruise_June_9_2023",
+        "322_Waymo_July_5_2022",
+        "388_Waymo_February_28_2022_(2)",
+        "508_Zoox_May_11_2021",
+        "588_Cruise_November_29_2019",
+        "609_Zoox_October_12_2019"
+      ]
+    },
+    {
+      "rank": 20,
+      "case_id": "009_Waymo_March_16_2025",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 5,
+      "cumulative_covered": 316,
+      "cumulative_pct": 0.6449,
+      "signature": {
+        "topology": "straight",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "ahead_same_lane|static_block"
+        ]
+      },
+      "members": [
+        "009_Waymo_March_16_2025",
+        "024_Waymo_March_16_2025",
+        "202_Waymo_June_11_2023",
+        "239_Cruise_March_22_2023_(2)",
+        "503_Waymo_June_2_2021_(2)"
+      ]
+    },
+    {
+      "rank": 21,
+      "case_id": "491_Zoox_July_13_2021",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 5,
+      "cumulative_covered": 321,
+      "cumulative_pct": 0.6551,
+      "signature": {
+        "topology": "straight",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "oncoming|oncoming"
+        ]
+      },
+      "members": [
+        "022_Zoox_January_23_2025",
+        "037_Zoox_January_23_2025",
+        "272_Cruise_December_21_2022",
+        "348_Motional_May_17_2022",
+        "491_Zoox_July_13_2021"
+      ]
+    },
+    {
+      "rank": 22,
+      "case_id": "120_Zoox_February_22_2024_(1)",
+      "prior_carla_run": false,
+      "scene_seed_status": "supported",
+      "bucket_size": 5,
+      "cumulative_covered": 326,
+      "cumulative_pct": 0.6653,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "cross|junction_turn"
+        ]
+      },
+      "members": [
+        "120_Zoox_February_22_2024_(1)",
+        "126_Nuro_January_31_2024",
+        "317_Zoox_July_22_2022",
+        "527_Cruise_February_25_2021",
+        "640_GM_Cruise_July_1_2019"
+      ]
+    },
+    {
+      "rank": 23,
+      "case_id": "639_GM_Cruise_July_2_2019",
+      "prior_carla_run": false,
+      "scene_seed_status": "missing",
+      "bucket_size": 5,
+      "cumulative_covered": 331,
+      "cumulative_pct": 0.6755,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "adjacent|static_hold"
+        ]
+      },
+      "members": [
+        "143_Apple_October_23_2023",
+        "253_WeRide_Corp_March_9_2023",
+        "309_Waymo_August_16_2022_(1)",
+        "639_GM_Cruise_July_2_2019",
+        "659_GM_Cruise_May_8_2019"
+      ]
+    },
+    {
+      "rank": 24,
+      "case_id": "065_Waymo_September_29_2024",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 4,
+      "cumulative_covered": 335,
+      "cumulative_pct": 0.6837,
+      "signature": {
+        "topology": "straight",
+        "lanes_bin": "2",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "ahead_same_lane|static_hold"
+        ]
+      },
+      "members": [
+        "065_Waymo_September_29_2024",
+        "156_Waymo_September_11_2023",
+        "307_Waymo_August_25_2022",
+        "310_Waymo_August_16_2022_(2)"
+      ]
+    },
+    {
+      "rank": 25,
+      "case_id": "235_Waymo_April_6_2023",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 4,
+      "cumulative_covered": 339,
+      "cumulative_pct": 0.6918,
+      "signature": {
+        "topology": "straight",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "adjacent|static_hold"
+        ]
+      },
+      "members": [
+        "235_Waymo_April_6_2023",
+        "385_Waymo_March_7_2022",
+        "584_Zoox_December_19_2019",
+        "593_Cruise_November_10_2019"
+      ]
+    },
+    {
+      "rank": 26,
+      "case_id": "259_Zoox_February_23_2023",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 4,
+      "cumulative_covered": 343,
+      "cumulative_pct": 0.7,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "2",
+        "sut_maneuver": "right",
+        "npc_sig": [
+          "adjacent|cut_in"
+        ]
+      },
+      "members": [
+        "259_Zoox_February_23_2023",
+        "389_Cruise_February_19_2022",
+        "470_Zoox_September_2_2021",
+        "512_Lyft_April_14_2021"
+      ]
+    },
+    {
+      "rank": 27,
+      "case_id": "262_Zoox_February_11_2023",
+      "prior_carla_run": false,
+      "scene_seed_status": "supported",
+      "bucket_size": 4,
+      "cumulative_covered": 347,
+      "cumulative_pct": 0.7082,
+      "signature": {
+        "topology": "straight",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "ahead_same_lane|front_brake"
+        ]
+      },
+      "members": [
+        "262_Zoox_February_11_2023",
+        "360_Cruise_April_17_2022",
+        "514_Waymo_March_31_2021",
+        "643_Pony.ai_June_26_2019"
+      ]
+    },
+    {
+      "rank": 28,
+      "case_id": "330_Apple_June_14_2022",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 4,
+      "cumulative_covered": 351,
+      "cumulative_pct": 0.7163,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "right",
+        "npc_sig": [
+          "behind_same_lane|rear_hit"
+        ]
+      },
+      "members": [
+        "330_Apple_June_14_2022",
+        "506_Cruise_May_17_2021",
+        "589_Cruise_November_25_2019",
+        "644_GM_Cruise_June_26_2019"
+      ]
+    },
+    {
+      "rank": 29,
+      "case_id": "635_GM_Cruise_July_15_2019",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 4,
+      "cumulative_covered": 355,
+      "cumulative_pct": 0.7245,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "adjacent|cut_in"
+        ]
+      },
+      "members": [
+        "406_Cruise_January_29_2022",
+        "472_Waymo_August_31_2021_(1)",
+        "599_Cruise_October_28_2019",
+        "635_GM_Cruise_July_15_2019"
+      ]
+    },
+    {
+      "rank": 30,
+      "case_id": "440_Cruise_November_14_2021",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 4,
+      "cumulative_covered": 359,
+      "cumulative_pct": 0.7327,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "ahead_same_lane|static_hold"
+        ]
+      },
+      "members": [
+        "440_Cruise_November_14_2021",
+        "564_Waymo_February_14_2020",
+        "587_Cruise_December_8_2019",
+        "607_Waymo_October_16_2019"
+      ]
+    },
+    {
+      "rank": 31,
+      "case_id": "021_Zoox_Inc._March_28_2025",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 3,
+      "cumulative_covered": 362,
+      "cumulative_pct": 0.7388,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "right",
+        "npc_sig": [
+          "oncoming|static_hold"
+        ]
+      },
+      "members": [
+        "006_Zoox_Inc._March_28_2025",
+        "021_Zoox_Inc._March_28_2025",
+        "395_Waymo_February_11_2022_(1)"
+      ]
+    },
+    {
+      "rank": 32,
+      "case_id": "008_Waymo_March_20_2025",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 3,
+      "cumulative_covered": 365,
+      "cumulative_pct": 0.7449,
+      "signature": {
+        "topology": "straight",
+        "lanes_bin": "1",
+        "sut_maneuver": "overtake_oncoming",
+        "npc_sig": [
+          "ahead_same_lane|stopped_ahead"
+        ]
+      },
+      "members": [
+        "008_Waymo_March_20_2025",
+        "023_Waymo_March_20_2025",
+        "287_Waymo_November_8_2022"
+      ]
+    },
+    {
+      "rank": 33,
+      "case_id": "040_Waymo_December_14_2024",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 3,
+      "cumulative_covered": 368,
+      "cumulative_pct": 0.751,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "overtake_oncoming",
+        "npc_sig": [
+          "ahead_same_lane|stopped_ahead"
+        ]
+      },
+      "members": [
+        "040_Waymo_December_14_2024",
+        "405_Waymo_February_1_2022",
+        "574_Aurora_Innovation_January_14_2020"
+      ]
+    },
+    {
+      "rank": 34,
+      "case_id": "533_Waymo_January_22_2021",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 3,
+      "cumulative_covered": 371,
+      "cumulative_pct": 0.7571,
+      "signature": {
+        "topology": "t_junction",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "ahead_same_lane|stopped_ahead"
+        ]
+      },
+      "members": [
+        "048_Waymo_November_27_2024",
+        "291_Apple_October_20_2022",
+        "533_Waymo_January_22_2021"
+      ]
+    },
+    {
+      "rank": 35,
+      "case_id": "055_Waymo_November_3_2024_(1)",
+      "prior_carla_run": false,
+      "scene_seed_status": "supported",
+      "bucket_size": 3,
+      "cumulative_covered": 374,
+      "cumulative_pct": 0.7633,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "2",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "cross|junction_turn"
+        ]
+      },
+      "members": [
+        "055_Waymo_November_3_2024_(1)",
+        "420_Cruise_December_26_2021",
+        "441_Cruise_November_13_2021"
+      ]
+    },
+    {
+      "rank": 36,
+      "case_id": "638_Waymo_July_8_2019",
+      "prior_carla_run": false,
+      "scene_seed_status": "supported",
+      "bucket_size": 3,
+      "cumulative_covered": 377,
+      "cumulative_pct": 0.7694,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "2",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "adjacent|static_hold"
+        ]
+      },
+      "members": [
+        "068_Waymo_September_26_2024",
+        "465_Zoox_September_21_2021",
+        "638_Waymo_July_8_2019"
+      ]
+    },
+    {
+      "rank": 37,
+      "case_id": "180_Cruise_July_30_2023",
+      "prior_carla_run": false,
+      "scene_seed_status": "supported",
+      "bucket_size": 3,
+      "cumulative_covered": 380,
+      "cumulative_pct": 0.7755,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "left",
+        "npc_sig": [
+          "behind_same_lane|rear_hit"
+        ]
+      },
+      "members": [
+        "180_Cruise_July_30_2023",
+        "601_Waymo_October_28_2019_(2)",
+        "668_GM_Cruise_April_10_2019_(2)"
+      ]
+    },
+    {
+      "rank": 38,
+      "case_id": "249_Waymo_March_12_2023",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 3,
+      "cumulative_covered": 383,
+      "cumulative_pct": 0.7816,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "2",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "ahead_same_lane|static_hold"
+        ]
+      },
+      "members": [
+        "249_Waymo_March_12_2023",
+        "387_Waymo_February_28_2022_(1)",
+        "592_Cruise_November_18_2019"
+      ]
+    },
+    {
+      "rank": 39,
+      "case_id": "293_Zoox_October_14_2022",
+      "prior_carla_run": false,
+      "scene_seed_status": "supported",
+      "bucket_size": 3,
+      "cumulative_covered": 386,
+      "cumulative_pct": 0.7878,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "straight",
+        "npc_sig": [
+          "oncoming|junction_turn"
+        ]
+      },
+      "members": [
+        "293_Zoox_October_14_2022",
+        "410_Waymo_January_22_2022",
+        "437_Cruise_November_21_2021"
+      ]
+    },
+    {
+      "rank": 40,
+      "case_id": "435_Waymo_November_26_2021",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 3,
+      "cumulative_covered": 389,
+      "cumulative_pct": 0.7939,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "left",
+        "npc_sig": [
+          "cross|static_hold"
+        ]
+      },
+      "members": [
+        "435_Waymo_November_26_2021",
+        "536_Waymo_January_13_2021",
+        "554_Zoox_July_14_2020"
+      ]
+    },
+    {
+      "rank": 41,
+      "case_id": "032_AutoX_February_5_2025",
+      "prior_carla_run": true,
+      "scene_seed_status": "supported",
+      "bucket_size": 2,
+      "cumulative_covered": 391,
+      "cumulative_pct": 0.798,
+      "signature": {
+        "topology": "curve",
+        "lanes_bin": "1",
+        "sut_maneuver": "right",
+        "npc_sig": [
+          "roadside|static_block"
+        ]
+      },
+      "members": [
+        "017_AutoX_February_5_2025",
+        "032_AutoX_February_5_2025"
+      ]
+    },
+    {
+      "rank": 42,
+      "case_id": "144_Waymo_October_17_2023",
+      "prior_carla_run": false,
+      "scene_seed_status": "missing",
+      "bucket_size": 2,
+      "cumulative_covered": 393,
+      "cumulative_pct": 0.802,
+      "signature": {
+        "topology": "cross_intersection",
+        "lanes_bin": "1",
+        "sut_maneuver": "right",
+        "npc_sig": [
+          "cross|junction_cross"
+        ]
+      },
+      "members": [
+        "052_Waymo_November_5_2024",
+        "144_Waymo_October_17_2023"
+      ]
+    }
+  ],
+  "skipped_count": 223
+}

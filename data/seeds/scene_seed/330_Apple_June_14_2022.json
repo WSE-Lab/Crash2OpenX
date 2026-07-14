@@ -1,0 +1,49 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "right",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "Mazda3（ego）在路口右转时追尾前方停止的测试车辆（NPC），测试车辆在右转过程中处于停止状态。",
+  "evidence": {
+    "source_snippets": [
+      "a white Mazda3 made contact with the rear of the test vehicle",
+      "as the test vehicle was making a right turn from Moorpark Way to East Evelyn Avenue",
+      "Vehicle was: Stopped in Traffic (VEH 1)",
+      "MOVEMENT PRECEDING COLLISION: MAKING RIGHT TURN (both VEH 1 and VEH 2)",
+      "TYPE OF COLLISION: REAR END (VEH 2)"
+    ],
+    "reason": "选择移动的Mazda3作为ego，测试其能否避免追尾前方停止的右转车辆。测试车辆静止，作为NPC使用stopped_ahead原语。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "330_Apple_June_14_2022.pdf"
+  }
+}

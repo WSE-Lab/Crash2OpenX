@@ -1,0 +1,51 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {
+        "speed": 5
+      }
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "oncoming",
+        "side": "none",
+        "behavior": {
+          "block": "oncoming",
+          "params": {
+            "encroach": "cross"
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "Zoox 自动驾驶车辆（传统模式）为对向卡车让行缓慢前移，卡车在超越时侵入本车道，刮碰到 Zoox 后雷达传感器。选取 Zoox 为 ego，对向卡车为 oncoming NPC，因接触发生越线行为。",
+  "evidence": {
+    "source_snippets": [
+      "While providing space to pass, a Zoox vehicle in conventional mode was slowly moving forward in response to an oncoming truck.",
+      "While passing, the truck came into contact with the Zoox vehicle's rear radar sensor.",
+      "TYPE OF COLLISION: B. SIDE SWIPE"
+    ],
+    "reason": "Zoox 车辆主动慢行让行，对向卡车试图通过时侵入本车道发生侧碰，符合 oncoming 交互碰撞。定性语“slowly”转换为 speed=5，无其他量化信息。环境根据时间 02:11 和天气选择“clear”“night”。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "491_Zoox_July_13_2021.pdf"
+  }
+}

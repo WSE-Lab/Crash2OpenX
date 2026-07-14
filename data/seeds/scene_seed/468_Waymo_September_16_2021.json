@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "overtake_oncoming",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "junction_turn",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "evening"
+    }
+  },
+  "description_zh": "ego 试图在对向车道超车时，与前方同车道正在左转的车辆 v2 发生侧碰。选择超车车辆为 ego 以测试其应对前车突然左转的能力。",
+  "evidence": {
+    "source_snippets": [
+      "While making a left turn from Palou Avenue onto Selby Avenue in manual mode, the Waymo AV was struck by a passenger vehicle attempting to pass the Waymo AV on the left side using the oncoming traffic lane."
+    ],
+    "reason": "超车车辆（ego）使用对向车道超车，前车（v2）左转，构成典型的路口超车冲突，现有词汇表可表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "468_Waymo_September_16_2021.pdf"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v1",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v1",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "后车（ego）直行时追尾前方静止的Waymo AV（v1），选自后车作为ego测试其对静止车辆的检测与反应能力。报告未提供速度等量化信息，环境为晴朗下午。",
+  "evidence": {
+    "source_snippets": [
+      "While attempting a merge onto northbound Bayshore Boulevard from southbound Bayshore Boulevard, the Waymo AV came to a stop to yield for approaching traffic on the right. While stopped, a vehicle approached from behind and made contact with the rear bumper of the Waymo AV.",
+      "VEH 1: A. CLEAR (X)",
+      "VEH 1: A. DAYLIGHT (X)",
+      "TIME OF ACCIDENT: 01:26 PM"
+    ],
+    "reason": "后车是唯一移动车辆，驾驶决策值得测试，故选为ego；前车静止，作为NPC stopped_ahead。无速度/距离量化，使用默认参数。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "351_Waymo_May_4_2022.pdf"
+  }
+}

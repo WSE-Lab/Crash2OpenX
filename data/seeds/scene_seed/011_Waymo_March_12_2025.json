@@ -1,0 +1,18 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "事故发生在私有地下停车场，车辆进入停车位时车顶传感器撞到上层水泥平台，属泊车机动且无第二参与者交互，排除。",
+  "reason": "属于停车场/私有区域泊车机动，无第二参与者交互，符合淘汰规则。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was entering a parking stall of an underground parking lot... made contact with the cement parking deck for the level above.",
+      "ADDRESS/LOCATION OF ACCIDENT: underground parking lot at 1160 Mission Street"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "011_Waymo_March_12_2025.pdf"
+  }
+}

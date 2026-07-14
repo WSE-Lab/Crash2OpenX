@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "stop_sign",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "SUV在Oak Street接近停止标志路口处，因前方Waymo AV正停车等待行人和交通，未能及时停车，发生追尾。测试SUV(ego)能否在停止标志控制下检测前方静止车辆并刹停。",
+  "evidence": {
+    "source_snippets": [
+      "While in autonomous mode, the Waymo AV came to a stop at a stop sign on Oak Street. While the ADV was stopped, waiting for a pedestrian to cross and for traffic on Stanyan Street to clear, an SUV approached the Waymo AV from behind and made contact with the rear of the Waymo AV.",
+      "MOVEMENT PRECEDING COLLISION: VEH 1: A. STOPPED, VEH 2: B. PROCEEDING STRAIGHT",
+      "TYPE OF COLLISION: VEH 2: C. REAR END"
+    ],
+    "reason": "SUV移动并追尾静止的AV，ego选为SUV以测试其能否及时停车，场景可用stopped_ahead + stop_sign表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "428_Waymo_December_7_2021.pdf"
+  }
+}

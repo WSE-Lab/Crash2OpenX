@@ -1,0 +1,19 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "Waymo AV在停车场静止，右侧一辆面包车从停车位倒车出来，尾部碰撞AV右侧。核心机动涉及倒车和停车场泊车，属于可辩护排除范围。",
+  "reason": "倒车/后退机动（面包车 backing），且发生在停车场泊车场景，根据淘汰规则1和3排除",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV came to a stop while yielding to a pickup truck",
+      "a van which was in a parking space immediately to the right of the Waymo AV began reversing out of the parking space. The rear of the van made contact with the right side of the Waymo AV.",
+      "MOVEMENT PRECEDING COLLISION: A. STOPPED for VEH 1, G. BACKING for VEH 2."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "206_Waymo_June_5_2023.pdf"
+  }
+}

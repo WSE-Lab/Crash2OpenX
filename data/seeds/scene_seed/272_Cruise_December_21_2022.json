@@ -1,0 +1,49 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "oncoming",
+        "side": "none",
+        "behavior": {
+          "block": "oncoming",
+          "params": {
+            "encroach": "cross"
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "unknown",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "Cruise AV 直行，对向 BMW 突然越线侵入其车道，导致碰撞（选 Cruise AV 为 ego，测其对突然侵入的应对）",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle (\"Cruise AV\"), operating in supervised autonomous mode, was traveling westbound on Brannan Street...",
+      "At the same time, a black BMW traveling eastbound on Brannan Street swerved into oncoming traffic and in front of the Cruise AV.",
+      "contact was made with the Cruise AV's front right quarter panel"
+    ],
+    "reason": "BMW swerved into oncoming traffic 对应 vehicle/oncoming 行为，Cruise AV 正常直行，可构成 oncoming 冲突场景。无量化速度，不填参数。天气与照明根据时间推断为 morning，weather 无描述。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "272_Cruise_December_21_2022.pdf"
+  }
+}

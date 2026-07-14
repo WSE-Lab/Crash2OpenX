@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "left",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "cross",
+        "side": "right",
+        "behavior": {
+          "block": "junction_cross",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "Zoox 车辆在 Folsom 街向左转弯过程中，右侧 6th 街方向一辆闯红灯直行的社会车辆与其发生碰撞。",
+  "evidence": {
+    "source_snippets": [
+      "A Zoox vehicle (Vehicle 1) operating in manual mode was traveling northeast on Folsom Street and preparing to turn left onto 6th Street in San Francisco.",
+      "At that time, a passenger car (Vehicle 2), traveling southeast on 6th Street, failed to stop for the red traffic light and entered the intersection, approaching the Zoox vehicle attempting a left turn.",
+      "The front driver's side of the passenger car collided with the driver-side rear wheel area of the Zoox vehicle."
+    ],
+    "reason": "两车都在路口移动，Zoox 左转，对方闯红灯直行，属于双方交互碰撞，可用 junction_cross 表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "020_Zoox_January_26_2025.pdf"
+  }
+}

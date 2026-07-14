@@ -1,0 +1,18 @@
+{
+  "status": "needs_extension",
+  "scene": null,
+  "description_zh": "Zoox自动驾驶车辆直行时，一辆原本停在右侧路边的车辆突然驶出并U型转弯，越过双黄线侵入Zoox车道，导致碰撞。",
+  "reason": "现有block无法表达NPC从路边停车位驶出并U-turn侵入对向车道的复合行为。oncoming block假设NPC原本在对向车道行驶，无法体现停车起步和U-turn动作；cut_in仅适用于相邻车道切入，不涉及U-turn。",
+  "proposed": "需要一个表示'从路边停车位驶出并U-turn侵入对向车道'的复合原语，或增加'parking_exit'动作与'u_turn'动作的组合。",
+  "evidence": {
+    "source_snippets": [
+      "A passenger car (Vehicle 2) was parallel parked on the right side of the roadway in the same direction as the Zoox vehicle. The passenger car pulled out of the parking spot and made a U-turn into the opposite travel lane, and unexpectedly crossed the double-yellow centerline and veered into the Zoox vehicle's travel lane."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "022_Zoox_January_23_2025.pdf"
+  }
+}

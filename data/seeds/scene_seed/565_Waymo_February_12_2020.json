@@ -1,0 +1,52 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {
+        "speed": 7.15
+      }
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "static",
+        "position": "roadside",
+        "side": "right",
+        "behavior": {
+          "block": "static_block",
+          "params": {
+            "lateral": 0.1
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "Waymo AV 在手动模式下直行，为避让对向来车向右偏移，与路边停放的车辆发生左侧后视镜擦碰。选取移动中的 AV 为 ego，静止的路边停车为 NPC，ego 直行时侧向偏移导致碰撞，横向距离极小以反映后视镜接触。",
+  "evidence": {
+    "source_snippets": [
+      "A Waymo Autonomous Vehicle (“Waymo AV”) was being driven in manual mode on northbound Midvale Avenue...",
+      "the Waymo AV’s right side mirror made contact with the left side mirror of a parked vehicle.",
+      "the Waymo AV’s test driver was attempting to move to the right to give space to an oncoming vehicle when it made contact with the parked vehicle’s left side mirror while traveling at approximately 16 MPH.",
+      "TYPE OF COLLISION: - B. SIDE SWIPE"
+    ],
+    "reason": "单车在手动模式下直行，因避让对向来车向右偏移，撞到路边静止车辆。ego 为移动汽车，对方为静止障碍，使用 static_block + roadside 表达，横向距离设为 0.1 m 对应后视镜擦碰。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "565_Waymo_February_12_2020.pdf"
+  }
+}

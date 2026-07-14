@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "behind_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "rear_hit",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "Waymo AV 在 Division Street 正常向西行驶，一辆特斯拉 Model 3 从后方追尾，后车曾闯停车标志，选择 ego 为被追尾的前车，NPC 为实施追尾的后车，用 rear_hit 表达典型追尾交互。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was traveling west on Division Street after having stopped at the stop sign at Vermont Street... a passenger car approached from behind the Waymo AV, ran the stop sign at Vermont Street, and made contact with the rear of the Waymo AV."
+    ],
+    "reason": "碰撞为后方车辆追尾前方正在行驶的 AV，符合 rear_hit 原语，位置为 behind_same_lane，无逆向或转弯，控制为无信号路段。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "113_Waymo_March_19_2024.pdf"
+  }
+}

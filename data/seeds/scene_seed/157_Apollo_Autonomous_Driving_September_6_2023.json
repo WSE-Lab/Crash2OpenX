@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "overtake_oncoming",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "static_hold",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "自动驾驶车辆在常规模式下试图绕过双排停放的车辆时，右侧方擦碰到该静止车辆。",
+  "evidence": {
+    "source_snippets": [
+      "An Apollo autonomous vehicle (“AV”) was traveling westbound on Rivera Street in San Francisco in autonomous mode and stopped for a double-parked vehicle near 31st Avenue. An Apollo safety operator disengaged the AV from autonomous mode into conventional mode with use of the steering wheel. Then the AV side-swiped the double-parked vehicle while in conventional mode."
+    ],
+    "reason": "Ego进入对向车道以绕过静止的双排停放车辆，擦碰发生。NPC为静止的vehicle，位置相邻右侧。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "157_Apollo_Autonomous_Driving_September_6_2023.pdf"
+  }
+}

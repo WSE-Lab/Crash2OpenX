@@ -1,0 +1,19 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "Waymo AV 在手动模式下以倒车方式从平行停车位驶出，与后方停着的乘客车发生碰撞。核心机动为倒车/后退，属于可辩护排除范围。",
+  "reason": "核心机动涉及倒车/后退（backing），属于淘汰规则1所述的可辩护 out-of-scope 类型。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was maneuvering out of a parallel parking spot at the right side curb on Fell Street. As it reversed, the rear of the Waymo AV made contact with the front of the passenger car parked directly behind it.",
+      "MOVEMENT PRECEDING COLLISION VEH 1: G. BACKING",
+      "VEH 2: O. PARKED"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "205_Waymo_June_9_2023.pdf"
+  }
+}

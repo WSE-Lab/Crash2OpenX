@@ -1,0 +1,2143 @@
+{
+  "cases": [
+    {
+      "case_id": "001_Zoox_April_11_2025"
+    },
+    {
+      "case_id": "002_Zoox_April_4_2025_Narrative"
+    },
+    {
+      "case_id": "003_Zoox_April_4_2025"
+    },
+    {
+      "case_id": "004_Pony.ai_March_29_2025"
+    },
+    {
+      "case_id": "005_Waymo_March_28_2025"
+    },
+    {
+      "case_id": "006_Zoox_Inc._March_28_2025"
+    },
+    {
+      "case_id": "007_Waymo_March_27_2025"
+    },
+    {
+      "case_id": "008_Waymo_March_20_2025"
+    },
+    {
+      "case_id": "009_Waymo_March_16_2025"
+    },
+    {
+      "case_id": "010_Waymo_March_14_2025"
+    },
+    {
+      "case_id": "011_Waymo_March_12_2025"
+    },
+    {
+      "case_id": "012_Zoox_February_23_2025"
+    },
+    {
+      "case_id": "013_Zoox_February_19_2025"
+    },
+    {
+      "case_id": "014_Zoox_February_18_2025"
+    },
+    {
+      "case_id": "015_Waymo_February_14_2025"
+    },
+    {
+      "case_id": "016_Mercedes-Benz_February_7_2025"
+    },
+    {
+      "case_id": "016_Zoox_April_11_2025"
+    },
+    {
+      "case_id": "017_AutoX_February_5_2025"
+    },
+    {
+      "case_id": "017_Zoox_April_4_2025_Narrative"
+    },
+    {
+      "case_id": "018_Waymo_February_3_2025"
+    },
+    {
+      "case_id": "018_Zoox_April_4_2025"
+    },
+    {
+      "case_id": "019_Pony.ai_March_29_2025"
+    },
+    {
+      "case_id": "019_Zoox_January_29_2025"
+    },
+    {
+      "case_id": "020_Waymo_March_28_2025"
+    },
+    {
+      "case_id": "020_Zoox_January_26_2025"
+    },
+    {
+      "case_id": "021_Waymo_January_23_2025"
+    },
+    {
+      "case_id": "021_Zoox_Inc._March_28_2025"
+    },
+    {
+      "case_id": "022_Waymo_March_27_2025"
+    },
+    {
+      "case_id": "022_Zoox_January_23_2025"
+    },
+    {
+      "case_id": "023_Waymo_January_21_2025"
+    },
+    {
+      "case_id": "023_Waymo_March_20_2025"
+    },
+    {
+      "case_id": "024_Waymo_March_16_2025"
+    },
+    {
+      "case_id": "024_Zoox_January_17_2025"
+    },
+    {
+      "case_id": "025_Waymo_January_15_2025"
+    },
+    {
+      "case_id": "025_Waymo_March_14_2025"
+    },
+    {
+      "case_id": "026_May_Mobility_January_14_2025"
+    },
+    {
+      "case_id": "026_Waymo_March_12_2025"
+    },
+    {
+      "case_id": "027_Waymo_January_11_2025_(2)"
+    },
+    {
+      "case_id": "027_Zoox_February_23_2025"
+    },
+    {
+      "case_id": "028_Waymo_January_11_2025_(1)"
+    },
+    {
+      "case_id": "028_Zoox_February_19_2025"
+    },
+    {
+      "case_id": "029_Zoox_February_18_2025"
+    },
+    {
+      "case_id": "029_Zoox_January_8_2025"
+    },
+    {
+      "case_id": "030_Waymo_February_14_2025"
+    },
+    {
+      "case_id": "030_Waymo_January_7_2025"
+    },
+    {
+      "case_id": "031_Mercedes-Benz_February_7_2025"
+    },
+    {
+      "case_id": "031_Zoox_January_4_2025"
+    },
+    {
+      "case_id": "032_AutoX_February_5_2025"
+    },
+    {
+      "case_id": "032_Waymo_December_27_2024"
+    },
+    {
+      "case_id": "033_Waymo_December_25_2024"
+    },
+    {
+      "case_id": "033_Waymo_February_3_2025"
+    },
+    {
+      "case_id": "034_Waymo_December_20_2024_Narrative_(B)"
+    },
+    {
+      "case_id": "034_Zoox_January_29_2025"
+    },
+    {
+      "case_id": "035_Waymo_December_20_2024_(A)"
+    },
+    {
+      "case_id": "035_Zoox_January_26_2025"
+    },
+    {
+      "case_id": "036_Waymo_December_20_2024"
+    },
+    {
+      "case_id": "036_Waymo_January_23_2025"
+    },
+    {
+      "case_id": "037_Zoox_December_18_2024"
+    },
+    {
+      "case_id": "037_Zoox_January_23_2025"
+    },
+    {
+      "case_id": "038_Waymo_December_17_2024"
+    },
+    {
+      "case_id": "038_Waymo_January_21_2025"
+    },
+    {
+      "case_id": "039_Waymo_December_16_2024"
+    },
+    {
+      "case_id": "039_Zoox_January_17_2025"
+    },
+    {
+      "case_id": "040_Waymo_December_14_2024"
+    },
+    {
+      "case_id": "040_Waymo_January_15_2025"
+    },
+    {
+      "case_id": "041_May_Mobility_January_14_2025"
+    },
+    {
+      "case_id": "041_Pony.ai_December_12_2024"
+    },
+    {
+      "case_id": "042_Waymo_December_11_2024"
+    },
+    {
+      "case_id": "042_Waymo_January_11_2025_(2)"
+    },
+    {
+      "case_id": "043_Waymo_January_11_2025_(1)"
+    },
+    {
+      "case_id": "043_Zoox_December_8_2024"
+    },
+    {
+      "case_id": "044_Waymo_December_2_2024_(2)"
+    },
+    {
+      "case_id": "045_Waymo_December_2_2024_(1)"
+    },
+    {
+      "case_id": "046_Waymo_November_30_2024"
+    },
+    {
+      "case_id": "047_WeRide_Corp_November_27_2024"
+    },
+    {
+      "case_id": "048_Waymo_November_27_2024"
+    },
+    {
+      "case_id": "049_Waymo_November_26_2024"
+    },
+    {
+      "case_id": "050_Waymo_November_26_2024"
+    },
+    {
+      "case_id": "051_Waymo_November_8_2024"
+    },
+    {
+      "case_id": "052_Waymo_November_5_2024"
+    },
+    {
+      "case_id": "053_Waymo_November_4_2024"
+    },
+    {
+      "case_id": "054_Waymo_November_3_2024_(2)"
+    },
+    {
+      "case_id": "055_Waymo_November_3_2024_(1)"
+    },
+    {
+      "case_id": "056_Zoox_October_24_2024"
+    },
+    {
+      "case_id": "057_Waymo_October_20_2024"
+    },
+    {
+      "case_id": "058_Waymo_October_19_2024"
+    },
+    {
+      "case_id": "059_Waymo_October_16_2024"
+    },
+    {
+      "case_id": "060_Woven_by_Toyota_October_16_2024"
+    },
+    {
+      "case_id": "061_Waymo_October_14_2024"
+    },
+    {
+      "case_id": "062_Zoox_October_10_2024"
+    },
+    {
+      "case_id": "063_Zoox_October_6_2024"
+    },
+    {
+      "case_id": "064_Waymo_October_3_2024"
+    },
+    {
+      "case_id": "065_Waymo_September_29_2024"
+    },
+    {
+      "case_id": "066_Zoox_September_29_2024"
+    },
+    {
+      "case_id": "067_Waymo_September_27_2024"
+    },
+    {
+      "case_id": "068_Waymo_September_26_2024"
+    },
+    {
+      "case_id": "069_Waymo_September_18_2024"
+    },
+    {
+      "case_id": "070_Waymo_September_13_2024"
+    },
+    {
+      "case_id": "071_Waymo_September_3_2024"
+    },
+    {
+      "case_id": "072_Zoox_September_3_2024"
+    },
+    {
+      "case_id": "073_Waymo_August_30_2024_(2)"
+    },
+    {
+      "case_id": "074_Waymo_August_30_2024_(1)"
+    },
+    {
+      "case_id": "075_Waymo_August_29_2024"
+    },
+    {
+      "case_id": "076_Waymo_August_20_2024"
+    },
+    {
+      "case_id": "077_Waymo_August_9_2024"
+    },
+    {
+      "case_id": "078_Zoox_August_2_2024"
+    },
+    {
+      "case_id": "079_Waymo_August_1_2024"
+    },
+    {
+      "case_id": "080_Waymo_July_27_2024"
+    },
+    {
+      "case_id": "081_Zoox_July_20_2024_(A)"
+    },
+    {
+      "case_id": "082_Zoox_July_20_2024_(B)"
+    },
+    {
+      "case_id": "083_Zoox_July_20_2024"
+    },
+    {
+      "case_id": "084_Waymo_July_19_2024"
+    },
+    {
+      "case_id": "085_Waymo_July_18_2024"
+    },
+    {
+      "case_id": "086_Zoox_July_16_2024"
+    },
+    {
+      "case_id": "087_Zoox_July_11_2024"
+    },
+    {
+      "case_id": "088_Waymo_July_6_2024_(A)"
+    },
+    {
+      "case_id": "089_Waymo_July_6_2024_(B)"
+    },
+    {
+      "case_id": "090_Waymo_July_2_2024"
+    },
+    {
+      "case_id": "091_WeRide_June_21_2024"
+    },
+    {
+      "case_id": "092_Waymo_June_11_2024"
+    },
+    {
+      "case_id": "093_WeRide_June_10_2024"
+    },
+    {
+      "case_id": "094_Waymo_June_5_2024"
+    },
+    {
+      "case_id": "095_Waymo_June_4_2024"
+    },
+    {
+      "case_id": "096_Waymo_June_3_2024"
+    },
+    {
+      "case_id": "097_Zoox_May_30_2024"
+    },
+    {
+      "case_id": "098_Nuro_May_22_2024"
+    },
+    {
+      "case_id": "099_Waymo_May_20_2024"
+    },
+    {
+      "case_id": "100_Waymo_May_17_2024"
+    },
+    {
+      "case_id": "101_Pony.ai_May_15_2024"
+    },
+    {
+      "case_id": "102_Waymo_May_13_2024"
+    },
+    {
+      "case_id": "103_Waymo_May_8_2024"
+    },
+    {
+      "case_id": "104_Zoox_April_28_2024"
+    },
+    {
+      "case_id": "105_Pony.ai_April_23_2024"
+    },
+    {
+      "case_id": "106_Zoox_April_17_2024"
+    },
+    {
+      "case_id": "107_Waymo_April_13_2024"
+    },
+    {
+      "case_id": "108_Waymo_April_11_2024"
+    },
+    {
+      "case_id": "109_Zoox_April_2_2024"
+    },
+    {
+      "case_id": "110_Waymo_March_30_2024"
+    },
+    {
+      "case_id": "111_Waymo_March_28_2024"
+    },
+    {
+      "case_id": "112_Waymo_March_22_2024"
+    },
+    {
+      "case_id": "113_Waymo_March_19_2024"
+    },
+    {
+      "case_id": "114_Zoox_March_18_2024"
+    },
+    {
+      "case_id": "115_Waymo_March_14_2024"
+    },
+    {
+      "case_id": "116_Nuro_March_12_2024"
+    },
+    {
+      "case_id": "117_Waymo_March_8_2024"
+    },
+    {
+      "case_id": "118_Waymo_March_3_2024"
+    },
+    {
+      "case_id": "119_Waymo_March_2_2024"
+    },
+    {
+      "case_id": "120_Zoox_February_22_2024_(1)"
+    },
+    {
+      "case_id": "121_Zoox_February_22_2024_(2)"
+    },
+    {
+      "case_id": "122_Waymo_February_18_2024"
+    },
+    {
+      "case_id": "123_Apple_February_15_2024"
+    },
+    {
+      "case_id": "124_Waymo_February_5_2024"
+    },
+    {
+      "case_id": "125_Waymo_January_31_2024"
+    },
+    {
+      "case_id": "126_Nuro_January_31_2024"
+    },
+    {
+      "case_id": "127_Apple_January_26_2024"
+    },
+    {
+      "case_id": "128_WeRide_January_17_2024"
+    },
+    {
+      "case_id": "129_Zoox_January_15_2024"
+    },
+    {
+      "case_id": "130_Nuro_January_12_2024"
+    },
+    {
+      "case_id": "131_Zoox_January_11_2024_(1)"
+    },
+    {
+      "case_id": "132_Zoox_January_11_2024_(2)"
+    },
+    {
+      "case_id": "133_Ghost_Autonomy_Inc_January_11_2024"
+    },
+    {
+      "case_id": "134_Waymo_January_8_2024"
+    },
+    {
+      "case_id": "135_Zoox_January_1_2024_(A)"
+    },
+    {
+      "case_id": "136_Zoox_January_1_2024_(B)"
+    },
+    {
+      "case_id": "137_Mercedes_Benz_November_29_2023"
+    },
+    {
+      "case_id": "138_Nuro_November_27_2023"
+    },
+    {
+      "case_id": "139_Waymo_November_22_2023"
+    },
+    {
+      "case_id": "140_Waymo_November_3_2023"
+    },
+    {
+      "case_id": "141_Cruise_October_27_2023"
+    },
+    {
+      "case_id": "142_Waymo_October_26_2023"
+    },
+    {
+      "case_id": "143_Apple_October_23_2023"
+    },
+    {
+      "case_id": "144_Waymo_October_17_2023"
+    },
+    {
+      "case_id": "145_Apollo_Autonomous_Driving_October_16_2023"
+    },
+    {
+      "case_id": "146_Apple_October_13_2023"
+    },
+    {
+      "case_id": "147_Zoox_October_12_2023"
+    },
+    {
+      "case_id": "148_Cruise_October_6_2023"
+    },
+    {
+      "case_id": "149_Waymo_September_30_2023"
+    },
+    {
+      "case_id": "150_Apple_September_29_2023"
+    },
+    {
+      "case_id": "151_Cruise_September_25_2023"
+    },
+    {
+      "case_id": "152_Cruise_September_27_2023"
+    },
+    {
+      "case_id": "153_WeRide_September_28_2023"
+    },
+    {
+      "case_id": "154_Apple_September_26_2023"
+    },
+    {
+      "case_id": "155_Pony.ai_September_15_2023"
+    },
+    {
+      "case_id": "156_Waymo_September_11_2023"
+    },
+    {
+      "case_id": "157_Apollo_Autonomous_Driving_September_6_2023"
+    },
+    {
+      "case_id": "158_Apollo_Autonomous_Driving_June_29_2023"
+    },
+    {
+      "case_id": "159_Cruise_September_11_2023"
+    },
+    {
+      "case_id": "160_Zoox_September_11_2023"
+    },
+    {
+      "case_id": "161_Beep_Inc_August_23_2023"
+    },
+    {
+      "case_id": "162_Waymo_September_3_2023"
+    },
+    {
+      "case_id": "163_Waymo_August_24_2023"
+    },
+    {
+      "case_id": "164_Waymo_August_23_2023"
+    },
+    {
+      "case_id": "165_Mercedes_Benz_August_18_2023"
+    },
+    {
+      "case_id": "166_Waymo_August_20_2023"
+    },
+    {
+      "case_id": "167_Waymo_August_19_2023"
+    },
+    {
+      "case_id": "168_Zoox_August_16_2023"
+    },
+    {
+      "case_id": "169_Cruise_August_18_2023"
+    },
+    {
+      "case_id": "170_Cruise_August_17_2023"
+    },
+    {
+      "case_id": "171_Cruise_August_14_2023"
+    },
+    {
+      "case_id": "172_Cruise_August_8_2023"
+    },
+    {
+      "case_id": "173_Waymo_August_17_2023"
+    },
+    {
+      "case_id": "174_Waymo_August_13_2023"
+    },
+    {
+      "case_id": "175_Ghost_Autonomy_Inc_August_14_2023"
+    },
+    {
+      "case_id": "176_Waymo_August_11_2023"
+    },
+    {
+      "case_id": "177_WeRide_August_11_2023"
+    },
+    {
+      "case_id": "178_Waymo_August_2_2023"
+    },
+    {
+      "case_id": "179_Waymo_July_29_2023"
+    },
+    {
+      "case_id": "180_Cruise_July_30_2023"
+    },
+    {
+      "case_id": "181_Cruise_July_28_2023"
+    },
+    {
+      "case_id": "182_Waymo_July_25_2023"
+    },
+    {
+      "case_id": "183_Waymo_July_22_2023"
+    },
+    {
+      "case_id": "184_Waymo_July_21_2023"
+    },
+    {
+      "case_id": "185_Nuro_July_24_2023"
+    },
+    {
+      "case_id": "186_Cruise_July_21_2023_(A)"
+    },
+    {
+      "case_id": "187_Cruise_July_21_2023_(B)"
+    },
+    {
+      "case_id": "188_Waymo_July_11_2023"
+    },
+    {
+      "case_id": "189_Waymo_July_8_2023"
+    },
+    {
+      "case_id": "190_Waymo_July_3_2023"
+    },
+    {
+      "case_id": "191_Cruise_July_2_2023"
+    },
+    {
+      "case_id": "192_Waymo_June_29_2023_(1)"
+    },
+    {
+      "case_id": "193_Waymo_June_29_2023_(2)"
+    },
+    {
+      "case_id": "194_Waymo_June_28._2023"
+    },
+    {
+      "case_id": "195_Cruise_June_29_2023"
+    },
+    {
+      "case_id": "196_Cruise_June_24_2023"
+    },
+    {
+      "case_id": "197_Cruise_June_17_2023_(2)"
+    },
+    {
+      "case_id": "198_Zoox_June_18_2023"
+    },
+    {
+      "case_id": "199_Waymo_June_18_2023"
+    },
+    {
+      "case_id": "200_Cruise_June_17_2023_(1)"
+    },
+    {
+      "case_id": "201_Cruise_June_15_2023"
+    },
+    {
+      "case_id": "202_Waymo_June_11_2023"
+    },
+    {
+      "case_id": "203_Cruise_June_9_2023"
+    },
+    {
+      "case_id": "204_Cruise_June_8_2023"
+    },
+    {
+      "case_id": "205_Waymo_June_9_2023"
+    },
+    {
+      "case_id": "206_Waymo_June_5_2023"
+    },
+    {
+      "case_id": "207_Mercedes_Benz_June_1_2023"
+    },
+    {
+      "case_id": "208_Mercedes_Benz_May_30_2023"
+    },
+    {
+      "case_id": "209_WeRide_June_8_2023"
+    },
+    {
+      "case_id": "210_Pony.ai_June_5_2023"
+    },
+    {
+      "case_id": "211_Waymo_May_21_2023"
+    },
+    {
+      "case_id": "212_Cruise_May_21_2023"
+    },
+    {
+      "case_id": "213_Cruise_May_18_2023"
+    },
+    {
+      "case_id": "214_Zoox_May_20_2023"
+    },
+    {
+      "case_id": "215_Zoox_May_17_2023"
+    },
+    {
+      "case_id": "216_Apple_May_11_2023"
+    },
+    {
+      "case_id": "217_Waymo_May_7_2023"
+    },
+    {
+      "case_id": "218_Waymo_May_6_2023"
+    },
+    {
+      "case_id": "219_Cruise_May_7_2023"
+    },
+    {
+      "case_id": "220_Cruise_May_3_2023"
+    },
+    {
+      "case_id": "221_Waymo_May_3_2023"
+    },
+    {
+      "case_id": "222_Cruise_May_4_2023"
+    },
+    {
+      "case_id": "223_Cruise_May_1_2023"
+    },
+    {
+      "case_id": "224_Waymo_April_30_2023"
+    },
+    {
+      "case_id": "225_Waymo_April_28_2023"
+    },
+    {
+      "case_id": "226_Mercedes_Benz_April_26_2023"
+    },
+    {
+      "case_id": "227_WeRide_Corp_May_1_2023"
+    },
+    {
+      "case_id": "228_Cruise_April_21_2023"
+    },
+    {
+      "case_id": "229_Cruise_April_22_2023"
+    },
+    {
+      "case_id": "230_Waymo_April_12_2023"
+    },
+    {
+      "case_id": "231_Zoox_April_11_2023_(2)"
+    },
+    {
+      "case_id": "232_Cruise_April_12_2023"
+    },
+    {
+      "case_id": "233_Cruise_April_9_2023"
+    },
+    {
+      "case_id": "234_Zoox_April_11_2023_(1)"
+    },
+    {
+      "case_id": "235_Waymo_April_6_2023"
+    },
+    {
+      "case_id": "236_Waymo_April_5_2023"
+    },
+    {
+      "case_id": "237_Waymo_April_3_2023"
+    },
+    {
+      "case_id": "238_Cruise_March_22_2023_(1)"
+    },
+    {
+      "case_id": "239_Cruise_March_22_2023_(2)"
+    },
+    {
+      "case_id": "240_Cruise_March_22_2023_(3)"
+    },
+    {
+      "case_id": "241_Cruise_March_21_2023_(2)"
+    },
+    {
+      "case_id": "242_Cruise_March_23_2023"
+    },
+    {
+      "case_id": "243_Cruise_March_21_2023_(1)"
+    },
+    {
+      "case_id": "244_Waymo_March_20_2023_(1)"
+    },
+    {
+      "case_id": "245_Waymo_March_20_2023_(2)"
+    },
+    {
+      "case_id": "246_Waymo_March_16_2023_(1)"
+    },
+    {
+      "case_id": "247_Waymo_March_16_2023_(2)"
+    },
+    {
+      "case_id": "248_Zoox_March_16_2023"
+    },
+    {
+      "case_id": "249_Waymo_March_12_2023"
+    },
+    {
+      "case_id": "250_Cruise_March_18_2023"
+    },
+    {
+      "case_id": "251_Cruise_March_6_2023"
+    },
+    {
+      "case_id": "252_Waymo_March_1_2023"
+    },
+    {
+      "case_id": "253_WeRide_Corp_March_9_2023"
+    },
+    {
+      "case_id": "254_Cruise_March_3_2023"
+    },
+    {
+      "case_id": "255_Waymo_February_25_2023_(1)"
+    },
+    {
+      "case_id": "256_Waymo_February_25_2023_(2)"
+    },
+    {
+      "case_id": "257_Waymo_February_24_2023"
+    },
+    {
+      "case_id": "258_Apple_February_21_2023"
+    },
+    {
+      "case_id": "259_Zoox_February_23_2023"
+    },
+    {
+      "case_id": "260_Waymo_February_15_2023"
+    },
+    {
+      "case_id": "261_Mercedes_Benz_February_9_2023"
+    },
+    {
+      "case_id": "262_Zoox_February_11_2023"
+    },
+    {
+      "case_id": "263_Zoox_February_8_2023"
+    },
+    {
+      "case_id": "264_Zoox_February_7_2023"
+    },
+    {
+      "case_id": "265_Mercedes_Benz_February_2_2023"
+    },
+    {
+      "case_id": "266_Zoox_January_30_2023"
+    },
+    {
+      "case_id": "267_Cruise_January_25_2023"
+    },
+    {
+      "case_id": "268_Waymo_January_22_2023"
+    },
+    {
+      "case_id": "269_Zoox_January_1_2023"
+    },
+    {
+      "case_id": "270_Cruise_December_28_2022"
+    },
+    {
+      "case_id": "271_Waymo_December_29._2022"
+    },
+    {
+      "case_id": "272_Cruise_December_21_2022"
+    },
+    {
+      "case_id": "273_Cruise_December_18_2022"
+    },
+    {
+      "case_id": "274_Cruise_December_14_2022"
+    },
+    {
+      "case_id": "275_Apple_December_20_2022"
+    },
+    {
+      "case_id": "276_Waymo_December_17_2022"
+    },
+    {
+      "case_id": "277_Waymo_December_13_2022_(1)"
+    },
+    {
+      "case_id": "278_Waymo_December_13_2022_(2)"
+    },
+    {
+      "case_id": "279_Waymo_December_12_2022"
+    },
+    {
+      "case_id": "280_Waymo_December_1_2022"
+    },
+    {
+      "case_id": "281_Zoox_November_28_2022"
+    },
+    {
+      "case_id": "282_Zoox_November_20_2022"
+    },
+    {
+      "case_id": "283_Mercedes_Benz_November_19_2022"
+    },
+    {
+      "case_id": "284_Mercedes_Benz_November_17_2022"
+    },
+    {
+      "case_id": "285_Cruise_November_16_2022"
+    },
+    {
+      "case_id": "286_Zoox_November_14_2022"
+    },
+    {
+      "case_id": "287_Waymo_November_8_2022"
+    },
+    {
+      "case_id": "288_Waymo_November_3_2022"
+    },
+    {
+      "case_id": "289_Zoox_November_4_2022"
+    },
+    {
+      "case_id": "290_Waymo_October_21_2022"
+    },
+    {
+      "case_id": "291_Apple_October_20_2022"
+    },
+    {
+      "case_id": "292_Apple_October_10_2022"
+    },
+    {
+      "case_id": "293_Zoox_October_14_2022"
+    },
+    {
+      "case_id": "294_Zoox_October_3_2022"
+    },
+    {
+      "case_id": "295_Ghost_Autonomy_Inc_October_7_2022"
+    },
+    {
+      "case_id": "296_Argo_AI_September_22_2022"
+    },
+    {
+      "case_id": "297_Waymo_September_17_2022"
+    },
+    {
+      "case_id": "298_Waymo_September_15_2022"
+    },
+    {
+      "case_id": "299_Zoox_September_14_2022"
+    },
+    {
+      "case_id": "300_Waymo_September_10_2022"
+    },
+    {
+      "case_id": "301_Cruise_September_5_2022"
+    },
+    {
+      "case_id": "302_Cruise_September_4_2022"
+    },
+    {
+      "case_id": "303_Zoox_September_1_2022"
+    },
+    {
+      "case_id": "304_Cruise_September_1_2022"
+    },
+    {
+      "case_id": "305_Zoox_August_30_2022"
+    },
+    {
+      "case_id": "306_Zoox_August_23_2022"
+    },
+    {
+      "case_id": "307_Waymo_August_25_2022"
+    },
+    {
+      "case_id": "308_Cruise_August_16_2022"
+    },
+    {
+      "case_id": "309_Waymo_August_16_2022_(1)"
+    },
+    {
+      "case_id": "310_Waymo_August_16_2022_(2)"
+    },
+    {
+      "case_id": "311_Waymo_August_14_2022"
+    },
+    {
+      "case_id": "312_Waymo_August_13_2022"
+    },
+    {
+      "case_id": "313_Waymo_August_10_2022"
+    },
+    {
+      "case_id": "314_Woven_Planet_August_8_2022"
+    },
+    {
+      "case_id": "315_Cruise_August_2_2022"
+    },
+    {
+      "case_id": "316_Waymo_July_24_2022"
+    },
+    {
+      "case_id": "317_Zoox_July_22_2022"
+    },
+    {
+      "case_id": "318_Cruise_July_18_2022"
+    },
+    {
+      "case_id": "319_Cruise_July_16_2022"
+    },
+    {
+      "case_id": "320_Cruise_July_14_2022"
+    },
+    {
+      "case_id": "321_Zoox_July_8_2022"
+    },
+    {
+      "case_id": "322_Waymo_July_5_2022"
+    },
+    {
+      "case_id": "323_Waymo_July_3_2022"
+    },
+    {
+      "case_id": "324_Waymo_July_2_2022_(1)"
+    },
+    {
+      "case_id": "325_Waymo_July_2_2022_(2)"
+    },
+    {
+      "case_id": "326_Waymo_July_1_2022"
+    },
+    {
+      "case_id": "327_Cruise_June_29_2022"
+    },
+    {
+      "case_id": "328_Zoox_June_28_2022"
+    },
+    {
+      "case_id": "329_Waymo_June_21_2022"
+    },
+    {
+      "case_id": "330_Apple_June_14_2022"
+    },
+    {
+      "case_id": "331_Cruise_June_17_2022"
+    },
+    {
+      "case_id": "332_Zoox_June_11_2022"
+    },
+    {
+      "case_id": "333_Zoox_June_8_2022"
+    },
+    {
+      "case_id": "334_Waymo_June_5_2022"
+    },
+    {
+      "case_id": "335_Cruise_June_3_2022"
+    },
+    {
+      "case_id": "336_Cruise_June_2_2022"
+    },
+    {
+      "case_id": "337_Waymo_June_1_2022"
+    },
+    {
+      "case_id": "338_Zoox_June_1_2022_(1)"
+    },
+    {
+      "case_id": "339_Zoox_June_1_2022_(2)"
+    },
+    {
+      "case_id": "340_Waymo_May_27_2022"
+    },
+    {
+      "case_id": "341_Cruise_May_25_2022"
+    },
+    {
+      "case_id": "342_Zoox_May_31_2022"
+    },
+    {
+      "case_id": "343_Waymo_May_21_2022"
+    },
+    {
+      "case_id": "344_Zoox_May_20_2022"
+    },
+    {
+      "case_id": "345_Mercedes_Benz_May_19_2022"
+    },
+    {
+      "case_id": "346_Waymo_May_17_2022"
+    },
+    {
+      "case_id": "347_Pony.ai_May_17_2022"
+    },
+    {
+      "case_id": "348_Motional_May_17_2022"
+    },
+    {
+      "case_id": "349_Cruise_May_13_2022"
+    },
+    {
+      "case_id": "350_Waymo_May_11_2022"
+    },
+    {
+      "case_id": "351_Waymo_May_4_2022"
+    },
+    {
+      "case_id": "352_Waymo_April_30_2022"
+    },
+    {
+      "case_id": "353_Zoox_April_28_2022"
+    },
+    {
+      "case_id": "354_Cruise_April_25_2022"
+    },
+    {
+      "case_id": "355_Cruise_April_24_2022"
+    },
+    {
+      "case_id": "356_Waymo_April_29_2022"
+    },
+    {
+      "case_id": "357_Waymo_April_26_2022"
+    },
+    {
+      "case_id": "358_Waymo_April_24_2022"
+    },
+    {
+      "case_id": "359_Zoox_April_22_2022"
+    },
+    {
+      "case_id": "360_Cruise_April_17_2022"
+    },
+    {
+      "case_id": "361_Waymo_April_18_2022_(1)"
+    },
+    {
+      "case_id": "362_Waymo_April_18_2022_(2)"
+    },
+    {
+      "case_id": "363_Cruise_April_16_2022"
+    },
+    {
+      "case_id": "364_Waymo_April_13_2022"
+    },
+    {
+      "case_id": "365_Pony.ai_April_11_2022"
+    },
+    {
+      "case_id": "366_Cruise_April_9_2022"
+    },
+    {
+      "case_id": "367_Waymo_April_11_2022"
+    },
+    {
+      "case_id": "368_Waymo_April_8_2022"
+    },
+    {
+      "case_id": "369_Zoox_April_6_2022"
+    },
+    {
+      "case_id": "370_Waymo_April_5_2022"
+    },
+    {
+      "case_id": "371_Cruise_April_1_2022"
+    },
+    {
+      "case_id": "372_Waymo_April_1_2022"
+    },
+    {
+      "case_id": "373_Waymo_March_31_2022"
+    },
+    {
+      "case_id": "374_Cruise_March_29_2022"
+    },
+    {
+      "case_id": "375_Zoox_March_29_2022"
+    },
+    {
+      "case_id": "376_Pony.ai_March_28_2022"
+    },
+    {
+      "case_id": "377_Cruise_March_26_2022"
+    },
+    {
+      "case_id": "378_Waymo_March_26_2022"
+    },
+    {
+      "case_id": "379_Cruise_March_24_2022"
+    },
+    {
+      "case_id": "380_Zoox_March_22_2022"
+    },
+    {
+      "case_id": "381_Cruise_March_15_2022"
+    },
+    {
+      "case_id": "382_Apple_March_15_2022"
+    },
+    {
+      "case_id": "383_Waymo_March_11_2022"
+    },
+    {
+      "case_id": "384_Waymo_March_9_2022"
+    },
+    {
+      "case_id": "385_Waymo_March_7_2022"
+    },
+    {
+      "case_id": "386_Waymo_March_6_2022"
+    },
+    {
+      "case_id": "387_Waymo_February_28_2022_(1)"
+    },
+    {
+      "case_id": "388_Waymo_February_28_2022_(2)"
+    },
+    {
+      "case_id": "389_Cruise_February_19_2022"
+    },
+    {
+      "case_id": "390_Waymo_February_19_2022"
+    },
+    {
+      "case_id": "391_Apple_February_22_2022"
+    },
+    {
+      "case_id": "392_Apple_February_17_2022"
+    },
+    {
+      "case_id": "393_Waymo_February_14_2022"
+    },
+    {
+      "case_id": "394_Cruise_February_11_2022"
+    },
+    {
+      "case_id": "395_Waymo_February_11_2022_(1)"
+    },
+    {
+      "case_id": "396_Waymo_February_11_2022_(2)"
+    },
+    {
+      "case_id": "397_Waymo_February_10_2022"
+    },
+    {
+      "case_id": "398_Waymo_February_9_2022_(1)"
+    },
+    {
+      "case_id": "399_Waymo_February_9_2022_(2)"
+    },
+    {
+      "case_id": "400_Waymo_February_8"
+    },
+    {
+      "case_id": "401_Waymo_February_6_2022"
+    },
+    {
+      "case_id": "402_Zoox_February_6_2022"
+    },
+    {
+      "case_id": "403_Zoox_February_5_2022"
+    },
+    {
+      "case_id": "404_Waymo_February_4_2022"
+    },
+    {
+      "case_id": "405_Waymo_February_1_2022"
+    },
+    {
+      "case_id": "406_Cruise_January_29_2022"
+    },
+    {
+      "case_id": "407_Waymo_January_28_2022_(1)"
+    },
+    {
+      "case_id": "408_Waymo_January_28_2022_(2)"
+    },
+    {
+      "case_id": "409_Cruise_January_26_2022"
+    },
+    {
+      "case_id": "410_Waymo_January_22_2022"
+    },
+    {
+      "case_id": "411_Waymo_January_20_2022_(1)"
+    },
+    {
+      "case_id": "412_Waymo_January_20_2022_(2)"
+    },
+    {
+      "case_id": "413_Zoox_January_16_2022"
+    },
+    {
+      "case_id": "414_Waymo_January_18_2022"
+    },
+    {
+      "case_id": "415_Zoox_January_11_2022"
+    },
+    {
+      "case_id": "416_Waymo_January_6_2022"
+    },
+    {
+      "case_id": "417_Zoox_January_4_2022"
+    },
+    {
+      "case_id": "418_Waymo_January_3_2022"
+    },
+    {
+      "case_id": "419_Waymo_January_1_2022"
+    },
+    {
+      "case_id": "420_Cruise_December_26_2021"
+    },
+    {
+      "case_id": "421_Waymo_December_22_2021"
+    },
+    {
+      "case_id": "422_Waymo_December_19_2021"
+    },
+    {
+      "case_id": "423_Cruise_November_15_2021"
+    },
+    {
+      "case_id": "424_Waymo_December_11_2021"
+    },
+    {
+      "case_id": "425_Cruise_December_11_2021"
+    },
+    {
+      "case_id": "426_Apple_December_6_2021"
+    },
+    {
+      "case_id": "427_Zoox_December_8_2021"
+    },
+    {
+      "case_id": "428_Waymo_December_7_2021"
+    },
+    {
+      "case_id": "429_Waymo_December_4_2021"
+    },
+    {
+      "case_id": "430_Waymo_December_3_2021"
+    },
+    {
+      "case_id": "431_Cruise_December_1_2021_(1)"
+    },
+    {
+      "case_id": "432_Cruise_December_1_2021_(2)"
+    },
+    {
+      "case_id": "433_Waymo_November_30_2021"
+    },
+    {
+      "case_id": "434_Waymo_November_28_2021"
+    },
+    {
+      "case_id": "435_Waymo_November_26_2021"
+    },
+    {
+      "case_id": "436_Waymo_November_25_2021"
+    },
+    {
+      "case_id": "437_Cruise_November_21_2021"
+    },
+    {
+      "case_id": "438_Waymo_November_20_2021"
+    },
+    {
+      "case_id": "439_Waymo_November_15_2021"
+    },
+    {
+      "case_id": "440_Cruise_November_14_2021"
+    },
+    {
+      "case_id": "441_Cruise_November_13_2021"
+    },
+    {
+      "case_id": "442_Waymo_November_12_2021"
+    },
+    {
+      "case_id": "443_Apple_November_11_2021"
+    },
+    {
+      "case_id": "444_Waymo_November_6_2021_(1)"
+    },
+    {
+      "case_id": "445_Waymo_November_6_2021_(2)"
+    },
+    {
+      "case_id": "446_Waymo_November_4_2021"
+    },
+    {
+      "case_id": "447_Zoox_November_3_2021"
+    },
+    {
+      "case_id": "448_WeRide_Corp_November_3_2021"
+    },
+    {
+      "case_id": "449_Pony.ai_October_28_2021"
+    },
+    {
+      "case_id": "450_Waymo_October_28_2021"
+    },
+    {
+      "case_id": "451_Waymo_October_27_2021"
+    },
+    {
+      "case_id": "452_Argo_AI_October_19_2021"
+    },
+    {
+      "case_id": "453_Zoox_October_21_2021"
+    },
+    {
+      "case_id": "454_Waymo_October_21_2021"
+    },
+    {
+      "case_id": "455_Waymo_October_19_2021"
+    },
+    {
+      "case_id": "456_Waymo_October_18_2021"
+    },
+    {
+      "case_id": "457_Waymo_October_8_2021_(1)"
+    },
+    {
+      "case_id": "458_Waymo_October_8_2021_(2)"
+    },
+    {
+      "case_id": "459_Waymo_October_7_2021"
+    },
+    {
+      "case_id": "460_Cruise_October_2_2021"
+    },
+    {
+      "case_id": "461_Waymo_October_1_2021"
+    },
+    {
+      "case_id": "462_Apple_September_27_2021"
+    },
+    {
+      "case_id": "463_Cruise_September_25_2021"
+    },
+    {
+      "case_id": "464_Waymo_September_22_2021"
+    },
+    {
+      "case_id": "465_Zoox_September_21_2021"
+    },
+    {
+      "case_id": "466_Waymo_September_17_2021_(1)"
+    },
+    {
+      "case_id": "467_Waymo_September_17_2021_(2)"
+    },
+    {
+      "case_id": "468_Waymo_September_16_2021"
+    },
+    {
+      "case_id": "469_Waymo_August_13_2021"
+    },
+    {
+      "case_id": "470_Zoox_September_2_2021"
+    },
+    {
+      "case_id": "471_Waymo_September_2_2021"
+    },
+    {
+      "case_id": "472_Waymo_August_31_2021_(1)"
+    },
+    {
+      "case_id": "473_Waymo_August_31_2021_(2)"
+    },
+    {
+      "case_id": "474_Cruise_August_30_2021"
+    },
+    {
+      "case_id": "475_Cruise_August_28_2021"
+    },
+    {
+      "case_id": "476_Waymo_August_27_2021"
+    },
+    {
+      "case_id": "477_Waymo_July_9_2021"
+    },
+    {
+      "case_id": "478_Waymo_August_21_2021"
+    },
+    {
+      "case_id": "479_Apple_August_23_2021"
+    },
+    {
+      "case_id": "480_Apple_August_19_2021"
+    },
+    {
+      "case_id": "481_Waymo_August_14_2021"
+    },
+    {
+      "case_id": "482_Waymo_August_5_2021"
+    },
+    {
+      "case_id": "483_Cruise_August_2_2021"
+    },
+    {
+      "case_id": "484_Waymo_August_1_2021"
+    },
+    {
+      "case_id": "485_Cruise_July_26_2021"
+    },
+    {
+      "case_id": "486_WeRide_Corp_July_16_2021"
+    },
+    {
+      "case_id": "487_Cruise_July_15_2021"
+    },
+    {
+      "case_id": "488_Waymo_July_14_2021"
+    },
+    {
+      "case_id": "489_Waymo_July_12_2021"
+    },
+    {
+      "case_id": "490_Cruise_July_10_2021"
+    },
+    {
+      "case_id": "491_Zoox_July_13_2021"
+    },
+    {
+      "case_id": "492_Argo_AI_July_8_2021"
+    },
+    {
+      "case_id": "493_Cruise_July_1_2021"
+    },
+    {
+      "case_id": "494_Argo_AI_July_1_2021"
+    },
+    {
+      "case_id": "495_WeRide_Corp_June_29_2021"
+    },
+    {
+      "case_id": "496_Waymo_June_26_2021"
+    },
+    {
+      "case_id": "497_Waymo_June_25_2021"
+    },
+    {
+      "case_id": "498_Waymo_June_16_2021"
+    },
+    {
+      "case_id": "499_Waymo_June_11_2021"
+    },
+    {
+      "case_id": "500_Waymo_June_4_2021"
+    },
+    {
+      "case_id": "501_Waymo_June_3_2021"
+    },
+    {
+      "case_id": "502_Waymo_June_2_2021_(1)"
+    },
+    {
+      "case_id": "503_Waymo_June_2_2021_(2)"
+    },
+    {
+      "case_id": "504_Cruise_May_31_2021"
+    },
+    {
+      "case_id": "505_Waymo_May_23_2021"
+    },
+    {
+      "case_id": "506_Cruise_May_17_2021"
+    },
+    {
+      "case_id": "507_Cruise_May_11_2021"
+    },
+    {
+      "case_id": "508_Zoox_May_11_2021"
+    },
+    {
+      "case_id": "509_Cruise_April_21_2021"
+    },
+    {
+      "case_id": "510_Waymo_April_18_2021"
+    },
+    {
+      "case_id": "511_Waymo_April_17_2021"
+    },
+    {
+      "case_id": "512_Lyft_April_14_2021"
+    },
+    {
+      "case_id": "513_Waymo_April_4_2021"
+    },
+    {
+      "case_id": "514_Waymo_March_31_2021"
+    },
+    {
+      "case_id": "515_Waymo_March_30_2021"
+    },
+    {
+      "case_id": "516_Cruise_March_30_2021"
+    },
+    {
+      "case_id": "517_Cruise_March_29_2021"
+    },
+    {
+      "case_id": "518_Cruise_March_27_2021"
+    },
+    {
+      "case_id": "519_Waymo_March_24_2021"
+    },
+    {
+      "case_id": "520_Waymo_March_19_2021"
+    },
+    {
+      "case_id": "521_Zoox_March_18_2021"
+    },
+    {
+      "case_id": "522_Cruise_March_12_2021"
+    },
+    {
+      "case_id": "523_Cruise_March_9_2021"
+    },
+    {
+      "case_id": "524_Waymo_March_5_2021"
+    },
+    {
+      "case_id": "525_Waymo_February_25_2021_(1)"
+    },
+    {
+      "case_id": "526_Waymo_February_25_2021_(2)"
+    },
+    {
+      "case_id": "527_Cruise_February_25_2021"
+    },
+    {
+      "case_id": "528_Waymo_February_17_2021"
+    },
+    {
+      "case_id": "529_Waymo_February_16_2021"
+    },
+    {
+      "case_id": "530_Pony.ai_February_11_2021"
+    },
+    {
+      "case_id": "531_Zoox_February_11_2021"
+    },
+    {
+      "case_id": "532_Cruise_February_9_2021"
+    },
+    {
+      "case_id": "533_Waymo_January_22_2021"
+    },
+    {
+      "case_id": "534_Cruise_January_21_2021"
+    },
+    {
+      "case_id": "535_Cruise_January_13_2021"
+    },
+    {
+      "case_id": "536_Waymo_January_13_2021"
+    },
+    {
+      "case_id": "537_Waymo_December_29_2020"
+    },
+    {
+      "case_id": "538_Pony.ai_December_19_2020"
+    },
+    {
+      "case_id": "539_Waymo_December_18_2020"
+    },
+    {
+      "case_id": "540_Lyft_December_2_2020"
+    },
+    {
+      "case_id": "541_Cruise_October_25_2020"
+    },
+    {
+      "case_id": "542_Cruise_October_24_2020"
+    },
+    {
+      "case_id": "543_Cruise_October_9_2020"
+    },
+    {
+      "case_id": "544_Zoox_October_6_2020"
+    },
+    {
+      "case_id": "545_Cruise_September_16_2020"
+    },
+    {
+      "case_id": "546_Zoox_September_16_2020"
+    },
+    {
+      "case_id": "547_Waymo_September_5_2020"
+    },
+    {
+      "case_id": "548_Zoox_August_20_2020"
+    },
+    {
+      "case_id": "549_Cruise_August_15_2020"
+    },
+    {
+      "case_id": "550_Cruise_August_9_2020"
+    },
+    {
+      "case_id": "551_Cruise_August_4_2020"
+    },
+    {
+      "case_id": "552_Zoox_August_6_2020"
+    },
+    {
+      "case_id": "553_Cruise_July_25_2020"
+    },
+    {
+      "case_id": "554_Zoox_July_14_2020"
+    },
+    {
+      "case_id": "555_Waymo_July_9_2020"
+    },
+    {
+      "case_id": "556_Waymo_June_15_2020"
+    },
+    {
+      "case_id": "557_Cruise_June_1_2020"
+    },
+    {
+      "case_id": "558_Pony.ai_May_30_2020"
+    },
+    {
+      "case_id": "559_Waymo_March_10_2020"
+    },
+    {
+      "case_id": "560_Waymo_February_26_2020"
+    },
+    {
+      "case_id": "561_Zoox_February_26_2020_(1)"
+    },
+    {
+      "case_id": "562_Zoox_February_26_2020_(2)"
+    },
+    {
+      "case_id": "563_Zoox_February_21_2020"
+    },
+    {
+      "case_id": "564_Waymo_February_14_2020"
+    },
+    {
+      "case_id": "565_Waymo_February_12_2020"
+    },
+    {
+      "case_id": "566_Cruise_February_9_2020"
+    },
+    {
+      "case_id": "567_Cruise_February_5_2020"
+    },
+    {
+      "case_id": "568_Cruise_January_31_2020"
+    },
+    {
+      "case_id": "569_Cruise_January_29_2020"
+    },
+    {
+      "case_id": "570_Waymo_January_28_2020"
+    },
+    {
+      "case_id": "571_Cruise_January_25_2020"
+    },
+    {
+      "case_id": "572_Zoox_January_21_2020"
+    },
+    {
+      "case_id": "573_Zoox_January_21_2020_(2)"
+    },
+    {
+      "case_id": "574_Aurora_Innovation_January_14_2020"
+    },
+    {
+      "case_id": "575_Zoox_January_14_2020"
+    },
+    {
+      "case_id": "576_Zoox_January_13_2020"
+    },
+    {
+      "case_id": "577_Cruise_January_12_2020"
+    },
+    {
+      "case_id": "578_Zoox_January_8_2020"
+    },
+    {
+      "case_id": "579_Waymo_January_7_2020"
+    },
+    {
+      "case_id": "580_Cruise_January_2_2020"
+    },
+    {
+      "case_id": "581_Cruise_December_27_2019"
+    },
+    {
+      "case_id": "582_Zoox_December_20_2019"
+    },
+    {
+      "case_id": "583_Waymo_December_20_2019"
+    },
+    {
+      "case_id": "584_Zoox_December_19_2019"
+    },
+    {
+      "case_id": "585_Cruise_December_19_2019"
+    },
+    {
+      "case_id": "586_Cruise_December_13_2019"
+    },
+    {
+      "case_id": "587_Cruise_December_8_2019"
+    },
+    {
+      "case_id": "588_Cruise_November_29_2019"
+    },
+    {
+      "case_id": "589_Cruise_November_25_2019"
+    },
+    {
+      "case_id": "590_Zoox_November_22_2019"
+    },
+    {
+      "case_id": "591_Lyft_November_19_2019"
+    },
+    {
+      "case_id": "592_Cruise_November_18_2019"
+    },
+    {
+      "case_id": "593_Cruise_November_10_2019"
+    },
+    {
+      "case_id": "594_Cruise_November_9_2019"
+    },
+    {
+      "case_id": "595_Cruise_November_7_2019_(1)"
+    },
+    {
+      "case_id": "596_Cruise_November_7_2019_(2)"
+    },
+    {
+      "case_id": "597_Waymo_November_4_2019"
+    },
+    {
+      "case_id": "598_Cruise_October_29_2019"
+    },
+    {
+      "case_id": "599_Cruise_October_28_2019"
+    },
+    {
+      "case_id": "600_Waymo_October_28_2019_(1)"
+    },
+    {
+      "case_id": "601_Waymo_October_28_2019_(2)"
+    },
+    {
+      "case_id": "602_Cruise_October_27_2019"
+    },
+    {
+      "case_id": "603_Cruise_October_26_2019"
+    },
+    {
+      "case_id": "604_Waymo_October_19_2019"
+    },
+    {
+      "case_id": "605_Waymo_October_18_2019"
+    },
+    {
+      "case_id": "606_Cruise_October_17_2019"
+    },
+    {
+      "case_id": "607_Waymo_October_16_2019"
+    },
+    {
+      "case_id": "608_Waymo_October_14_2019"
+    },
+    {
+      "case_id": "609_Zoox_October_12_2019"
+    },
+    {
+      "case_id": "610_Cruise_October_12_2019"
+    },
+    {
+      "case_id": "611_Zoox_October_11_2019"
+    },
+    {
+      "case_id": "612_Waymo_October_10_2019"
+    },
+    {
+      "case_id": "613_GM_Cruise_October_3_2019"
+    },
+    {
+      "case_id": "614_GM_Cruise_September_27_2019"
+    },
+    {
+      "case_id": "615_Apple_September_19_2019"
+    },
+    {
+      "case_id": "616_Aimotive_September_16_2019"
+    },
+    {
+      "case_id": "617_Waymo_September_14_2019"
+    },
+    {
+      "case_id": "618_GM_Cruise_September_9_2019"
+    },
+    {
+      "case_id": "619_GM_Cruise_September_5_2019"
+    },
+    {
+      "case_id": "620_GM_Cruise_August_26_2019"
+    },
+    {
+      "case_id": "621_GM_Cruise_August_22_2019"
+    },
+    {
+      "case_id": "622_Waymo_August_13_2019"
+    },
+    {
+      "case_id": "623_Waymo_August_12_2019"
+    },
+    {
+      "case_id": "624_GM_Cruise_August_10_2019"
+    },
+    {
+      "case_id": "625_Waymo_August_9_2019_(1)"
+    },
+    {
+      "case_id": "626_Waymo_August_9_2019_(2)"
+    },
+    {
+      "case_id": "627_GM_Cruise_August_7_2019"
+    },
+    {
+      "case_id": "628_GM_Cruise_August_4_2019"
+    },
+    {
+      "case_id": "629_Zoox_July_23_2019"
+    },
+    {
+      "case_id": "630_GM_Cruise_July_21_2019_(1)"
+    },
+    {
+      "case_id": "631_GM_Cruise_July_21_2019_(2)"
+    },
+    {
+      "case_id": "632_GM_Cruise_July_20_2019"
+    },
+    {
+      "case_id": "633_GM_Cruise_July_17_2019"
+    },
+    {
+      "case_id": "634_Waymo_July_16_2019"
+    },
+    {
+      "case_id": "635_GM_Cruise_July_15_2019"
+    },
+    {
+      "case_id": "636_Pony.aI_July_12_2019"
+    },
+    {
+      "case_id": "637_GM_Cruise_July_10_2019"
+    },
+    {
+      "case_id": "638_Waymo_July_8_2019"
+    },
+    {
+      "case_id": "639_GM_Cruise_July_2_2019"
+    },
+    {
+      "case_id": "640_GM_Cruise_July_1_2019"
+    },
+    {
+      "case_id": "641_GM_Cruise_June_29_2019"
+    },
+    {
+      "case_id": "642_GM_Cruise_June_27_2019"
+    },
+    {
+      "case_id": "643_Pony.ai_June_26_2019"
+    },
+    {
+      "case_id": "644_GM_Cruise_June_26_2019"
+    },
+    {
+      "case_id": "645_GM_Cruise_June_23_2019"
+    },
+    {
+      "case_id": "646_GM_Cruise_June_20_2019"
+    },
+    {
+      "case_id": "647_Zoox_Inc_June_19_2019"
+    },
+    {
+      "case_id": "648_Waymo_June_16_2019"
+    },
+    {
+      "case_id": "649_GM_Cruise_June_13_2019"
+    },
+    {
+      "case_id": "650_GM_Cruise_June_12_2019"
+    },
+    {
+      "case_id": "651_Zoox_Inc_June_11_2019"
+    },
+    {
+      "case_id": "652_GM_Cruise_June_8_2019"
+    },
+    {
+      "case_id": "653_Waymo_May_29_2019"
+    },
+    {
+      "case_id": "654_GM_Cruise_May_24_2019"
+    },
+    {
+      "case_id": "655_Waymo_May_22_2019"
+    },
+    {
+      "case_id": "656_GM_Cruise_May_18_2019"
+    },
+    {
+      "case_id": "657_Waymo_May_15_2019"
+    },
+    {
+      "case_id": "658_GM_Cruise_May_13_2019"
+    },
+    {
+      "case_id": "659_GM_Cruise_May_8_2019"
+    },
+    {
+      "case_id": "660_GM_Cruise_May_4_2019_(1)"
+    },
+    {
+      "case_id": "661_GM_Cruise_May_4_2019_(2)"
+    },
+    {
+      "case_id": "662_Lyft_May_2_2019"
+    },
+    {
+      "case_id": "663_GM_Cruise_May_2_2019"
+    },
+    {
+      "case_id": "664_GM_Cruise_April_14_2019_(1)"
+    },
+    {
+      "case_id": "665_GM_Cruise_April_14_2019_(2)"
+    },
+    {
+      "case_id": "666_Lyft_April_11_2019"
+    },
+    {
+      "case_id": "667_GM_Cruise_April_10_2019_(1)"
+    },
+    {
+      "case_id": "668_GM_Cruise_April_10_2019_(2)"
+    },
+    {
+      "case_id": "669_GM_Cruise_April_3_2019"
+    },
+    {
+      "case_id": "670_Waymo_March_26_2019"
+    },
+    {
+      "case_id": "671_GM_Cruise_March_24_2019"
+    },
+    {
+      "case_id": "672_GM_Cruise_March_23_2019"
+    },
+    {
+      "case_id": "673_Lyft_March_12_2019"
+    },
+    {
+      "case_id": "674_GM_Cruise_March_8_2019"
+    },
+    {
+      "case_id": "675_Lyft_March_6_2019"
+    },
+    {
+      "case_id": "676_Lyft_February_28_2019"
+    },
+    {
+      "case_id": "677_GM_Cruise_February_27_2019"
+    },
+    {
+      "case_id": "678_Waymo_February_26_2019"
+    },
+    {
+      "case_id": "679_GM_Cruise_February_14_2019"
+    },
+    {
+      "case_id": "680_Waymo_February_10_2019"
+    },
+    {
+      "case_id": "681_Waymo_February_6_2019"
+    },
+    {
+      "case_id": "682_Waymo_January_26_2019"
+    },
+    {
+      "case_id": "683_Aurora_Innovation_January_10_2019"
+    },
+    {
+      "case_id": "684_GM_Cruise_January_10_2019"
+    },
+    {
+      "case_id": "685_GM_Cruise_January_7_2019"
+    }
+  ]
+}

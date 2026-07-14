@@ -2,7 +2,7 @@
 name = "crash2openx"
 version = "0.1.0"
 description = "Crash2OpenX: natural-language crash reports -> RoadSeed/SceneSeed models -> OpenDRIVE/OpenSCENARIO -> CARLA execution"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     # Vendored OpenDRIVE/OpenSCENARIO generator (editable submodule, pinned debb300 / v0.16.5).
     # Brings numpy, scipy, pyclothoids, lxml, xmlschema transitively.
@@ -13,8 +13,6 @@ dependencies = [
     "flask",
     # PDF text extraction (tools/extract_source.py imports fitz).
     "pymupdf",
-    # DOCX input normalization.
-    "python-docx",
     "pillow>=11.3.0",
     "matplotlib>=3.9.4",
 ]

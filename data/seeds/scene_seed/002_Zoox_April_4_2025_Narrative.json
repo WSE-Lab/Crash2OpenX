@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "cyclist",
+        "kind": "cyclist",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "cut_in",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "cyclist",
+      "b": "ego"
+    },
+    "control": "traffic_light"
+  },
+  "description_zh": "绿灯后Zoox车辆直行通过路口，右侧自行车道的电动自行车骑行者提前起步后突然向左切入行车路径，横向撞击Zoox右前部。",
+  "evidence": {
+    "source_snippets": [
+      "An unoccupied Zoox vehicle in autonomy was stopped at a red light in the right travel lane on southbound 11th Street at the intersection...",
+      "The cyclist began to proceed before the light turned green and headed straight.",
+      "After the light turned green, the Zoox vehicle proceeded straight towards Bryant Street.",
+      "While nearly through the intersection, the cyclist abruptly veered left into the path of the Zoox vehicle and accelerated toward the front of the Zoox vehicle...",
+      "The eBike laterally impacted the Zoox vehicle's right front fender and body side..."
+    ],
+    "reason": "ego从停止状态绿灯起步直行，cyclist从右侧相邻车道突然向左切入并加速，形成cut-in冲突。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek-v4-pro",
+    "input": "backups/old_20260604/outputs/facts_skill/002_Zoox_April_4_2025_Narrative.json"
+  }
+}

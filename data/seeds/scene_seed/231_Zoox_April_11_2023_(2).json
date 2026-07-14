@@ -1,0 +1,17 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "一辆车在弯道中撞到右侧混凝土桥台，无其他道路使用者参与，属于单车失控碰撞固定物体，无第二交互参与者。",
+  "reason": "属于单车冲出路缘/失控（无第二参与者）类事故，无测试价值的双方交互。",
+  "evidence": {
+    "source_snippets": [
+      "A Zoox vehicle in manual mode was traveling eastbound on Lombard St. towards Leavenworth St. following a sharp curve in the road when it made contact with a concrete abutment on the right."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "231_Zoox_April_11_2023_(2).pdf"
+  }
+}

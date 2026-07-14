@@ -1,0 +1,15 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "事故报告内容为空，无法提取任何场景信息",
+  "reason": "无事故描述，无法确定是否有测试价值的移动车辆或碰撞类型",
+  "evidence": {
+    "source_snippets": []
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "600_Waymo_October_28_2019_(1).pdf"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v1",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v1",
+      "b": "ego"
+    },
+    "control": "stop_sign",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "Waymo AV 在停止标志处停下后起步，后方SUV追尾碰撞；选择SUV为ego测试追尾场景，前车作为静止障碍物。",
+  "evidence": {
+    "source_snippets": [
+      "While proceeding straight on eastbound Noriega Street in autonomous mode, the Waymo AV slowed down and came to a halt at the stop sign at the intersection with 25th Avenue. As the Waymo began to proceed, a SUV approached the Waymo AV from behind and made contact with the rear of the Waymo AV.",
+      "TYPE OF COLLISION: VEH 2: C. REAR END"
+    ],
+    "reason": "后车追尾前车，前车刚起步可近似为静止，故将后车选为ego，前车为NPC，使用stopped_ahead原语。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "407_Waymo_January_28_2022_(1).pdf"
+  }
+}

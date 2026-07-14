@@ -1,0 +1,19 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "测试车辆在手动模式下行驶时撞上路面碎片，碎片弹起刮伤了驾驶员侧车门，未涉及其他车辆或道路使用者，属于单车撞静止物体，无第二交互参与者。",
+  "reason": "属于 non-collision（撞物体），无第二参与者，无任何移动的车辆具备测试价值。",
+  "evidence": {
+    "source_snippets": [
+      "On February 22nd, a test vehicle operating in manual mode was traveling East-bound on Evelyn Avenue in Mountain View and ran over road debris that was projected upward, scratching the test-vehicle’s driver-side door.",
+      "NUMBER OF VEHICLES INVOLVED: 1",
+      "TYPE OF COLLISION: E. HIT OBJECT"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "391_Apple_February_22_2022.pdf"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "right",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "left",
+        "behavior": {
+          "block": "cut_in",
+          "params": {
+            "trig_ttc": 1.5
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "Zoox 车辆在绿灯下右转时，左侧相邻车道的大卡车突然右转切入，与 Zoox 左前传感器发生碰撞。选择 Zoox 为 ego，测试其应对相邻车辆突然切入的能力。",
+  "evidence": {
+    "source_snippets": [
+      "A Zoox vehicle in manual mode was proceeding southbound in the turn lane on Sixth Street with a green light, yielding to a pedestrian before completing a right turn onto eastbound Harrison Street...",
+      "A large truck in the left adjacent lane abruptly turned right and cut in front of the Zoox vehicle making contact with the left front sensor."
+    ],
+    "reason": "报告描述了一辆卡车从左侧相邻车道突然右转切入正在右转的 Zoox 车辆前方，导致碰撞。这符合 cut_in 行为原语，且 ego 正在移动并执行右转，具有测试价值。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "259_Zoox_February_23_2023.pdf"
+  }
+}

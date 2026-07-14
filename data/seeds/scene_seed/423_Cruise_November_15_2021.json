@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "stop_sign",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "ego 直行接近有 stop sign 的路口，前方同车道有一辆静止的 Cruise AV 正在等待 stop sign，ego 未能及时刹停导致追尾。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle ... was at a complete stop in response to a stop sign ... Another vehicle approaching from the rear made contact with the Cruise AV’s rear bumper."
+    ],
+    "reason": "后车移动追尾静止前车，选后车为 ego 测试其能否及时刹停。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "423_Cruise_November_15_2021.pdf"
+  }
+}

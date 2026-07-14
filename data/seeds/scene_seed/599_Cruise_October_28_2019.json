@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "cyclist",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "cut_in",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "AV 直行，右侧自行车道内的骑行者躲避行人后突然切入 AV 车道，碰撞 AV 右前乘客门。根据报告，天气晴朗，时间凌晨，骑行者行为为 cut_in，AV 为移动车辆，构成双方交互碰撞。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling southeast bound on Howard Street near the intersection with 9th Street when a bicyclist in the right adjacent dedicated bike lane veered away from a wayward pedestrian throwing an unknown object in the bicyclist's direction in the crosswalk. The driver of the Cruise AV disengaged from autonomous mode and, shortly thereafter, the bicyclist veered into the Cruise AV's lane and made contact with the right front passenger door of the Cruise AV."
+    ],
+    "reason": "ego 为自主模式直行的 AV，骑行者从右侧自行车道切入 ego 车道发生侧面碰撞，符合 cut_in 原语，位置 adjacent right，双方交互碰撞可表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "599_Cruise_October_28_2019.pdf"
+  }
+}

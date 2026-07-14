@@ -1,0 +1,20 @@
+{
+  "status": "needs_extension",
+  "scene": null,
+  "description_zh": "在狭窄无标线的北向单车道上，Motional 车辆减速至 1.5mph 让对向来车通过，对向车经过时驾驶员侧后视镜与 Motional 车辆的后视镜及 LIDAR 外壳发生擦碰。",
+  "reason": "现有 oncoming block 仅有 speed 和 encroach 参数，无法表达极窄横向间距（side mirror contact）导致的侧擦。本场景需要设定两车对向行驶时 lateral ≈ 0.1，而 oncoming 不支持 lateral 参数，故无法准确建模。",
+  "proposed": "为 oncoming block 增加可选的 lateral 参数，用于指定会车时两车之间的横向距离；或新增一个 narrow_passage 原语，表示无分道线的狭窄双向道路上两车低速交会发生侧擦。",
+  "evidence": {
+    "source_snippets": [
+      "The Motional vehicle was traveling on 4th Ave, between Brooks Ct and Broadway St, in Venice, CA in manual mode in the sole northbound lane.",
+      "While navigating the narrow two-lane, unstriped road, the safety driver slowed the vehicle to 1.5mph to allow a driver coming in the opposite direction to navigate past the Motional vehicle.",
+      "The other vehicle’s driver side wing mirror made contact with the Motional vehicle’s driver side wing mirror and LIDAR casing, causing cosmetic damage."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "348_Motional_May_17_2022.pdf"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "yield",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "在匝道让行时，后车追尾前方静止车辆，选择后车为 ego 测试其能否及时停车。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV entered the slip lane which connects westbound 13th Street to northbound Mission Street and came to a stop to yield to cross-traffic on Mission Street.",
+      "As the Waymo AV was stopped, the front of the passenger car which was traveling behind the Waymo AV made contact with the rear of the Waymo AV."
+    ],
+    "reason": "后车移动且追尾静止前车，选择后车为 ego 测试其驾驶决策。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "167_Waymo_August_19_2023.pdf"
+  }
+}

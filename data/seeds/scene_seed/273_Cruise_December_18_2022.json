@@ -1,0 +1,63 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "left",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v_truck",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "static_hold",
+          "params": {}
+        }
+      },
+      {
+        "id": "v_dodge",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "left",
+        "behavior": {
+          "block": "cut_in",
+          "params": {
+            "trig_ttc": 1.5,
+            "speed": 12.0
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "v_dodge",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "Cruise AV 在右车道行驶时遇到前方停止的十八轮大卡车，向左变道绕行并在左车道短暂停车；随后一辆 Dodge Charger（车2）从左侧相邻车道突然切入，导致与 Cruise AV 左前侧发生侧擦碰撞。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle (\"Cruise AV\"), operating in driverless autonomous mode, was traveling southbound in the right lane on Divisadero Street between Fulton Street and McAllister Street.",
+      "The Cruise AV approached an eighteen-wheeler that was stopped in the right lane of southbound Divisadero Street.",
+      "The Cruise AV began to navigate around the eighteen-wheeler and stopped briefly as it was completing its passing maneuver.",
+      "Shortly thereafter, a Dodge Charger approached the stopped Cruise AV in the left lane and attempted to pass the Cruise AV on the lefthand side.",
+      "Contact was made with the Cruise AV, damaging the front left wheel, front left fender, front left bumper, and front driver side mirror of the Cruise AV.",
+      "TYPE OF COLLISION: VEH 1: B. SIDE SWIPE"
+    ],
+    "reason": "选择 Cruise AV 作为 ego，因其驾驶决策（向左变道绕行静止货车后短暂停车）值得测试。Dodge Charger 的行为用 cut_in（左侧相邻切入）近似其从左侧超车导致的侧擦碰撞。静止货车作为相邻右侧 static_hold 障碍物，促使 ego 变道。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "273_Cruise_December_18_2022.pdf"
+  }
+}

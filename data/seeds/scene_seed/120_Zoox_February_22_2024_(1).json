@@ -1,0 +1,51 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {
+        "speed": 5
+      }
+    },
+    "npcs": [
+      {
+        "id": "bus",
+        "kind": "vehicle",
+        "position": "cross",
+        "side": "right",
+        "behavior": {
+          "block": "junction_turn",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "bus",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "Zoox 车辆在 Mission St 红灯等待，绿灯亮起后缓慢前移，右侧路口 9th St 上一辆公交车右转侵入车道，导致侧碰。",
+  "evidence": {
+    "source_snippets": [
+      "A Zoox vehicle (Vehicle 1) in autonomy, traveling northeast on Mission St, was stopped in lane for a red traffic light at 9th Street.",
+      "A SamTrans bus (Vehicle 2), with a front-mounted triple-bike rack extending past the width of the bus on the driver's side, was traveling southeast on 9th Street and attempting a right turn onto Mission St.",
+      "The protruding edge of the bike rack was encroaching into the Zoox vehicle's travel lane as the bus was executing the right hand turn.",
+      "As the light turned green the Zoox vehicle inched forward and attempted to steer away from the bus.",
+      "Just as the safety operator disengaged from autonomy, the protruding edge of the bike rack made contact with the driver's side fender on the Zoox vehicle."
+    ],
+    "reason": "Ego waiting at red light, starts moving on green; NPC from cross street makes right turn encroaching ego's lane, resulting in collision. Junction_turn with cross position captures the conflict."
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "120_Zoox_February_22_2024_(1).pdf"
+  }
+}

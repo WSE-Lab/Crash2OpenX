@@ -1,0 +1,46 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "left",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "cut_in",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "Cruise AV 在路口准备左转时，右侧相邻车道的 BMW 变道切入，与 AV 右后角发生碰撞。选用 cut_in 原语表达变道冲突。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was waiting for oncoming traffic to clear the intersection before making a left turn onto Bush Street from southbound Steiner Street when another vehicle made contact with the right rear corner of the Cruise AV",
+      "VEH 2 MOVEMENT PRECEDING COLLISION: J. CHANGING LANES"
+    ],
+    "reason": "事故涉及两辆移动车辆，Cruise AV 左转，BMW 变道切入，属于可表达的双方交互碰撞。选用 cut_in block 和 adjacent position 表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "639_GM_Cruise_July_2_2019.pdf"
+  }
+}

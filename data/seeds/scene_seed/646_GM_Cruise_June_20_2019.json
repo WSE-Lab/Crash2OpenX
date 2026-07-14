@@ -1,0 +1,17 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "事故涉及AV驾驶员在左转时减速后接管车辆，随后另一车辆擦碰AV右后角后逃逸。报告描述中无法提取到任何具有测试价值的移动car作为ego（AV被描述为减速/接管，另一方逃逸无信息），且根据指令无法选取合适的ego并构建有效的双方交互场景。",
+  "reason": "无法提取有效移动car作为ego，缺乏测试价值",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was making a left turn from the leftmost lane on westbound Bush Street onto northbound Octavia Street when the Cruise AV slowed down. The driver of the Cruise AV disengaged from autonomous mode and, shortly thereafter, another vehicle clipped the Cruise AV’s right rear corner, damaging the right rear bumper cover, wheel well, and wheel. The driver of the other vehicle drove away without exchanging information."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "646_GM_Cruise_June_20_2019.pdf"
+  }
+}

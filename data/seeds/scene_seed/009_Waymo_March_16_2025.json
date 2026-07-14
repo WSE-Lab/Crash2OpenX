@@ -1,0 +1,42 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v1",
+        "kind": "static",
+        "position": "ahead_same_lane",
+        "side": "right",
+        "behavior": {
+          "block": "static_block",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v1",
+      "b": "ego"
+    },
+    "control": "unknown"
+  },
+  "description_zh": "SUV从后方接近并试图从左侧超越一辆开启双闪灯的静止Waymo车辆，超越过程中发生侧面擦碰，选SUV为ego以测试其在接近静止车辆时的超车决策。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was parked in-lane with hazard lights activated...",
+      "An SUV travelling northeast... approached... from behind, and began to pass... on the left."
+    ],
+    "reason": "SUV是主动移动并试图超越静止Waymo AV的车辆，其超越决策和侧向安全距离值得测试，故选为ego；Waymo AV静止，作为static障碍物。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek-v4-pro",
+    "input": "backups/old_20260604/outputs/facts_skill/009_Waymo_March_16_2025.json"
+  }
+}

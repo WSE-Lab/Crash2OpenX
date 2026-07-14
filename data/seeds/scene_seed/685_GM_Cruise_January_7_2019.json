@@ -1,0 +1,48 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "left",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "left",
+        "behavior": {
+          "block": "cut_in",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "Cruise AV 在传统模式下从东北向 Folsom St 左转至西北向 11th St 时，左侧一辆试图超车的摩托车（PCX150）从相邻车道切入，擦碰 AV 左前侧。选取正在左转的 AV 作为 ego，测试左转场景下对侧向切入车辆的感知与避让；摩托车作为 NPC，位于 ego 左侧相邻位置，执行侧向切入（cut_in）。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle (“Cruise AV”), operating in conventional mode, was making a left turn from northeast bound Folsom Street onto northwest bound 11th Street when a scooterist, attempting to pass the Cruise AV on the left, made contact with the front left side of the Cruise AV, damaging the front left fender, radar, and wheel well of the Cruise AV.",
+      "MOVEMENT PRECEDING COLLISION — VEH 1: E. MAKING LEFT TURN; VEH 2: J. CHANGING LANES",
+      "TYPE OF COLLISION — VEH 1: B. SIDE SWIPE",
+      "WEATHER: CLEAR; LIGHTING: DARK – STREET LIGHTS; ROADWAY SURFACE: DRY"
+    ],
+    "reason": "左转车辆被左侧试图超车的摩托车切入擦碰，属双方移动交互，现有词汇表可用 adjacent/cut_in 表达，故为 supported。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "685_GM_Cruise_January_7_2019.pdf"
+  }
+}

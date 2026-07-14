@@ -1,0 +1,17 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "事故核心机动是倒车（reversing），属于倒车/后退（reverse/backing）场景，不符合CARLA的能力范围且属于NHTSA非V2V子集，因此排除。",
+  "reason": "核心机动涉及倒车/后退，不符合两轴场景生成的范围。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was maneuvered in manual mode to unpark from the curb. During this maneuver, the test driver reversed the Waymo AV and the rear of the Waymo AV made contact with the front of the passenger car that was parked behind the Waymo AV."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "033_Waymo_December_25_2024.pdf"
+  }
+}

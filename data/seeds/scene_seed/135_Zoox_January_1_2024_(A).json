@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v3",
+        "kind": "vehicle",
+        "position": "cross",
+        "side": "left",
+        "behavior": {
+          "block": "junction_cross",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v3",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "SUV（ego）闯红灯直行通过路口，与交叉方向东行直行的轿车（v3）发生侧向碰撞（broadside），SUV 失控后波及静止的 Zoox 车辆，但核心冲突为路口闯红灯直行冲突。",
+  "evidence": {
+    "source_snippets": [
+      "An SUV (Vehicle 2), heading southbound on Capp St, failed to stop for the red traffic light and entered the intersection, causing a collision with a passenger car (Vehicle 3) that was traveling eastbound on 24th Street.",
+      "MOVEMENT PRECEDING COLLISION: VEH 2 - PROCEEDING STRAIGHT",
+      "TYPE OF COLLISION: BROADSIDE"
+    ],
+    "reason": "选取闯红灯的 SUV 作为 ego，其动态直行决策具有测试价值；与交叉方向直行车辆 v3 形成两车交互，junction_cross + cross position 可表达该冲突，碰撞为 broadside，符合支持条件。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "135_Zoox_January_1_2024_(A).pdf"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "left",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "behind_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "junction_turn",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "unknown",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "Cruise AV 在路口准备左转，让过左侧超车车辆后继续左转，后方一辆本田 Clarity 试图右转时与 AV 的右后保险杠发生接触。选取 AV 为 ego，后方右转车辆为 NPC，两者在路口转弯冲突。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was approaching the intersection prior to making a left turn from southbound Lyon Street onto eastbound California Street when the Cruise AV yielded to an overtaking vehicle on its left proceeding straight on southbound Lyon. Once the overtaking vehicle completed its pass, the Cruise AV attempted to continue its left turn when another vehicle directly behind the Cruise AV, attempting to turn right on California, made contact with the Cruise AV’s right rear bumper, damaging the bumper."
+    ],
+    "reason": "双方车辆行驶中在路口转弯冲突，位于 ego 后方的车辆右转碰撞 ego 右后部，现有 junction_turn block 与 behind_same_lane position 可表达此交互，ego 左转决策具备测试价值。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "668_GM_Cruise_April_10_2019_(2).pdf"
+  }
+}

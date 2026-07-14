@@ -1,0 +1,50 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {
+        "speed": 5
+      }
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "rain",
+      "time_of_day": "night",
+      "friction_scale": 0.5
+    }
+  },
+  "description_zh": "后车在左转车道红灯时误起步，追尾同车道前方静止等待左转的前车。选取后车为ego，测试其对前方静止车辆的识别与制动。环境为雨夜，路面湿滑。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was stopped in the dedicated left turn lane facing west on Cesar Chavez Street, awaiting a green signal to turn onto Mission Street.",
+      "The left turn arrow signal for the dedicated turn lane occupied by the Waymo AV remained red. The passenger car that had been stopped directly behind the Waymo AV began moving forward.",
+      "The front of the passenger car made contact with the rear of the Waymo AV."
+    ],
+    "reason": "后车为唯一移动的car，将其选作ego；前车静止在同车道前方，使用stopped_ahead。存在交通信号灯控制，且碰撞类型为追尾。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "249_Waymo_March_12_2023.pdf"
+  }
+}

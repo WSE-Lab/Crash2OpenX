@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "opposing_leg",
+        "side": "none",
+        "behavior": {
+          "block": "junction_turn",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "Zoox 自动驾驶车辆在绿灯下直行通过路口时，对向车辆违法左转侵入路权，发生碰撞，选直行的 Zoox 为 ego，对向车辆为路口转弯冲突 NPC。",
+  "evidence": {
+    "source_snippets": [
+      "A Zoox vehicle was proceeding straight in autonomy through an intersection with a green light and right of way when vehicle 2 attempted an illegal left turn across lanes of traffic into Zoox’s right of way."
+    ],
+    "reason": "碰撞涉及交互双方：ego 直行有路权，NPC 非法左转，符合 junction_turn 原语，位置 opposing_leg 表征对向，可被现有积木表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "293_Zoox_October_14_2022.pdf"
+  }
+}

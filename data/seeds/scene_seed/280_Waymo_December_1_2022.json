@@ -1,0 +1,49 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "cut_in",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "rain",
+      "time_of_day": "morning",
+      "friction_scale": 0.5
+    }
+  },
+  "description_zh": "三车事故中，第三辆车在中间车道正常行驶，后车从右侧车道切入中间车道并与之侧碰，符合 cut-in 场景。ego 为被撞的第三辆车，NPC 为切入车辆。",
+  "evidence": {
+    "source_snippets": [
+      "A passenger vehicle traveling behind the Waymo AV attempted to go around the Waymo AV to merge with traffic in the center lane but collided with a third passenger vehicle",
+      "RAINING: X (VEH 1), X (VEH 2)",
+      "WET: X (VEH 1), X (VEH 2)",
+      "TIME OF ACCIDENT: 07:57 AM"
+    ],
+    "reason": "将第三辆车作为 ego，后车作为 NPC 从右侧切入，形成 cut-in 冲突，忽略被波及的 Waymo AV。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "280_Waymo_December_1_2022.pdf"
+  }
+}

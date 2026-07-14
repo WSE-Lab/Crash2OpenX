@@ -1,0 +1,49 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "cloudy",
+      "time_of_day": "night",
+      "friction_scale": 0.5
+    }
+  },
+  "description_zh": "一辆车（ego）在路口直行时追尾了因红灯停在前方同车道的 Waymo AV（v2）。报告显示后车移动、前车停止，属于典型的 rear-end 碰撞。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was stopped in traffic for a red light on The Embarcadero southbound when a passenger car approached from behind and made contact with the rear of the Waymo AV.",
+      "Vehicle was: Stopped in Traffic (Vehicle 1), Vehicle was: Moving (Vehicle 2)",
+      "TYPE OF COLLISION VEH 2: C. REAR END",
+      "MOVEMENT PRECEDING COLLISION VEH 2: B. PROCEEDING STRAIGHT"
+    ],
+    "reason": "后车（丰田凯美瑞）在移动且追尾静止的前车，具备测试价值，故选为 ego；前车（AV）作为 NPC 以 stopped_ahead 表达，符合词汇表。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "122_Waymo_February_18_2024.pdf"
+  }
+}

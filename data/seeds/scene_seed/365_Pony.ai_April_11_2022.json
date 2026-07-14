@@ -1,0 +1,18 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "事故发生在停车场，对方车辆倒车撞上静止的Pony.ai自动驾驶车辆，核心机动涉及倒车/后退，不属于V2V范畴，且无具备测试价值的向前驾驶决策。",
+  "reason": "核心机动涉及倒车/后退（reversing/backing），属于CARLA无法实现且NHTSA非V2V子集，同时在停车场内、所有可评估的移动车辆均在进行倒车动作，无正向驾驶测试价值。",
+  "evidence": {
+    "source_snippets": [
+      "a Pony.ai Autonomous Vehicle was parked in a parking lot when a passenger vehicle reversed into the Pony.ai vehicle.",
+      "MOVEMENT PRECEDING COLLISION: - VEH 1: X A. STOPPED - VEH 2: X G. BACKING"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "365_Pony.ai_April_11_2022.pdf"
+  }
+}

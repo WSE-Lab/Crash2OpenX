@@ -1,0 +1,17 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "SUV 倒车并绕过静止的 Waymo AV 发生侧碰，核心机动为倒车，属于可辩护排除范围",
+  "reason": "核心机动涉及倒车/后退，CARLA 无法实现，且属 NHTSA 非 V2V 子集",
+  "evidence": {
+    "source_snippets": [
+      "The SUV then stopped, reversed, and drove around the Waymo AV and made contact with the Waymo AV’s driver side rear fender."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "438_Waymo_November_20_2021.pdf"
+  }
+}

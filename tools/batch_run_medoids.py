@@ -60,7 +60,7 @@ def classify(rr) -> tuple[str, str]:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--medoids", type=Path, default=ROOT / "paper/eval_medoids_n100.json")
+    ap.add_argument("--medoids", type=Path, default=ROOT / "data/eval/eval_medoids_top42.json")
     ap.add_argument("--out-root", type=Path, default=ROOT / "outputs/medoid_runs")
     ap.add_argument("--max-seconds", type=int, default=60)
     ap.add_argument("--pcla-agent", default="tfv6_regnet",
@@ -74,7 +74,8 @@ def main() -> int:
     args = ap.parse_args()
 
     meta = json.loads(args.medoids.read_text())
-    all_meds = [m["medoid"] for m in meta["medoids"]]
+    # eval_medoids_n100.json uses "medoid"; eval_medoids_top42.json uses "case_id".
+    all_meds = [m.get("medoid") or m["case_id"] for m in meta["medoids"]]
     if args.cases:
         cases = args.cases
     elif args.pilot:
@@ -102,12 +103,12 @@ def main() -> int:
         if args.skip_existing and (run_dir / "summary.json").is_file():
             print(f"  [{i:>2}/{len(cases)}] · {cid:<55} (skip — exists)")
             continue
-        xodr = ROOT / f"outputs/opendrive_seed/{cid}.xodr"
-        xosc = ROOT / f"outputs/medoid_xosc/{cid}.xosc"
+        xodr = ROOT / f"data/compiled/opendrive_seed/{cid}.xodr"
+        xosc = ROOT / f"data/compiled/medoid_xosc/{cid}.xosc"
         if not (xodr.is_file() and xosc.is_file()):
             print(f"  [{i:>2}/{len(cases)}] ✗ {cid:<55} missing xodr/xosc")
             continue
-        scene_seed = json.loads((ROOT / f"outputs/scene_seed/{cid}.json").read_text())
+        scene_seed = json.loads((ROOT / f"data/seeds/scene_seed/{cid}.json").read_text())
         t0 = time.time()
         try:
             rr = client.run_scenario(

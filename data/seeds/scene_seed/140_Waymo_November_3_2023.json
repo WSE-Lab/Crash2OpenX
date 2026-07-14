@@ -1,0 +1,48 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "front_brake",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "皮卡在绿灯路口直行时，因前方乘用车减速而追尾，测试皮卡能否及时制动避免碰撞。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was stopped in the rightmost non-HOV lane on northbound 3rd Street waiting for the intersection at Stevenson Street to clear during a green light.",
+      "The passenger car behind the Waymo AV was rear-ended by a pickup truck, causing the front of the passenger car to make contact with the rear of the Waymo AV.",
+      "VEH 2: B. PROCEEDING STRAIGHT (X)",
+      "TYPE OF COLLISION: C. REAR END (X)"
+    ],
+    "reason": "选取移动的皮卡作为 ego（测试其追尾前车的制动决策），乘用车作为前方减速车辆（front_brake），忽略静止的 Waymo AV 以聚焦关键双方冲突。控制信号为绿灯，环境晴朗下午。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "140_Waymo_November_3_2023.pdf"
+  }
+}

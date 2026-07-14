@@ -1,0 +1,19 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "碰撞因皮卡倒车导致，核心机动为倒车/后退，属于可辩护排除范围。",
+  "reason": "核心机动涉及倒车（reverse/backing），CARLA 无法实现，且属于 NHTSA 非 V2V 子集。",
+  "evidence": {
+    "source_snippets": [
+      "The Cruise AV approached a pickup truck that was reversing on eastbound Greenwich Street and the Cruise AV stopped as the pickup truck continued to reverse.",
+      "The pickup truck continued to reverse and made contact with the Cruise AV, damaging the front bumper of the Cruise AV.",
+      "VEH 1: A. STOPPED, VEH 2: G. BACKING"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "377_Cruise_March_26_2022.pdf"
+  }
+}

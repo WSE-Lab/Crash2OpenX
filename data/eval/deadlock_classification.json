@@ -1,0 +1,496 @@
+{
+  "tfv6_regnet": {
+    "021_Zoox_Inc._March_28_2025": {
+      "class": "C",
+      "reason": "ADS lane-keep fail (lane_inv=8, wrong_lane=1)",
+      "metrics": {
+        "driven_m": 64.343,
+        "min_dist_m": 270.18,
+        "max_long_jerk_abs": 418.07,
+        "collision_count": 0,
+        "lane_invasion_count": 8,
+        "wrong_lane_count": 1,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "032_AutoX_February_5_2025": {
+      "class": "B",
+      "reason": "scenario-design suspect (needs manual inspection)",
+      "metrics": {
+        "driven_m": 49.033,
+        "min_dist_m": 8.17,
+        "max_long_jerk_abs": 165.2091,
+        "collision_count": 0,
+        "lane_invasion_count": 4,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "038_Waymo_December_17_2024": {
+      "class": "C",
+      "reason": "ADS lane-keep fail (lane_inv=15, wrong_lane=0)",
+      "metrics": {
+        "driven_m": 59.016,
+        "min_dist_m": 16.38,
+        "max_long_jerk_abs": 180.3052,
+        "collision_count": 0,
+        "lane_invasion_count": 15,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "081_Zoox_July_20_2024_(A)": {
+      "class": "E",
+      "reason": "ADS routing miss (driven=55.81 m, min_dist=16.4 m > 10)",
+      "metrics": {
+        "driven_m": 55.814,
+        "min_dist_m": 16.38,
+        "max_long_jerk_abs": 169.0762,
+        "collision_count": 0,
+        "lane_invasion_count": 2,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "091_WeRide_June_21_2024": {
+      "class": "C",
+      "reason": "ADS lane-keep fail (lane_inv=5, wrong_lane=1)",
+      "metrics": {
+        "driven_m": 58.692,
+        "min_dist_m": 15.0,
+        "max_long_jerk_abs": 183.9493,
+        "collision_count": 0,
+        "lane_invasion_count": 5,
+        "wrong_lane_count": 1,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "153_WeRide_September_28_2023": {
+      "class": "C",
+      "reason": "ADS lane-keep fail (lane_inv=6, wrong_lane=3)",
+      "metrics": {
+        "driven_m": 48.613,
+        "min_dist_m": 3.41,
+        "max_long_jerk_abs": 640.6768,
+        "collision_count": 0,
+        "lane_invasion_count": 6,
+        "wrong_lane_count": 3,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "157_Apollo_Autonomous_Driving_September_6_2023": {
+      "class": "SKIP",
+      "reason": "runner_verdict=drifted",
+      "metrics": {
+        "driven_m": 7.03,
+        "min_dist_m": 3.2,
+        "max_long_jerk_abs": 169.8769,
+        "collision_count": 1,
+        "lane_invasion_count": 3,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "drifted"
+      }
+    },
+    "161_Beep_Inc_August_23_2023": {
+      "class": "C",
+      "reason": "ADS lane-keep fail (lane_inv=2, wrong_lane=1)",
+      "metrics": {
+        "driven_m": 58.463,
+        "min_dist_m": 102.65,
+        "max_long_jerk_abs": 183.2349,
+        "collision_count": 0,
+        "lane_invasion_count": 2,
+        "wrong_lane_count": 1,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "165_Mercedes_Benz_August_18_2023": {
+      "class": "B",
+      "reason": "scenario-design suspect (needs manual inspection)",
+      "metrics": {
+        "driven_m": 46.639,
+        "min_dist_m": 4.9,
+        "max_long_jerk_abs": 410.203,
+        "collision_count": 0,
+        "lane_invasion_count": 4,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "193_Waymo_June_29_2023_(2)": {
+      "class": "B",
+      "reason": "scenario-design suspect (needs manual inspection)",
+      "metrics": {
+        "driven_m": 46.056,
+        "min_dist_m": 4.69,
+        "max_long_jerk_abs": 195.7275,
+        "collision_count": 0,
+        "lane_invasion_count": 4,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "246_Waymo_March_16_2023_(1)": {
+      "class": "B",
+      "reason": "scenario-design suspect (needs manual inspection)",
+      "metrics": {
+        "driven_m": 61.404,
+        "min_dist_m": 9.53,
+        "max_long_jerk_abs": 187.8963,
+        "collision_count": 0,
+        "lane_invasion_count": 4,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "263_Zoox_February_8_2023": {
+      "class": "SKIP",
+      "reason": "runner_verdict=drifted",
+      "metrics": {
+        "driven_m": 36.79,
+        "min_dist_m": 4.74,
+        "max_long_jerk_abs": 590.7296,
+        "collision_count": 1,
+        "lane_invasion_count": 15,
+        "wrong_lane_count": 1,
+        "l3_verdict": "drifted",
+        "runner_verdict": "drifted"
+      }
+    },
+    "273_Cruise_December_18_2022": {
+      "class": "SKIP",
+      "reason": "runner_verdict=drifted",
+      "metrics": {
+        "driven_m": 5.88,
+        "min_dist_m": 3.31,
+        "max_long_jerk_abs": 193.8801,
+        "collision_count": 1,
+        "lane_invasion_count": 3,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "drifted"
+      }
+    },
+    "322_Waymo_July_5_2022": {
+      "class": "C",
+      "reason": "ADS lane-keep fail (lane_inv=2, wrong_lane=1)",
+      "metrics": {
+        "driven_m": 54.867,
+        "min_dist_m": 25.0,
+        "max_long_jerk_abs": 364.2702,
+        "collision_count": 0,
+        "lane_invasion_count": 2,
+        "wrong_lane_count": 1,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "435_Waymo_November_26_2021": {
+      "class": "C",
+      "reason": "ADS lane-keep fail (lane_inv=6, wrong_lane=1)",
+      "metrics": {
+        "driven_m": 62.421,
+        "min_dist_m": 272.45,
+        "max_long_jerk_abs": 195.5296,
+        "collision_count": 0,
+        "lane_invasion_count": 6,
+        "wrong_lane_count": 1,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "444_Waymo_November_6_2021_(1)": {
+      "class": "E",
+      "reason": "ADS routing miss (driven=104.82 m, min_dist=20.3 m > 10)",
+      "metrics": {
+        "driven_m": 104.815,
+        "min_dist_m": 20.3,
+        "max_long_jerk_abs": 504.8165,
+        "collision_count": 0,
+        "lane_invasion_count": 4,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "593_Cruise_November_10_2019": {
+      "class": "SKIP",
+      "reason": "runner_verdict=ok",
+      "metrics": {
+        "driven_m": 2.43,
+        "min_dist_m": 3.88,
+        "max_long_jerk_abs": 186.3586,
+        "collision_count": 1,
+        "lane_invasion_count": 1,
+        "wrong_lane_count": 0,
+        "l3_verdict": "aligned",
+        "runner_verdict": "ok"
+      }
+    },
+    "665_GM_Cruise_April_14_2019_(2)": {
+      "class": "C",
+      "reason": "ADS lane-keep fail (lane_inv=2, wrong_lane=1)",
+      "metrics": {
+        "driven_m": 17.712,
+        "min_dist_m": 25.24,
+        "max_long_jerk_abs": 183.3151,
+        "collision_count": 0,
+        "lane_invasion_count": 2,
+        "wrong_lane_count": 1,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    }
+  },
+  "if_if": {
+    "021_Zoox_Inc._March_28_2025": {
+      "class": "E",
+      "reason": "ADS routing miss (driven=30.41 m, min_dist=300.5 m > 10)",
+      "metrics": {
+        "driven_m": 30.406,
+        "min_dist_m": 300.48,
+        "max_long_jerk_abs": 333.8309,
+        "collision_count": 0,
+        "lane_invasion_count": 4,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "032_AutoX_February_5_2025": {
+      "class": "B",
+      "reason": "scenario-design suspect (needs manual inspection)",
+      "metrics": {
+        "driven_m": 19.147,
+        "min_dist_m": 6.02,
+        "max_long_jerk_abs": 344.4001,
+        "collision_count": 0,
+        "lane_invasion_count": 2,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "038_Waymo_December_17_2024": {
+      "class": "C",
+      "reason": "ADS lane-keep fail (lane_inv=25, wrong_lane=0)",
+      "metrics": {
+        "driven_m": 78.361,
+        "min_dist_m": 16.38,
+        "max_long_jerk_abs": 378.321,
+        "collision_count": 0,
+        "lane_invasion_count": 25,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "081_Zoox_July_20_2024_(A)": {
+      "class": "E",
+      "reason": "ADS routing miss (driven=39.60 m, min_dist=16.4 m > 10)",
+      "metrics": {
+        "driven_m": 39.604,
+        "min_dist_m": 16.38,
+        "max_long_jerk_abs": 226.8303,
+        "collision_count": 0,
+        "lane_invasion_count": 2,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "091_WeRide_June_21_2024": {
+      "class": "SKIP",
+      "reason": "runner_verdict=ok",
+      "metrics": {
+        "driven_m": 25.91,
+        "min_dist_m": 5.0,
+        "max_long_jerk_abs": 226.8303,
+        "collision_count": 1,
+        "lane_invasion_count": 2,
+        "wrong_lane_count": 0,
+        "l3_verdict": "aligned",
+        "runner_verdict": "ok"
+      }
+    },
+    "153_WeRide_September_28_2023": {
+      "class": "B",
+      "reason": "scenario-design suspect (needs manual inspection)",
+      "metrics": {
+        "driven_m": 16.749,
+        "min_dist_m": 8.31,
+        "max_long_jerk_abs": 452.3072,
+        "collision_count": 0,
+        "lane_invasion_count": 1,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "157_Apollo_Autonomous_Driving_September_6_2023": {
+      "class": "SKIP",
+      "reason": "runner_verdict=ok",
+      "metrics": {
+        "driven_m": 4.53,
+        "min_dist_m": 4.68,
+        "max_long_jerk_abs": 226.8774,
+        "collision_count": 1,
+        "lane_invasion_count": 2,
+        "wrong_lane_count": 0,
+        "l3_verdict": "aligned",
+        "runner_verdict": "ok"
+      }
+    },
+    "161_Beep_Inc_August_23_2023": {
+      "class": "E",
+      "reason": "ADS routing miss (driven=40.64 m, min_dist=105.5 m > 10)",
+      "metrics": {
+        "driven_m": 40.639,
+        "min_dist_m": 105.51,
+        "max_long_jerk_abs": 226.8303,
+        "collision_count": 0,
+        "lane_invasion_count": 2,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "165_Mercedes_Benz_August_18_2023": {
+      "class": "SKIP",
+      "reason": "runner_verdict=ok",
+      "metrics": {
+        "driven_m": 20.24,
+        "min_dist_m": 5.01,
+        "max_long_jerk_abs": 226.8254,
+        "collision_count": 1,
+        "lane_invasion_count": 2,
+        "wrong_lane_count": 0,
+        "l3_verdict": "aligned",
+        "runner_verdict": "ok"
+      }
+    },
+    "193_Waymo_June_29_2023_(2)": {
+      "class": "B",
+      "reason": "scenario-design suspect (needs manual inspection)",
+      "metrics": {
+        "driven_m": 17.329,
+        "min_dist_m": 7.83,
+        "max_long_jerk_abs": 408.5952,
+        "collision_count": 0,
+        "lane_invasion_count": 2,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "246_Waymo_March_16_2023_(1)": {
+      "class": "B",
+      "reason": "scenario-design suspect (needs manual inspection)",
+      "metrics": {
+        "driven_m": 17.245,
+        "min_dist_m": 7.85,
+        "max_long_jerk_abs": 473.9958,
+        "collision_count": 0,
+        "lane_invasion_count": 1,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "263_Zoox_February_8_2023": {
+      "class": "SKIP",
+      "reason": "runner_verdict=drifted",
+      "metrics": {
+        "driven_m": 13.62,
+        "min_dist_m": 3.71,
+        "max_long_jerk_abs": 226.8774,
+        "collision_count": 1,
+        "lane_invasion_count": 5,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "drifted"
+      }
+    },
+    "273_Cruise_December_18_2022": {
+      "class": "B",
+      "reason": "scenario-design suspect (needs manual inspection)",
+      "metrics": {
+        "driven_m": 0.489,
+        "min_dist_m": 8.1,
+        "max_long_jerk_abs": 418.5068,
+        "collision_count": 0,
+        "lane_invasion_count": 0,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "322_Waymo_July_5_2022": {
+      "class": "E",
+      "reason": "ADS routing miss (driven=41.15 m, min_dist=25.0 m > 10)",
+      "metrics": {
+        "driven_m": 41.145,
+        "min_dist_m": 25.0,
+        "max_long_jerk_abs": 226.8303,
+        "collision_count": 0,
+        "lane_invasion_count": 3,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "435_Waymo_November_26_2021": {
+      "class": "E",
+      "reason": "ADS routing miss (driven=39.86 m, min_dist=291.1 m > 10)",
+      "metrics": {
+        "driven_m": 39.863,
+        "min_dist_m": 291.12,
+        "max_long_jerk_abs": 218.8458,
+        "collision_count": 0,
+        "lane_invasion_count": 4,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "444_Waymo_November_6_2021_(1)": {
+      "class": "C",
+      "reason": "ADS lane-keep fail (lane_inv=9, wrong_lane=0)",
+      "metrics": {
+        "driven_m": 22.763,
+        "min_dist_m": 7.52,
+        "max_long_jerk_abs": 395.6189,
+        "collision_count": 0,
+        "lane_invasion_count": 9,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    },
+    "593_Cruise_November_10_2019": {
+      "class": "D",
+      "reason": "ADS stalled (driven=0.03 m, |jerk|=0.000 m/s³)",
+      "metrics": {
+        "driven_m": 0.026,
+        "min_dist_m": 6.1,
+        "max_long_jerk_abs": 0.0001,
+        "collision_count": 0,
+        "lane_invasion_count": 0,
+        "wrong_lane_count": 0,
+        "l3_verdict": "drifted",
+        "runner_verdict": "deadlock"
+      }
+    }
+  }
+}

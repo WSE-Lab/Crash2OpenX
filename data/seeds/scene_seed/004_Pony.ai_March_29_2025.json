@@ -1,0 +1,41 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "parked_vehicle",
+        "kind": "static",
+        "position": "roadside",
+        "side": "right",
+        "behavior": {
+          "block": "static_block",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "parked_vehicle"
+    },
+    "control": "unknown"
+  },
+  "description_zh": "一辆自动驾驶车直行时，右侧路边有一辆停放车辆，自车右侧与该停放车辆侧镜发生接触。",
+  "evidence": {
+    "source_snippets": [
+      "On March 29, 2025, a Pony.ai autonomous vehicle (AV), while driving eastbound on Trestle Glen Road in Oakland, CA, made contact with the side mirror of a parked passenger vehicle."
+    ],
+    "reason": "自车在移动中（直行）与路边静止车辆发生侧面接触，可从该事实构建直行场景测试避免碰撞路边障碍物的能力。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek-v4-pro",
+    "input": "backups/old_20260604/outputs/facts_skill/004_Pony.ai_March_29_2025.json"
+  }
+}

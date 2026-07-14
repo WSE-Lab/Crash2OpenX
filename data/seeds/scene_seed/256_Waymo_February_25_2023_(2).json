@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "right",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "truck",
+        "kind": "static",
+        "position": "roadside",
+        "side": "right",
+        "behavior": {
+          "block": "static_block",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "truck",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "Waymo AV 在手动模式下右转进入 Pacific Avenue 时，右后轮与一辆停在路边停车场入口处的重型卡车的 lowered loading lift 发生侧擦碰撞。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was making a right turn to travel west on Pacific Avenue. As the Waymo AV turned, the rear right tire of the Waymo AV made contact with the lowered loading lift of a heavy truck parked partially across the parking lot entrance."
+    ],
+    "reason": "AV 正在移动并右转，具有测试价值；卡车静止在路边，可用 static_block 表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "256_Waymo_February_25_2023_(2).pdf"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "front_brake",
+          "params": {
+            "trig_dist": 30,
+            "brake_t": 2.5,
+            "end_speed": 0
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "stop_sign",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "ego（后方面包车）直行时，前车（Cruise AV）因前方路口 stop sign 缓慢减速停车（front_brake，制动时间 2.5 秒，最终停止），ego 未及时制动导致追尾。控制为 stop sign，天气晴，上午时段。将后方未及时停车的面包车选为 ego 以测试其对前车减速的反应能力。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle (“Cruise AV”), operating in driverless autonomous mode, was traveling northbound on Harrison St. between 18th Street and 19th Street. As the Cruise AV was coming to a stop for a stop sign at the intersection with 18th Street, a van approaching from the rear failed to stop behind the Cruise AV and made contact with the Cruise AV's rear bumper",
+      "WEATHER: A. CLEAR",
+      "LIGHTING: A. DAYLIGHT",
+      "ROADWAY SURFACE: A. DRY",
+      "TYPE OF COLLISION: C. REAR END"
+    ],
+    "reason": "双方交互碰撞，后方车辆（选为 ego）未能对前车减速做出反应，具有纵向控制测试价值。前车正常为 stop sign 减速停止，无突然动作，故对前车施加 long brake_t 的 front_brake。环境信息从报告提取。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "203_Cruise_June_9_2023.pdf"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "status": "needs_extension",
+  "scene": null,
+  "description_zh": "自动驾驶车辆向南行驶并因前方阻挡减速，后方骑行者（Cyclist 3）为躲避另一辆从路边停车位驶出的车辆向左变向，撞上自动驾驶车辆右后保险杠。现有 DSL 无法表达骑行者从后方同车道接近并侧向碰撞的行为。",
+  "reason": "cyclist 的 position 枚举缺少 behind_same_lane，且 behavior.block 中没有适合描述骑行者从后方接近、因避让而偏离车道并追尾或侧碰的原语。",
+  "proposed": "扩展 cyclist 的 position 以支持 behind_same_lane，或增加一个专门的行为块如 'rear_avoidance'，描述后方骑行者因躲避障碍而变向并与前方汽车发生后部/侧后碰撞。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle ... was traveling southbound on Potrero Avenue ... The Cruise AV braked for the two cyclists as Cyclist 3 traveling behind the Cruise AV veered left to avoid another vehicle pulling out of a curbside parking spot. Cyclist 3 then made contact with the right rear bumper of the Cruise AV..."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "406_Cruise_January_29_2022.pdf"
+  }
+}

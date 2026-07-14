@@ -1,0 +1,48 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "left",
+        "behavior": {
+          "block": "junction_turn",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "stop_sign",
+    "environment": {
+      "weather": "unknown",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "Waymo AV 在停止标志处停车后起步直行通过交叉口，左侧相邻车道（对向车道但同向）的重型卡车开始右转，其尾部与已停下的 AV 前部碰撞。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was traveling north eastbound on Toland Street and came to a stop at a stop sign at the intersection with Jerrold Avenue.",
+      "To the left of the Waymo AV, a heavy truck was stopped, facing the same direction as the Waymo AV, but in the opposing lane of travel and partially within the intersection with Jerrold Avenue.",
+      "As the Waymo AV began to proceed forward from a stop, the heavy truck began making a wide right turn.",
+      "The Waymo AV came to a stop and the rear passenger side of the heavy truck made contact with the front driver side of the stationary Waymo AV."
+    ],
+    "reason": "从报告提取：ego 为 Waymo AV，直行起步；NPC 卡车在左侧相邻（对向车道同向）进行右转，与 ego 碰撞，属于路口转弯冲突场景，block 用 junction_turn，position 用 adjacent，控制为 stop sign。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "064_Waymo_October_3_2024.pdf"
+  }
+}

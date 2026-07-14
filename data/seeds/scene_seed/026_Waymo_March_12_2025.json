@@ -1,0 +1,20 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "Waymo AV 在地下停车场进入停车位时车顶传感器撞到上层混凝土天花板，属于私有区域泊车机动且为单车撞固定物事故，无双方交互碰撞。",
+  "reason": "停车场/私有区域(泊车机动)及无第二参与者的非碰撞事故",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was entering a parking stall of an underground parking lot at 1160 Mission Street at a low rate of speed when the sensor mounted on the roof of the Waymo AV made contact with the cement parking deck for the level above.",
+      "TYPE OF COLLISION: ... HIT OBJECT (X marked)",
+      "Vehicle was: Moving (checked)",
+      "NUMBER OF VEHICLES INVOLVED: 1"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "026_Waymo_March_12_2025.pdf"
+  }
+}

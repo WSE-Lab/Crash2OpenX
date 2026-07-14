@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "cross",
+        "side": "right",
+        "behavior": {
+          "block": "junction_turn",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "Cruise AV 在 South Van Ness 街直行，另一辆车从 Howard 街右转汇入，撞到其右后保险杠。以直行的 AV 为 ego，测试对右侧交叉路口转弯汇入车辆的反应。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling northbound on South Van Ness Street near the Howard Street fork when another vehicle, turning right onto South Van Ness from Howard, made contact with the right rear corner of the Cruise AV, causing damage to the Cruise AV’s rear bumper."
+    ],
+    "reason": "双方均移动且存在交互，ego 直行时遭遇右转汇入的侧向来车，现有词汇表可覆盖（cross 位置 + junction_turn 行为），故为 supported。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "684_GM_Cruise_January_10_2019.pdf"
+  }
+}

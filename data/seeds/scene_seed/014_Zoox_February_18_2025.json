@@ -1,0 +1,18 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "一辆 Zoox 车辆在手动模式下右转时撞上交通岛，无其他道路使用者参与，属于单车撞固定物体，无交互方。",
+  "reason": "属于单车冲出路缘/失控（无第二参与者）或非碰撞事故，无测试价值的交互方。",
+  "evidence": {
+    "source_snippets": [
+      "A Zoox vehicle operating in manual mode was eastbound on Frederick Street and turning right onto Buena Vista Avenue in San Francisco when the front wheel on the driver's side struck a traffic island to the left side of the vehicle.",
+      "TYPE OF COLLISION: E. HIT OBJECT"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "014_Zoox_February_18_2025.pdf"
+  }
+}

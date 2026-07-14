@@ -1,0 +1,50 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {
+        "speed": 5
+      }
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "behind_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "rear_hit",
+          "params": {
+            "speed": 5
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "Zoox 自动驾驶车辆（ego）在 Embarcadero 街南行方向以低速跟随车流时，被后方 Nissan Frontier（v2）低速追尾。根据定性词“low speed”为 ego 与后车均设为 5 m/s；后车行为选用 rear_hit 原语表达同车道后方碰撞。",
+  "evidence": {
+    "source_snippets": [
+      "A Zoox vehicle in autonomy was stopped with brake lights illuminated in traffic southbound on Embarcadero Street towards Folsom Street.",
+      "When traffic ahead began to move the Zoox vehicle was appropriately following the car ahead at low speed when it was rear ended by Vehicle #2 at low speed."
+    ],
+    "reason": "两车均移动（Zoox 低速跟车，后车移动追尾），选择被追尾的 Zoox 作为 ego 以便使用 rear_hit 原语；后车行为以 behind_same_lane 位置 + rear_hit 表达追尾。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "263_Zoox_February_8_2023.pdf"
+  }
+}

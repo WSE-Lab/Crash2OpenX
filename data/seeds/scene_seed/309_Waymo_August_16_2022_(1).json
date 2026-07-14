@@ -1,0 +1,18 @@
+{
+  "status": "needs_extension",
+  "scene": null,
+  "description_zh": "SUV 在交叉口对向车道停止后再次启动，左前角撞到停在旁边静止的 Waymo AV 左侧，双方均为车辆，ego 移动且有碰撞交互。",
+  "reason": "现有 vehicle block 缺少描述“从相邻车道静止启动后横向偏离碰撞”的原语，ego maneuver 仅有 straight/left/right/overtake_oncoming，无法表达启动后横向偏移切入相邻车道的行为，且 NPC 的 static_hold 无法配合 ego 的横向漂移。",
+  "proposed": "需要新增一个 block 表示“从静止启动后横向偏入相邻车道”，例如 'start_and_swerve'，参数可包含 speed、swerve_direction 和 trig_simtime，用于描述车辆在相邻车道停止后启动，并沿横向方向偏入目标车道导致碰撞。",
+  "evidence": {
+    "source_snippets": [
+      "After stopping, the SUV began moving again and the front left corner of the SUV made contact with the left side of the Waymo AV."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "309_Waymo_August_16_2022_(1).pdf"
+  }
+}

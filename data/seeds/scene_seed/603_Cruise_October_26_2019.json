@@ -1,0 +1,15 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "输入中无事故描述，无法推理场景",
+  "reason": "无事故描述，无法判断是否存在测试价值的移动车辆或碰撞类型",
+  "evidence": {
+    "source_snippets": []
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "603_Cruise_October_26_2019.pdf"
+  }
+}

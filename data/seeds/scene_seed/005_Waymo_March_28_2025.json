@@ -1,0 +1,17 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "核心机动涉及倒车/后退（SUV倒车平行泊车），CARLA无法实现",
+  "reason": "The SUV was backing up to parallel park, which is a reversing behavior not supported by CARLA",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was parked at the curb facing south on Fillmore Street when an SUV attempting to parallel park in front of the Waymo AV reversed, and the rear of the SUV made contact with the front of the stationary Waymo AV."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek-v4-pro",
+    "input": "backups/old_20260604/outputs/facts_skill/005_Waymo_March_28_2025.json"
+  }
+}

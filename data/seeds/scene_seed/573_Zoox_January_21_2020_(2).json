@@ -1,0 +1,46 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "overtake_oncoming",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "Zoox自动驾驶车辆在Broadway St.向Powell St.行驶时，遇前方车道内双排停放的平板卡车，车辆借对向车道绕过时右侧车门与卡车左后部发生侧擦碰，判断ego超车决策为测试核心。",
+  "evidence": {
+    "source_snippets": [
+      "A Zoox vehicle traveling in autonomous mode on Broadway St. towards Powell St. encountered a double-parked flatbed truck. The Zoox vehicle began to maneuver around the stationary truck and made slight contact with the left rear of the truck, causing a scrape on the passenger-side door of the Zoox vehicle; there was no damage to the truck.",
+      "MOVEMENT PRECEDING COLLISION: VEH 1: PASSING OTHER VEHICLE, VEH 2: STOPPED. TYPE OF COLLISION: SIDE SWIPE."
+    ],
+    "reason": "AV为移动车辆且执行绕行（超车）动作，具备测试价值；另一车辆静止在前方同车道，形成典型借道超车刮碰场景，现有词汇可表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "573_Zoox_January_21_2020_(2).pdf"
+  }
+}

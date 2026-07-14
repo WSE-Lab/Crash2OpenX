@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>165_Mercedes_Benz_August_18_2023 road-only preview</title>
+  <style>
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #17202a; background: #f7f8fa; }
+    header { padding: 18px 24px; background: #ffffff; border-bottom: 1px solid #d8dee8; }
+    h1 { margin: 0 0 8px; font-size: 20px; }
+    .meta { display: flex; gap: 16px; flex-wrap: wrap; color: #4e5968; font-size: 13px; }
+    main { display: grid; grid-template-columns: minmax(520px, 1fr) 420px; gap: 18px; padding: 18px; }
+    .panel { background: #ffffff; border: 1px solid #d8dee8; border-radius: 8px; overflow: hidden; }
+    .panel h2 { margin: 0; padding: 12px 14px; font-size: 15px; border-bottom: 1px solid #e5e9f0; }
+    .canvas { aspect-ratio: 1 / 1; background: #eef2f6; }
+    svg { width: 100%; height: 100%; display: block; }
+    .road-ref { stroke: #202b3a; stroke-width: 4; stroke-linecap: round; opacity: 0.9; }
+    .road-ref.junction { stroke: #6f4bd8; stroke-width: 3; }
+    .lane-boundary { stroke: #7c8794; stroke-width: 1.2; stroke-linecap: round; opacity: 0.72; }
+    .lane-boundary.center { stroke: #c8a018; stroke-width: 1.6; stroke-dasharray: 8 7; opacity: 0.9; }
+    .lane { stroke: #15926f; stroke-width: 1.7; stroke-dasharray: 6 5; stroke-linecap: round; opacity: 0.85; }
+    .lane.connector { stroke: #d07819; stroke-width: 1.5; stroke-dasharray: 4 4; }
+    pre { margin: 0; padding: 14px; overflow: auto; font-size: 12px; line-height: 1.45; }
+    .legend { display: flex; gap: 14px; padding: 10px 14px; border-top: 1px solid #e5e9f0; color: #4e5968; font-size: 12px; }
+    .key { display: inline-flex; align-items: center; gap: 6px; }
+    .swatch { width: 24px; height: 3px; display: inline-block; border-radius: 2px; }
+    .ref { background: #202b3a; }
+    .boundary { background: #7c8794; }
+    .junction { background: #6f4bd8; }
+    .lane-s { background: #15926f; }
+    .connector { background: #d07819; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Road-only OpenDRIVE Preview</h1>
+    <div class="meta">
+      <span>XODR: /Users/xijun/WSELab/road_scene_pipeline/outputs/opendrive_seed/165_Mercedes_Benz_August_18_2023.xodr</span>
+      <span>roads: 3</span>
+      <span>junctions: 0</span>
+      <span>connections: 0</span>
+      <span>laneLinks: 0</span>
+      <span>lanes: 1/direction, 1 total</span>
+    </div>
+  </header>
+  <main>
+    <section class="panel">
+      <h2>Road Geometry</h2>
+      <div class="canvas">
+        <svg viewBox="0 0 1000 1000" role="img" aria-label="OpenDRIVE road geometry preview">
+          <line class="lane-boundary" x1="124.99" y1="171.25" x2="312.47" y2="171.25" />
+<line class="lane-boundary center" x1="124.99" y1="125.00" x2="312.47" y2="125.00" />
+<line class="lane-boundary" x1="312.47" y1="171.25" x2="347.70" y2="172.45" />
+<line class="lane-boundary" x1="347.70" y1="172.45" x2="382.77" y2="176.06" />
+<line class="lane-boundary" x1="382.77" y1="176.06" x2="417.51" y2="182.05" />
+<line class="lane-boundary" x1="417.51" y1="182.05" x2="451.76" y2="190.40" />
+<line class="lane-boundary" x1="451.76" y1="190.40" x2="485.37" y2="201.06" />
+<line class="lane-boundary" x1="485.37" y1="201.06" x2="518.16" y2="214.00" />
+<line class="lane-boundary" x1="518.16" y1="214.00" x2="550.00" y2="229.14" />
+<line class="lane-boundary" x1="550.00" y1="229.14" x2="580.73" y2="246.42" />
+<line class="lane-boundary" x1="580.73" y1="246.42" x2="610.21" y2="265.76" />
+<line class="lane-boundary" x1="610.21" y1="265.76" x2="638.30" y2="287.06" />
+<line class="lane-boundary" x1="638.30" y1="287.06" x2="664.87" y2="310.24" />
+<line class="lane-boundary" x1="664.87" y1="310.24" x2="689.80" y2="335.17" />
+<line class="lane-boundary" x1="689.80" y1="335.17" x2="712.97" y2="361.74" />
+<line class="lane-boundary" x1="712.97" y1="361.74" x2="734.27" y2="389.84" />
+<line class="lane-boundary" x1="734.27" y1="389.84" x2="753.61" y2="419.32" />
+<line class="lane-boundary" x1="753.61" y1="419.32" x2="770.88" y2="450.05" />
+<line class="lane-boundary" x1="770.88" y1="450.05" x2="786.02" y2="481.89" />
+<line class="lane-boundary" x1="786.02" y1="481.89" x2="798.96" y2="514.69" />
+<line class="lane-boundary" x1="798.96" y1="514.69" x2="809.62" y2="548.30" />
+<line class="lane-boundary" x1="809.62" y1="548.30" x2="817.97" y2="582.55" />
+<line class="lane-boundary" x1="817.97" y1="582.55" x2="823.96" y2="617.30" />
+<line class="lane-boundary" x1="823.96" y1="617.30" x2="827.57" y2="652.37" />
+<line class="lane-boundary" x1="827.57" y1="652.37" x2="828.77" y2="687.61" />
+<line class="lane-boundary center" x1="312.47" y1="125.00" x2="350.86" y2="126.31" />
+<line class="lane-boundary center" x1="350.86" y1="126.31" x2="389.07" y2="130.24" />
+<line class="lane-boundary center" x1="389.07" y1="130.24" x2="426.92" y2="136.77" />
+<line class="lane-boundary center" x1="426.92" y1="136.77" x2="464.24" y2="145.86" />
+<line class="lane-boundary center" x1="464.24" y1="145.86" x2="500.85" y2="157.48" />
+<line class="lane-boundary center" x1="500.85" y1="157.48" x2="536.59" y2="171.58" />
+<line class="lane-boundary center" x1="536.59" y1="171.58" x2="571.27" y2="188.08" />
+<line class="lane-boundary center" x1="571.27" y1="188.08" x2="604.76" y2="206.91" />
+<line class="lane-boundary center" x1="604.76" y1="206.91" x2="636.88" y2="227.97" />
+<line class="lane-boundary center" x1="636.88" y1="227.97" x2="667.48" y2="251.19" />
+<line class="lane-boundary center" x1="667.48" y1="251.19" x2="696.43" y2="276.43" />
+<line class="lane-boundary center" x1="696.43" y1="276.43" x2="723.60" y2="303.60" />
+<line class="lane-boundary center" x1="723.60" y1="303.60" x2="748.84" y2="332.55" />
+<line class="lane-boundary center" x1="748.84" y1="332.55" x2="772.05" y2="363.16" />
+<line class="lane-boundary center" x1="772.05" y1="363.16" x2="793.12" y2="395.29" />
+<line class="lane-boundary center" x1="793.12" y1="395.29" x2="811.94" y2="428.77" />
+<line class="lane-boundary center" x1="811.94" y1="428.77" x2="828.44" y2="463.47" />
+<line class="lane-boundary center" x1="828.44" y1="463.47" x2="842.53" y2="499.20" />
+<line class="lane-boundary center" x1="842.53" y1="499.20" x2="854.15" y2="535.82" />
+<line class="lane-boundary center" x1="854.15" y1="535.82" x2="863.25" y2="573.14" />
+<line class="lane-boundary center" x1="863.25" y1="573.14" x2="869.77" y2="611.00" />
+<line class="lane-boundary center" x1="869.77" y1="611.00" x2="873.70" y2="649.22" />
+<line class="lane-boundary center" x1="873.70" y1="649.22" x2="875.01" y2="687.61" />
+<line class="lane-boundary" x1="828.66" y1="687.50" x2="828.66" y2="875.00" />
+<line class="lane-boundary center" x1="874.90" y1="687.50" x2="874.90" y2="875.00" />
+          <line class="road-ref" x1="124.99" y1="125.00" x2="312.47" y2="125.00" />
+<line class="road-ref" x1="312.47" y1="125.00" x2="350.86" y2="126.31" />
+<line class="road-ref" x1="350.86" y1="126.31" x2="389.07" y2="130.24" />
+<line class="road-ref" x1="389.07" y1="130.24" x2="426.92" y2="136.77" />
+<line class="road-ref" x1="426.92" y1="136.77" x2="464.24" y2="145.86" />
+<line class="road-ref" x1="464.24" y1="145.86" x2="500.85" y2="157.48" />
+<line class="road-ref" x1="500.85" y1="157.48" x2="536.59" y2="171.58" />
+<line class="road-ref" x1="536.59" y1="171.58" x2="571.27" y2="188.08" />
+<line class="road-ref" x1="571.27" y1="188.08" x2="604.76" y2="206.91" />
+<line class="road-ref" x1="604.76" y1="206.91" x2="636.88" y2="227.97" />
+<line class="road-ref" x1="636.88" y1="227.97" x2="667.48" y2="251.19" />
+<line class="road-ref" x1="667.48" y1="251.19" x2="696.43" y2="276.43" />
+<line class="road-ref" x1="696.43" y1="276.43" x2="723.60" y2="303.60" />
+<line class="road-ref" x1="723.60" y1="303.60" x2="748.84" y2="332.55" />
+<line class="road-ref" x1="748.84" y1="332.55" x2="772.05" y2="363.16" />
+<line class="road-ref" x1="772.05" y1="363.16" x2="793.12" y2="395.29" />
+<line class="road-ref" x1="793.12" y1="395.29" x2="811.94" y2="428.77" />
+<line class="road-ref" x1="811.94" y1="428.77" x2="828.44" y2="463.47" />
+<line class="road-ref" x1="828.44" y1="463.47" x2="842.53" y2="499.20" />
+<line class="road-ref" x1="842.53" y1="499.20" x2="854.15" y2="535.82" />
+<line class="road-ref" x1="854.15" y1="535.82" x2="863.25" y2="573.14" />
+<line class="road-ref" x1="863.25" y1="573.14" x2="869.77" y2="611.00" />
+<line class="road-ref" x1="869.77" y1="611.00" x2="873.70" y2="649.22" />
+<line class="road-ref" x1="873.70" y1="649.22" x2="875.01" y2="687.61" />
+<line class="road-ref" x1="874.90" y1="687.50" x2="874.90" y2="875.00" />
+          <line class="lane" x1="124.99" y1="148.12" x2="312.47" y2="148.12" />
+<line class="lane" x1="312.47" y1="148.12" x2="349.28" y2="149.38" />
+<line class="lane" x1="349.28" y1="149.38" x2="385.92" y2="153.15" />
+<line class="lane" x1="385.92" y1="153.15" x2="422.22" y2="159.41" />
+<line class="lane" x1="422.22" y1="159.41" x2="458.00" y2="168.13" />
+<line class="lane" x1="458.00" y1="168.13" x2="493.11" y2="179.27" />
+<line class="lane" x1="493.11" y1="179.27" x2="527.37" y2="192.79" />
+<line class="lane" x1="527.37" y1="192.79" x2="560.64" y2="208.61" />
+<line class="lane" x1="560.64" y1="208.61" x2="592.74" y2="226.66" />
+<line class="lane" x1="592.74" y1="226.66" x2="623.54" y2="246.87" />
+<line class="lane" x1="623.54" y1="246.87" x2="652.89" y2="269.13" />
+<line class="lane" x1="652.89" y1="269.13" x2="680.65" y2="293.33" />
+<line class="lane" x1="680.65" y1="293.33" x2="706.70" y2="319.38" />
+<line class="lane" x1="706.70" y1="319.38" x2="730.90" y2="347.15" />
+<line class="lane" x1="730.90" y1="347.15" x2="753.16" y2="376.50" />
+<line class="lane" x1="753.16" y1="376.50" x2="773.36" y2="407.30" />
+<line class="lane" x1="773.36" y1="407.30" x2="791.41" y2="439.41" />
+<line class="lane" x1="791.41" y1="439.41" x2="807.23" y2="472.68" />
+<line class="lane" x1="807.23" y1="472.68" x2="820.75" y2="506.95" />
+<line class="lane" x1="820.75" y1="506.95" x2="831.89" y2="542.06" />
+<line class="lane" x1="831.89" y1="542.06" x2="840.61" y2="577.85" />
+<line class="lane" x1="840.61" y1="577.85" x2="846.87" y2="614.15" />
+<line class="lane" x1="846.87" y1="614.15" x2="850.63" y2="650.79" />
+<line class="lane" x1="850.63" y1="650.79" x2="851.89" y2="687.61" />
+<line class="lane" x1="851.78" y1="687.50" x2="851.78" y2="875.00" />
+        </svg>
+      </div>
+      <div class="legend">
+        <span class="key"><span class="swatch ref"></span>road reference</span>
+        <span class="key"><span class="swatch boundary"></span>lane boundary</span>
+        <span class="key"><span class="swatch junction"></span>junction connector</span>
+        <span class="key"><span class="swatch lane-s"></span>driving lane center</span>
+        <span class="key"><span class="swatch connector"></span>connector sample</span>
+      </div>
+    </section>
+    <section class="panel">
+      <h2>Road Seed</h2>
+      <pre>{
+  &quot;road&quot;: {
+    &quot;topology&quot;: &quot;curve&quot;,
+    &quot;type&quot;: &quot;motorway&quot;,
+    &quot;lanes&quot;: {
+      &quot;forward&quot;: 1,
+      &quot;backward&quot;: 0
+    },
+    &quot;center_line&quot;: &quot;broken&quot;
+  }
+}</pre>
+      <h2>OpenDRIVE Summary</h2>
+      <pre>{
+  &quot;road_count&quot;: 3,
+  &quot;junction_count&quot;: 0,
+  &quot;connection_count&quot;: 0,
+  &quot;lane_link_count&quot;: 0,
+  &quot;driving_lanes_per_direction&quot;: 1,
+  &quot;total_driving_lanes_on_approach&quot;: 1,
+  &quot;road_ids&quot;: [
+    &quot;1&quot;,
+    &quot;2&quot;,
+    &quot;3&quot;
+  ],
+  &quot;junction_ids&quot;: [],
+  &quot;xodr_schema_valid&quot;: true
+}</pre>
+    </section>
+  </main>
+</body>
+</html>

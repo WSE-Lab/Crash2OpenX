@@ -1,0 +1,48 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v1",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "static_hold",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v1"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "evening"
+    }
+  },
+  "description_zh": "一辆白色 Plymouth Voyager（ego）在红灯路口试图从左侧绕过前方静止的 Lexus 测试车（v1）进入左转车道时，右侧车身擦碰到测试车左后轮传感器，发生侧擦碰撞。天气晴朗，傍晚，路面干燥，施工区。",
+  "evidence": {
+    "source_snippets": [
+      "A test vehicle, stopped at a red light in Sunnyvale while operating in manual mode, was lightly struck on a sensor attached to the rear driver side wheel by a white minivan attempting to maneuver around the vehicle to enter a left turn lane.",
+      "MOVEMENT PRECEDING COLLISION: A. STOPPED: VEH 1 (X); I. PASSING OTHER VEHICLE: VEH 2 (X)",
+      "TYPE OF COLLISION: B. SIDE SWIPE",
+      "WEATHER: A. CLEAR; LIGHTING: A. DAYLIGHT; ROADWAY SURFACE: A. DRY; ROADWAY CONDITIONS: D. CONSTRUCTION – REPAIR ZONE"
+    ],
+    "reason": "移动的 minivan（ego）试图绕过静止的测试车（v1）进入左转车道时发生侧擦，ego 有主动驾驶决策（超车），测试价值明确；静止车辆用 static_hold + adjacent 表达，符合现有词汇表。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "443_Apple_November_11_2021.pdf"
+  }
+}

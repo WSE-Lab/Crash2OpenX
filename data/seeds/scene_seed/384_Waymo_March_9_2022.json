@@ -1,0 +1,19 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "事故原因是对方车辆从停放状态倒车进入道路，与静止的Waymo AV发生侧后方刮擦，核心机动为倒车（backing），属于CARLA无法实现且NHTSA非V2V的子集，无可用于测试的移动车辆交互。",
+  "reason": "核心机动涉及倒车/后退（reverse/backing），属于淘汰规则第一条的可辩护排除范围，且唯一移动的车辆正执行倒车，无符合要求的ego候选。",
+  "evidence": {
+    "source_snippets": [
+      "A parked car to the right of the Waymo AV began reversing into the street and made contact with the rear right side of the Waymo AV.",
+      "MOVEMENT PRECEDING COLLISION: BACKING (VEH 2)",
+      "Vehicle was: Stopped in Traffic (Checked) for VEH 1"
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "384_Waymo_March_9_2022.pdf"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "oncoming",
+        "side": "left",
+        "behavior": {
+          "block": "static_hold",
+          "params": {
+            "lateral": 0.1
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "一辆重型卡车（ego）在 Randall Street 上向东南直行，遇对向车道静止的 Waymo AV（v2）让行，卡车经过时左侧与 AV 左后传感器发生侧擦碰撞。判定 ego 为卡车，因其具有主动驾驶决策（通过静止车辆），NPC 静止在对向车道。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was proceeding northwest on Randall Street near the intersection with Harper Street when it came to a stop to yield to a heavy truck traveling southeast on Randall Street.",
+      "As the heavy truck drove past the Waymo AV, the driver’s side section of the heavy truck made contact with the rear driver’s side sensor of the Waymo AV."
+    ],
+    "reason": "重型卡车（移动车辆）作为 ego，Waymo AV 静止在对向车道，侧擦碰撞可用 oncoming + static_hold 表达，lateral 设 0.1 模拟传感器接触。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "235_Waymo_April_6_2023.pdf"
+  }
+}

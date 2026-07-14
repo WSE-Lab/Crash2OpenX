@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "一辆BMW（ego）在下午晴朗天气下，在红绿灯路口直行，追尾了前方同车道停止等待红灯的Cruise AV（v2）。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle ... was facing west and stopped for a red light at the intersection of Duboce and Guererro Streets. Before the Cruise AV started to proceed for the green light, contact was made to the rear bumper of the Cruise AV by a BMW traveling behind the AV."
+    ],
+    "reason": "选择移动的BMW为ego，测试其能否避免追尾；Cruise AV为静止前车，用stopped_ahead表示。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "522_Cruise_March_12_2021.pdf"
+  }
+}

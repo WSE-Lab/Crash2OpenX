@@ -1,0 +1,55 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {
+        "speed": 3.13
+      }
+    },
+    "npcs": [
+      {
+        "id": "v1",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "front_brake",
+          "params": {
+            "speed": 5,
+            "end_speed": 0,
+            "brake_t": 2.0
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v1"
+    },
+    "control": "stop_sign",
+    "environment": {
+      "weather": "cloudy",
+      "time_of_day": "morning",
+      "friction_scale": 0.5
+    }
+  },
+  "description_zh": "后车以约7 mph速度直行，前车在停止标志处从慢速减速至停车后，后车追尾静止的前车。选择后车为ego，测试其在湿路面对前车停车的制动反应。",
+  "evidence": {
+    "source_snippets": [
+      "A passenger vehicle behind the Waymo AV then made contact with the stationary Waymo AV’s rear bumper at approximately 7 MPH.",
+      "The Waymo AV had come to a complete stop at the stop sign at Precita Avenue at Cesar Chavez.",
+      "As the Waymo AV proceeded slowly in preparation to merge, the Waymo AV test driver disengaged autonomous mode and manually stopped the Waymo AV.",
+      "ROADWAY SURFACE: WET (VEH 1), WET (VEH 2)"
+    ],
+    "reason": "后车为本场景唯一移动车辆且具备测试价值（追尾静止前车）；前车的行为可表示为减速停车（front_brake），符合现有词汇表。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "533_Waymo_January_22_2021.pdf"
+  }
+}

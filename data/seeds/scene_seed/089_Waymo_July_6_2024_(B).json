@@ -1,0 +1,17 @@
+{
+  "status": "skipped",
+  "scene": null,
+  "description_zh": "事故发生在停车场出口，Waymo AV 在驶出车库时停下等待骑车人，随后静止状态被骑车人故意触碰。没有移动的汽车，且属停车场区域，无测试价值。",
+  "reason": "场景中唯一汽车（AV）在碰撞时静止，且无其他移动汽车，按照淘汰规则2（无移动的car具备测试价值）和规则3（停车场区域）排除。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was exiting a parking garage onto Mission Street... As the Waymo AV approached the garage exit, it stopped for a cyclist... The Waymo AV remained stationary..."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "089_Waymo_July_6_2024_(B).pdf"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "av",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "static_hold",
+          "params": {
+            "lateral": 0.1
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "av",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "一辆直行车辆在左侧相邻车道行驶时，侧擦了一辆停在路边右侧的自动驾驶车辆（Cruise AV），造成侧镜和左侧车身损坏。",
+  "evidence": {
+    "source_snippets": [
+      "While the Cruise AV was parked parallel to the curb on the street, another vehicle traveling westbound on Vallejo in the left adjacent traffic lane sideswiped and made contact with the left side of the Cruise AV and the parked vehicle in front of the Cruise AV, damaging the Cruise AV's driver's side mirror, camera, articulating radar assembly, and doors."
+    ],
+    "reason": "选择另一辆移动的车辆作为ego，因为它是场景中唯一正在移动的car且有测试价值（测试横向安全距离以避免侧擦）；Cruise AV处于静止常规模式作为NPC。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "593_Cruise_November_10_2019.pdf"
+  }
+}

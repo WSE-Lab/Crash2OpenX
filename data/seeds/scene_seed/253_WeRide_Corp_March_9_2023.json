@@ -1,0 +1,52 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {
+        "speed": 2.2
+      }
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "left",
+        "behavior": {
+          "block": "static_hold",
+          "params": {
+            "lateral": 0.1,
+            "gap": 5.0
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "一辆低速行驶的车辆（Dodge Challenger，ego）试图从右侧绕过停在红灯前的静止车辆（WeRide AV，v2），因横向距离不足擦碰到v2的右后保险杠。",
+  "evidence": {
+    "source_snippets": [
+      "Our Autonomous vehicle (car 1) was in conventional mode stopped at the traffic light on Embarcadero and Washington.",
+      "A black color Dodge Challenger (car 2) attempted to bypass our car (car 1) from the rear and in doing so hit our car (car 1) right side rear bumper.",
+      "At the time of collision our AV (Car 1) was stopped traveling 0 mph and the Dodge Challenger (car 2) was traveling less than 5 mph."
+    ],
+    "reason": "Ego selected as the moving Dodge Challenger that attempted to bypass a stopped vehicle, making it the test-worthy participant. NPC is the stopped AV, placed in adjacent left position with minimal lateral clearance to simulate the bypass attempt collision."
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "253_WeRide_Corp_March_9_2023.pdf"
+  }
+}

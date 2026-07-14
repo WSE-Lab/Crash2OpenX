@@ -1,0 +1,505 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenDRIVE>
+    <header name="153_WeRide_September_28_2023" revMajor="1" revMinor="5" date="2025-01-01T00:00:00" north="346.250" south="-346.250" east="346.250" west="-346.250">
+        <geoReference>+proj=tmerc +lat_0=0 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs</geoReference>
+    </header>
+    <road rule="RHT" id="1" junction="-1" length="280.0">
+        <link>
+            <successor elementType="junction" elementId="100" />
+        </link>
+        <type s="0" type="townArterial"><speed max="16.7" unit="m/s" /></type><planView>
+            <geometry s="0" x="0" y="0" hdg="0" length="280.0">
+                <line />
+            </geometry>
+        </planView>
+        <lanes>
+            <laneSection s="0">
+                <left>
+                    <lane id="2" type="driving" level="false">
+                        <link>
+                            <successor id="2" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="standard" width="0.2" />
+                    </lane>
+                    <lane id="1" type="driving" level="false">
+                        <link>
+                            <successor id="1" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.2">
+                            <type name="broken" width="0.2">
+                                <line length="3" space="9" tOffset="0" width="0.15" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                    <lane id="3" type="shoulder" level="false">
+                        <link />
+                        <width a="10" b="0.0" c="0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="none" weight="standard" color="standard" width="0.0" />
+                    </lane>
+                </left>
+                <center>
+                    <lane id="0" type="none" level="false">
+                        <roadMark sOffset="0" type="broken" weight="standard" color="yellow" width="0.25">
+                            <type name="broken" width="0.25">
+                                <line length="4" space="8" tOffset="0" width="0.2" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                </center>
+                <right>
+                    <lane id="-1" type="driving" level="false">
+                        <link>
+                            <successor id="-1" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.2">
+                            <type name="broken" width="0.2">
+                                <line length="3" space="9" tOffset="0" width="0.15" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                    <lane id="-2" type="driving" level="false">
+                        <link>
+                            <successor id="-2" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="standard" width="0.2" />
+                    </lane>
+                    <lane id="-3" type="shoulder" level="false">
+                        <link />
+                        <width a="10" b="0.0" c="0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="none" weight="standard" color="standard" width="0.0" />
+                    </lane>
+                </right>
+            </laneSection>
+        </lanes>
+    </road>
+    <road rule="RHT" id="2" junction="-1" length="280.0">
+        <link>
+            <successor elementType="junction" elementId="100" />
+        </link>
+        <type s="0" type="townArterial"><speed max="16.7" unit="m/s" /></type><planView>
+            <geometry s="0" x="320.0" y="-320.0" hdg="7.853981633974483" length="280.0">
+                <line />
+            </geometry>
+        </planView>
+        <lanes>
+            <laneSection s="0">
+                <left>
+                    <lane id="2" type="driving" level="false">
+                        <link>
+                            <predecessor id="2" />
+                        <successor id="2" />
+                            </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="standard" width="0.2" />
+                    </lane>
+                    <lane id="1" type="driving" level="false">
+                        <link>
+                            <predecessor id="1" />
+                        <successor id="1" />
+                            </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.2">
+                            <type name="broken" width="0.2">
+                                <line length="3" space="9" tOffset="0" width="0.15" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                    <lane id="3" type="shoulder" level="false">
+                        <link />
+                        <width a="10" b="0.0" c="0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="none" weight="standard" color="standard" width="0.0" />
+                    </lane>
+                </left>
+                <center>
+                    <lane id="0" type="none" level="false">
+                        <roadMark sOffset="0" type="broken" weight="standard" color="yellow" width="0.25">
+                            <type name="broken" width="0.25">
+                                <line length="4" space="8" tOffset="0" width="0.2" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                </center>
+                <right>
+                    <lane id="-1" type="driving" level="false">
+                        <link>
+                            <predecessor id="-1" />
+                        <successor id="-1" />
+                            </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.2">
+                            <type name="broken" width="0.2">
+                                <line length="3" space="9" tOffset="0" width="0.15" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                    <lane id="-2" type="driving" level="false">
+                        <link>
+                            <predecessor id="-2" />
+                        <successor id="-2" />
+                            </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="standard" width="0.2" />
+                    </lane>
+                    <lane id="-3" type="shoulder" level="false">
+                        <link />
+                        <width a="10" b="0.0" c="0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="none" weight="standard" color="standard" width="0.0" />
+                    </lane>
+                </right>
+            </laneSection>
+        </lanes>
+    </road>
+    <road rule="RHT" id="3" junction="-1" length="280.0">
+        <link>
+            <successor elementType="junction" elementId="100" />
+        </link>
+        <type s="0" type="townArterial"><speed max="16.7" unit="m/s" /></type><planView>
+            <geometry s="0" x="640.0" y="0.0" hdg="3.141592653589793" length="280.0">
+                <line />
+            </geometry>
+        </planView>
+        <lanes>
+            <laneSection s="0">
+                <left>
+                    <lane id="2" type="driving" level="false">
+                        <link>
+                            <predecessor id="2" />
+                        <successor id="-2" />
+                            </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="standard" width="0.2" />
+                    </lane>
+                    <lane id="1" type="driving" level="false">
+                        <link>
+                            <predecessor id="1" />
+                        <successor id="-1" />
+                            </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.2">
+                            <type name="broken" width="0.2">
+                                <line length="3" space="9" tOffset="0" width="0.15" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                    <lane id="3" type="shoulder" level="false">
+                        <link />
+                        <width a="10" b="0.0" c="0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="none" weight="standard" color="standard" width="0.0" />
+                    </lane>
+                </left>
+                <center>
+                    <lane id="0" type="none" level="false">
+                        <roadMark sOffset="0" type="broken" weight="standard" color="yellow" width="0.25">
+                            <type name="broken" width="0.25">
+                                <line length="4" space="8" tOffset="0" width="0.2" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                </center>
+                <right>
+                    <lane id="-1" type="driving" level="false">
+                        <link>
+                            <predecessor id="-1" />
+                        <successor id="1" />
+                            </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.2">
+                            <type name="broken" width="0.2">
+                                <line length="3" space="9" tOffset="0" width="0.15" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                    <lane id="-2" type="driving" level="false">
+                        <link>
+                            <predecessor id="-2" />
+                        <successor id="2" />
+                            </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="standard" width="0.2" />
+                    </lane>
+                    <lane id="-3" type="shoulder" level="false">
+                        <link />
+                        <width a="10" b="0.0" c="0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="none" weight="standard" color="standard" width="0.0" />
+                    </lane>
+                </right>
+            </laneSection>
+        </lanes>
+    </road>
+    <road rule="RHT" id="100" junction="100" length="66.41059750765554">
+        <link>
+            <predecessor elementType="road" elementId="1" contactPoint="end" />
+            <successor elementType="road" elementId="2" contactPoint="end" />
+        </link>
+        <type s="0" type="townArterial"><speed max="16.7" unit="m/s" /></type><planView>
+            <geometry s="0" x="280.0" y="0.0" hdg="0.0" length="20.942768254319812">
+                <spiral curvStart="1e-09" curvEnd="-0.0345474233877665" />
+            </geometry>
+            <geometry s="20.942768254319812" x="300.67034621734103" y="-2.5019047697690766" hdg="-0.3617593304255469" length="24.525060999015906">
+                <spiral curvStart="-0.0345474233877665" curvEnd="-0.03454742338776651" />
+            </geometry>
+            <geometry s="45.46782925333572" x="317.49809523023094" y="-19.329653782658976" hdg="-1.2090369963693492" length="20.942768254319812">
+                <spiral curvStart="-0.034547423387766514" curvEnd="9.999999979123376e-10" />
+            </geometry>
+        </planView>
+        <lanes>
+            <laneSection s="0">
+                <left>
+                    <lane id="2" type="driving" level="false">
+                        <link>
+                            <predecessor id="2" />
+                            <successor id="-2" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="standard" width="0.2" />
+                    </lane>
+                    <lane id="1" type="driving" level="false">
+                        <link>
+                            <predecessor id="1" />
+                            <successor id="-1" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.2">
+                            <type name="broken" width="0.2">
+                                <line length="3" space="9" tOffset="0" width="0.15" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                    <lane id="3" type="shoulder" level="false">
+                        <link />
+                        <width a="10" b="0.0" c="0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="none" weight="standard" color="standard" width="0.0" />
+                    </lane>
+                </left>
+                <center>
+                    <lane id="0" type="none" level="false">
+                        <roadMark sOffset="0" type="broken" weight="standard" color="yellow" width="0.25" />
+                    </lane>
+                </center>
+                <right>
+                    <lane id="-1" type="driving" level="false">
+                        <link>
+                            <predecessor id="-1" />
+                            <successor id="1" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.2">
+                            <type name="broken" width="0.2">
+                                <line length="3" space="9" tOffset="0" width="0.15" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                    <lane id="-2" type="driving" level="false">
+                        <link>
+                            <predecessor id="-2" />
+                            <successor id="2" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="standard" width="0.2" />
+                    </lane>
+                    <lane id="-3" type="shoulder" level="false">
+                        <link />
+                        <width a="10" b="0.0" c="0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="none" weight="standard" color="standard" width="0.0" />
+                    </lane>
+                </right>
+            </laneSection>
+            </lanes>
+    </road>
+    <road rule="RHT" id="101" junction="100" length="80.0">
+        <link>
+            <predecessor elementType="road" elementId="1" contactPoint="end" />
+            <successor elementType="road" elementId="3" contactPoint="end" />
+        </link>
+        <type s="0" type="townArterial"><speed max="16.7" unit="m/s" /></type><planView>
+            <geometry s="0" x="280.0" y="0.0" hdg="4.2862637970157366e-16" length="80.0">
+                <line />
+            </geometry>
+        </planView>
+        <lanes>
+            <laneSection s="0">
+                <left>
+                    <lane id="2" type="driving" level="false">
+                        <link>
+                            <predecessor id="2" />
+                            <successor id="-2" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="standard" width="0.2" />
+                    </lane>
+                    <lane id="1" type="driving" level="false">
+                        <link>
+                            <predecessor id="1" />
+                            <successor id="-1" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.2">
+                            <type name="broken" width="0.2">
+                                <line length="3" space="9" tOffset="0" width="0.15" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                    <lane id="3" type="shoulder" level="false">
+                        <link />
+                        <width a="10" b="0.0" c="0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="none" weight="standard" color="standard" width="0.0" />
+                    </lane>
+                </left>
+                <center>
+                    <lane id="0" type="none" level="false">
+                        <roadMark sOffset="0" type="broken" weight="standard" color="yellow" width="0.25" />
+                    </lane>
+                </center>
+                <right>
+                    <lane id="-1" type="driving" level="false">
+                        <link>
+                            <predecessor id="-1" />
+                            <successor id="1" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.2">
+                            <type name="broken" width="0.2">
+                                <line length="3" space="9" tOffset="0" width="0.15" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                    <lane id="-2" type="driving" level="false">
+                        <link>
+                            <predecessor id="-2" />
+                            <successor id="2" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="standard" width="0.2" />
+                    </lane>
+                    <lane id="-3" type="shoulder" level="false">
+                        <link />
+                        <width a="10" b="0.0" c="0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="none" weight="standard" color="standard" width="0.0" />
+                    </lane>
+                </right>
+            </laneSection>
+        </lanes>
+    </road>
+    <road rule="RHT" id="102" junction="100" length="66.41059750765554">
+        <link>
+            <predecessor elementType="road" elementId="2" contactPoint="end" />
+            <successor elementType="road" elementId="3" contactPoint="end" />
+        </link>
+        <type s="0" type="townArterial"><speed max="16.7" unit="m/s" /></type><planView>
+            <geometry s="0" x="320.00000000000006" y="-40.0" hdg="1.5707963267948966" length="20.942768254319812">
+                <spiral curvStart="1e-09" curvEnd="-0.0345474233877665" />
+            </geometry>
+            <geometry s="20.942768254319812" x="322.5019047697691" y="-19.329653782658976" hdg="1.2090369963693497" length="24.525060999015906">
+                <spiral curvStart="-0.0345474233877665" curvEnd="-0.03454742338776651" />
+            </geometry>
+            <geometry s="45.46782925333572" x="339.329653782659" y="-2.5019047697690677" hdg="0.36175933042554737" length="20.942768254319812">
+                <spiral curvStart="-0.034547423387766514" curvEnd="9.999999979123376e-10" />
+            </geometry>
+        </planView>
+        <lanes>
+            <laneSection s="0">
+                <left>
+                    <lane id="2" type="driving" level="false">
+                        <link>
+                            <predecessor id="2" />
+                            <successor id="-2" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="standard" width="0.2" />
+                    </lane>
+                    <lane id="1" type="driving" level="false">
+                        <link>
+                            <predecessor id="1" />
+                            <successor id="-1" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.2">
+                            <type name="broken" width="0.2">
+                                <line length="3" space="9" tOffset="0" width="0.15" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                    <lane id="3" type="shoulder" level="false">
+                        <link />
+                        <width a="10" b="0.0" c="0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="none" weight="standard" color="standard" width="0.0" />
+                    </lane>
+                </left>
+                <center>
+                    <lane id="0" type="none" level="false">
+                        <roadMark sOffset="0" type="broken" weight="standard" color="yellow" width="0.25" />
+                    </lane>
+                </center>
+                <right>
+                    <lane id="-1" type="driving" level="false">
+                        <link>
+                            <predecessor id="-1" />
+                            <successor id="1" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.2">
+                            <type name="broken" width="0.2">
+                                <line length="3" space="9" tOffset="0" width="0.15" sOffset="0" />
+                            </type>
+                        </roadMark>
+                    </lane>
+                    <lane id="-2" type="driving" level="false">
+                        <link>
+                            <predecessor id="-2" />
+                            <successor id="2" />
+                        </link>
+                        <width a="3.5" b="0.0" c="-0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="solid" weight="standard" color="standard" width="0.2" />
+                    </lane>
+                    <lane id="-3" type="shoulder" level="false">
+                        <link />
+                        <width a="10" b="0.0" c="0.0" d="0.0" sOffset="0" />
+                        <roadMark sOffset="0" type="none" weight="standard" color="standard" width="0.0" />
+                    </lane>
+                </right>
+            </laneSection>
+            </lanes>
+    </road>
+    <junction name="skill_t_junction" id="100" type="default">
+        <connection incomingRoad="2" id="0" contactPoint="end" connectingRoad="100">
+            <laneLink from="-2" to="2" />
+            <laneLink from="-1" to="1" />
+            <laneLink from="1" to="-1" />
+            <laneLink from="2" to="-2" />
+        </connection>
+        <connection incomingRoad="1" id="1" contactPoint="start" connectingRoad="100">
+            <laneLink from="-2" to="-2" />
+            <laneLink from="-1" to="-1" />
+            <laneLink from="1" to="1" />
+            <laneLink from="2" to="2" />
+        </connection>
+        <connection incomingRoad="3" id="2" contactPoint="end" connectingRoad="101">
+            <laneLink from="-2" to="2" />
+            <laneLink from="-1" to="1" />
+            <laneLink from="1" to="-1" />
+            <laneLink from="2" to="-2" />
+        </connection>
+        <connection incomingRoad="1" id="3" contactPoint="start" connectingRoad="101">
+            <laneLink from="-2" to="-2" />
+            <laneLink from="-1" to="-1" />
+            <laneLink from="1" to="1" />
+            <laneLink from="2" to="2" />
+        </connection>
+        <connection incomingRoad="3" id="4" contactPoint="end" connectingRoad="102">
+            <laneLink from="-2" to="2" />
+            <laneLink from="-1" to="1" />
+            <laneLink from="1" to="-1" />
+            <laneLink from="2" to="-2" />
+        </connection>
+        <connection incomingRoad="2" id="5" contactPoint="start" connectingRoad="102">
+            <laneLink from="-2" to="-2" />
+            <laneLink from="-1" to="-1" />
+            <laneLink from="1" to="1" />
+            <laneLink from="2" to="2" />
+        </connection>
+    </junction>
+</OpenDRIVE>

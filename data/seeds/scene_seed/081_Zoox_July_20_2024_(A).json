@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "left",
+        "behavior": {
+          "block": "cut_in",
+          "params": {
+            "trig_ttc": 1.5
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "unknown",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "afternoon"
+    }
+  },
+  "description_zh": "在旧金山16街接近Utah街路口处，一辆宝马（ego）在右车道直行，左侧车道的特斯拉突然向右变道，侧擦宝马。特斯拉先前跟在一辆减速的Zoox车后，其变道动作被描述为“abruptly”，故使用cut_in原语并设定trig_ttc=1.5。",
+  "evidence": {
+    "source_snippets": [
+      "A Zoox vehicle (Vehicle 1) in autonomy was traveling west on 16th Street in the left travel lane, slowing as it approached the intersection with Utah Street in San Francisco. The Zoox vehicle operator disengaged from autonomy and braked further for stopped traffic ahead in the same travel lane. At that time, a Tesla sedan (Vehicle 2) traveling directly behind the Zoox vehicle abruptly attempted a lane change maneuver into the adjacent lane on the right, side-swiping a BMW sedan (Vehicle 3) that was also westbound on 16th Street in the right lane."
+    ],
+    "reason": "选取宝马（直行右车道）为ego，特斯拉（左侧车道）为切入方的NPC，主碰撞为侧擦（side-swiping）。‘abruptly’定性为切入时机紧迫（trig_ttc=1.5）。驾驶交互完整可用现有词汇表表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "081_Zoox_July_20_2024_(A).pdf"
+  }
+}

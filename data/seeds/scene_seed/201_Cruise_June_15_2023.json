@@ -1,0 +1,18 @@
+{
+  "status": "needs_extension",
+  "scene": null,
+  "description_zh": "Cruise AV在尝试向左绕行前方同车道内静止的铰接式升降平台时，与平台抬升在道路上方的手臂发生接触，损伤车顶激光雷达。",
+  "reason": "现有 DSL 纯粹基于二维平面关系（横向/纵向），无法表达垂直维度的突出障碍物（如升降臂）。这仍是一场真实的双方交互碰撞（ego 移动、与静止障碍物接触），但由于缺少高度/悬垂物信息，无法用现有 block 准确描述。",
+  "proposed": "需要一个能够表达垂直突出物（如升降臂）的静态障碍物原语，例如扩展 static_block 增加 height（突出物高度）和 overhang_length（悬垂长度）参数，或新增 block 类型“static_overhead_obstacle”以描述道路上方存在的危险物体。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle, operating in driverless autonomous mode, was traveling eastbound on Sacramento Street between Lyon Street and Baker Street. The Cruise AV approached a motorized articulating boom lift (\"ABL\"), which was stopped in the Cruise AV's lane of travel. As the Cruise AV began to maneuver around and to the left of the ABL, the Cruise AV made contact with the arm of the ABL, which was elevated above the roadway. This caused damage to the Cruise AV's roof Lidar assembly."
+    ]
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "201_Cruise_June_15_2023.pdf"
+  }
+}

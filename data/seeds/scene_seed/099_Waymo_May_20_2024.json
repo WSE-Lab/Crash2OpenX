@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "left",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "cross",
+        "side": "right",
+        "behavior": {
+          "block": "junction_cross",
+          "params": {
+            "speed": 18
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "unknown",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "Waymo AV 在路口绿灯时启动左转，右侧一辆闯红灯高速直行的车辆（v2）侧向撞击 ego 驾驶侧，测试 ego 对交叉闯红灯目标的感知与避让能力。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was traveling east on 14th Street and came to a stop at a red light at the intersection with Folsom Street to prepare for a left turn. When the light turned green, the Waymo AV proceeded into the intersection. As it did so, a passenger car traveling southbound on Folsom Street at a high rate of speed entered the intersection against a red traffic light. The front of the passenger car made contact with the driver’s side of the Waymo AV."
+    ],
+    "reason": "双方均在移动，ego 左转，对方从右侧横向高速闯红灯，属于典型的交叉路口冲突，可用 junction_cross 表达；时间 3:02 AM 为夜间，天气未提及故 unknown。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "099_Waymo_May_20_2024.pdf"
+  }
+}

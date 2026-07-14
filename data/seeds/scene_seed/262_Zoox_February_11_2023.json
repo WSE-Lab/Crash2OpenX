@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {
+        "speed": 4.47
+      }
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "front_brake",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "dawn"
+    }
+  },
+  "description_zh": "Zoox 自动驾驶车辆在减速停车时被后方车辆以约 10 mph 追尾，选择后车为 ego 测试其能否及时刹停。",
+  "evidence": {
+    "source_snippets": [
+      "A Zoox vehicle in autonomous mode was slowing to a stop with brake lights illuminated behind traffic on northbound 5th Street near Jesse Street when a vehicle behind made contact at approximately 10mph."
+    ],
+    "reason": "后车是主动移动方，以约 10 mph 直行追尾减速中的前车，具有测试价值；前车减速可用 front_brake 表达，无需扩展词汇表。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "262_Zoox_February_11_2023.pdf"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "right",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "left",
+        "behavior": {
+          "block": "junction_turn",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "unknown",
+      "time_of_day": "unknown"
+    }
+  },
+  "description_zh": "Cruise AV 在绿灯亮起后从 Geary Boulevard 右转进入 Larkin Street，并礼让斑马线上的行人；此时一辆 Toyota Camry 从左侧非转弯车道突然右转切入，与 AV 的左前保险杠发生接触。将 Cruise AV 选为 ego，测试其在转弯让行时应对相邻车辆违规转弯切入的能力。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle (\"Cruise AV\"), operating in manual mode, was at a complete stop in response to a red light on Geary Boulevard at the intersection with Larkin Street. The Cruise AV began to make a right turn onto Larkin Street on a green light and was yielding to a pedestrian in the crosswalk. Shortly thereafter, a Toyota Camry traveling in a non-turn lane of Geary Boulevard made a right turn in front of the Cruise AV, making contact with the Cruise AV's front left bumper."
+    ],
+    "reason": "场景包含两辆移动车辆的交互冲突，ego 正在右转让行，另一车从左侧非转弯车道右转切入导致碰撞，具有测试价值。使用 junction_turn 表达 NPC 在路口转弯冲突，位置为相邻左侧车道，控制为红绿灯。没有量化速度或距离，故不填参数。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "389_Cruise_February_19_2022.pdf"
+  }
+}

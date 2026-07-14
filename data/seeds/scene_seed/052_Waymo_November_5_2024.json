@@ -1,0 +1,49 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "right",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v1",
+        "kind": "vehicle",
+        "position": "cross",
+        "side": "left",
+        "behavior": {
+          "block": "static_hold",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v1",
+      "b": "ego"
+    },
+    "control": "stop_sign",
+    "environment": {
+      "weather": "unknown",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "皮卡（ego）在停止标志路口右转，拖车尾部碰到停在交叉口内的一辆静止车辆（v1，原 Waymo AV），测 ego 转弯路径是否考虑拖车甩尾空间。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was traveling north on Genebern Way in autonomous mode when it came to a stop at a stop sign to prepare to make a left turn onto westbound Murray Street.",
+      "Immediately after, a pickup truck (hauling a gooseneck trailer carrying a shipping container) that had been traveling east on Murray Street came to a stop at a stop sign at the intersection with Genebern Way.",
+      "While the pickup truck remained stopped, the Waymo AV proceeded through the intersection. As the Waymo AV was making a left turn through the intersection, the pickup truck entered the intersection to make a right turn onto southbound Genebern Way.",
+      "After the Waymo AV partially entered westbound Murray Street, it came to a stop to yield to the pickup truck.",
+      "A moment later, while the Waymo AV remained stopped, the rear left corner of the shipping container made contact with the front driver side of the Waymo AV."
+    ],
+    "reason": "选择主动右转的皮卡作为 ego，NPC 为停在路口内的静止车辆，位置 cross（左侧），行为 static_hold，控制信号为 stop_sign，可表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "052_Waymo_November_5_2024.pdf"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "none",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "后车(ego)在夜间沿Bayshore Boulevard直行，追尾碰撞前方静止的Waymo AV(v2)。",
+  "evidence": {
+    "source_snippets": [
+      "While attempting a merge onto northbound Bayshore Boulevard from southbound Bayshore Boulevard, the Waymo AV came to a stop to yield for approaching traffic on the right. While stopped, a vehicle approached from behind and made contact with the rear bumper of the Waymo AV."
+    ],
+    "reason": "唯一在移动的车辆具有测试价值，选为ego；前方静止车辆作为前方停止车。符合追尾场景，可用rear_hit与stopped_ahead表达。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "390_Waymo_February_19_2022.pdf"
+  }
+}

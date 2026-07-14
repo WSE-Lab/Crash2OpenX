@@ -1,0 +1,45 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "left",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "oncoming",
+        "side": "none",
+        "behavior": {
+          "block": "junction_cross",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "morning"
+    }
+  },
+  "description_zh": "Cruise AV 在人工驾驶模式下从东南向 11 街左转进入东北向 Folsom 街，与对向直行通过绿灯的车辆发生碰撞，ego 承担左转穿越决策，对向车直行通过路口。",
+  "evidence": {
+    "source_snippets": [
+      "A Cruise autonomous vehicle (“Cruise AV”), operating in conventional mode, was making a left turn from southeast bound 11th Street onto northeast bound Folsom Street when the driver of the Cruise AV made contact with the rear driver side door of another vehicle that was proceeding through the green light on southwest bound 11th Street"
+    ],
+    "reason": "典型路口左转与对向直行冲突，两车均移动且有测试价值；选取左转车辆为 ego，对向直行车为 NPC，使用 junction_cross 原语表达直行通过路口的行为，控制信号为 traffic_light。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "671_GM_Cruise_March_24_2019.pdf"
+  }
+}

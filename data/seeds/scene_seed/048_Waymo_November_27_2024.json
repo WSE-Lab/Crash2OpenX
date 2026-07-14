@@ -1,0 +1,47 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v1",
+        "kind": "vehicle",
+        "position": "ahead_same_lane",
+        "side": "none",
+        "behavior": {
+          "block": "stopped_ahead",
+          "params": {}
+        }
+      }
+    ],
+    "collision": {
+      "a": "v1",
+      "b": "ego"
+    },
+    "control": "stop_sign",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "本田 Civic（ego）在 Barneveld Avenue 直行接近三向停车标志路口时，未及时刹停，追尾撞上前方已停在路口等待的 Waymo AV（静止前车）。选取后车为 ego 以测试其能否及时避免追尾。",
+  "evidence": {
+    "source_snippets": [
+      "The Waymo AV was traveling north on Barneveld Avenue and came to a stop at the 3-way stop sign controlled intersection of Jerrold Avenue, when a passenger car approached the Waymo AV from behind. The front of the passenger car made contact with the rear of the Waymo AV.",
+      "VEHICLE 1: Stopped in Traffic; VEHICLE 2: Moving",
+      "TYPE OF COLLISION: REAR END"
+    ],
+    "reason": "后车主动移动追尾静止前车，场景可由 ego 直行、前车 stopped_ahead 表达。选取后车为 ego 以测试驾驶决策。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "048_Waymo_November_27_2024.pdf"
+  }
+}

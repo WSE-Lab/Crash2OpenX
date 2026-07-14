@@ -1,0 +1,50 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {
+        "speed": 0.447
+      }
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "left",
+        "behavior": {
+          "block": "static_hold",
+          "params": {
+            "lateral": 0.1
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "ego",
+      "b": "v2"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "unknown",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "一辆试图从右侧超越停止在红灯前的Waymo AV的乘用车，以约1英里/小时的速度擦碰到AV右侧前翼子板的传感器，属于典型的右侧超车空间不足导致的侧碰。",
+  "evidence": {
+    "source_snippets": [
+      "A Waymo Autonomous Vehicle (“Waymo AV”) was stopped in autonomous mode on southbound Escuela Avenue at El Camino Real in Mountain View when it was side-swiped.",
+      "The Waymo AV was stopped in traffic at a red light when a passenger vehicle attempted to pass the Waymo AV on the right, and made contact with a sensor on the Waymo AV’s passenger side front fender at approximately 1 MPH."
+    ],
+    "reason": "报告明确描述有移动的车辆（乘客车辆）试图从右侧超车并发生侧碰，该车具有测试价值，可设为ego；静止的Waymo AV作为相邻左侧的静止车辆，使用static_hold行为原语，并可利用lateral参数表达侧镜接触的距离保真。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "638_Waymo_July_8_2019.pdf"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "status": "supported",
+  "scene": {
+    "sut": {
+      "id": "ego",
+      "kind": "vehicle",
+      "maneuver": "straight",
+      "params": {}
+    },
+    "npcs": [
+      {
+        "id": "v2",
+        "kind": "vehicle",
+        "position": "adjacent",
+        "side": "right",
+        "behavior": {
+          "block": "cut_in",
+          "params": {
+            "trig_ttc": 1.5
+          }
+        }
+      }
+    ],
+    "collision": {
+      "a": "v2",
+      "b": "ego"
+    },
+    "control": "traffic_light",
+    "environment": {
+      "weather": "clear",
+      "time_of_day": "night"
+    }
+  },
+  "description_zh": "夜晚有路灯的交叉口，Zoox（ego）在绿灯后从右车道变入左车道直行；相邻右侧的SUV（v2）突然左转切入，导致侧擦。碰撞前SUV突然横向移动（trig_ttc=1.5秒），ego急刹车但未能避免接触，将v2行为映射为cut_in。",
+  "evidence": {
+    "source_snippets": [
+      "After the light turned green, the SUV proceeded straight, in the right lane... The Zoox vehicle also proceeded and transitioned into the left lane... While almost through the intersection, the SUV suddenly veered left across the path of the Zoox vehicle toward Division Street.",
+      "The Zoox vehicle braked hard in response... contact with the passenger side front fender... minor damage.",
+      "Movement Preceding Collision: Vehicle 1 – Proceeding Straight; Vehicle 2 – Other Unsafe Turning.",
+      "Type of Collision: Side Swipe."
+    ],
+    "reason": "选择Zoox为ego：其在自动驾驶模式下直行并以紧急制动应对切入，具测试价值。SUV为NPC，从右侧相邻车道突然左转侵入ego车道，符合cut_in原语；定性词“suddenly”映射trig_ttc=1.5秒。控制信号为traffic_light，环境clear + night。"
+  },
+  "pipeline": {
+    "stage": "scene_seed_v2",
+    "generation_mode": "api_deepseek",
+    "model": "deepseek/deepseek-v4-pro",
+    "input": "043_Zoox_December_8_2024.pdf"
+  }
+}
