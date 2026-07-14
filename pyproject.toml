@@ -33,4 +33,4 @@ package = false
 scenariogeneration = { path = "external/scenariogeneration", editable = true }
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "tools"]

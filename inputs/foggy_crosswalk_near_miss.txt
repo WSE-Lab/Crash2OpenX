@@ -1,0 +1,5 @@
+At approximately 06:10 on a foggy morning, an autonomous test vehicle was traveling straight toward a marked town crosswalk at 8 m/s.
+
+Visibility was reduced by dense fog and the damp pavement had lower-than-normal friction.
+
+A pedestrian entered the crosswalk from the right side of the road. The vehicle maintained a continuous path, reduced speed, and passed behind the pedestrian without contact, preserving a minimum clearance of approximately 5.2 meters.

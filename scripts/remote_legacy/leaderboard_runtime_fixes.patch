@@ -1,0 +1,33 @@
+--- a/src/demo.py
++++ b/src/demo.py
+@@ -1115,7 +1115,10 @@ def build_pcla_sut_route_from_xosc(
+     if len(transforms) < 2:
+         raise ValueError(f'{actor_name} start offset={start_offset:.2f}m 后 route 少于 2 个点，无法为 PCLA SUT 生成 route')
+     if route_mode == 'endpoints' and not preserve_topology:
+-        transforms = [transforms[0], transforms[-1]]
++        lane_transforms = build_straight_lane_route_from_endpoints(
++            carla_map, transforms, route_spacing
++        )
++        transforms = lane_transforms if len(lane_transforms) >= 2 else [transforms[0], transforms[-1]]
+     original_waypoint_count = len(transforms)
+     transforms = align_transforms_to_start_driving_lane(carla_map, transforms)
+     transforms = densify_transforms_by_distance(transforms, route_spacing)
+--- a/scenario_runner/srunner/scenariomanager/actorcontrols/external_control.py
++++ b/scenario_runner/srunner/scenariomanager/actorcontrols/external_control.py
+@@ -567,6 +567,16 @@ class ExternalControl(BasicControl):
+ 
+         if not self._pcla_agent.sensors_ready():
+             self._actor.apply_control(carla.VehicleControl())
++            if self._init_speed:
++                velocity = self._actor.get_velocity()
++                current_speed = math.sqrt(velocity.x ** 2 + velocity.y ** 2)
++                if abs(self._target_speed - current_speed) > 3.0:
++                    yaw = math.radians(self._actor.get_transform().rotation.yaw)
++                    self._actor.set_target_velocity(carla.Vector3D(
++                        math.cos(yaw) * self._target_speed,
++                        math.sin(yaw) * self._target_speed,
++                        0.0,
++                    ))
+             self._update_spectator_view()
+             return
+ 

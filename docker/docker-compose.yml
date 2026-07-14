@@ -1,0 +1,33 @@
+# CARLA simulation host for Crash2OpenX (paper Sec. 4, execution layer:
+# "CARLA runs in Docker, so the simulation host can be reproduced with a
+# single command").
+#
+#   docker compose -f docker/docker-compose.yml up -d
+#
+# Requirements: Linux host, NVIDIA GPU, nvidia-container-toolkit installed.
+services:
+  carla:
+    image: carlasim/carla:0.9.16
+    container_name: carla-0916
+    command: /bin/bash ./CarlaUE4.sh -RenderOffScreen -nosound -carla-rpc-port=2000
+    ports:
+      - "2000-2002:2000-2002"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+    # Hard cap on container logs. A CARLA server left running floods the
+    # json-file log (observed: ~660 GB/day under a leaked 20 fps client);
+    # 3x100 MB keeps the host disk safe no matter how long it runs.
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "3"

@@ -1,0 +1,258 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Accident Replay Trace Scene",
+  "type": "object",
+  "required": [
+    "metadata",
+    "environment",
+    "coordinate_frame",
+    "duration_s",
+    "collision_time_s",
+    "collision_point",
+    "collision",
+    "actors",
+    "road_generation",
+    "pipeline"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": true,
+      "properties": {
+        "name": {"type": "string"},
+        "source_pdf": {"type": ["string", "null"]},
+        "location": {"type": ["string", "null"]}
+      }
+    },
+    "environment": {"type": "object", "additionalProperties": true},
+    "coordinate_frame": {"const": "generated_local_map"},
+    "duration_s": {"type": "number", "exclusiveMinimum": 0},
+    "collision_time_s": {"type": "number", "minimum": 0},
+    "collision_point": {
+      "type": "object",
+      "required": ["x", "y", "z"],
+      "additionalProperties": false,
+      "properties": {
+        "x": {"type": "number"},
+        "y": {"type": "number"},
+        "z": {"type": "number"}
+      }
+    },
+    "collision": {
+      "type": "object",
+      "required": ["initiator", "target", "type"],
+      "additionalProperties": true,
+      "properties": {
+        "initiator": {"type": "string"},
+        "target": {"type": "string"},
+        "type": {"type": "string"}
+      }
+    },
+    "actors": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type", "controller"],
+        "additionalProperties": true,
+        "properties": {
+          "type": {"enum": ["vehicle", "pedestrian", "cyclist", "obstacle"]},
+          "subtype": {"type": ["string", "null"]},
+          "role": {"type": ["string", "null"]},
+          "controller": {"enum": ["scripted", "static"]},
+          "trace": {
+            "type": "array",
+            "items": {"$ref": "#/$defs/trace_point"}
+          },
+          "pose": {"$ref": "#/$defs/pose"}
+        },
+        "oneOf": [
+          {"required": ["trace"]},
+          {"required": ["pose"]}
+        ]
+      }
+    },
+    "road_generation": {
+      "type": "object",
+      "required": [
+        "mode",
+        "xodr_path",
+        "road_type",
+        "junction_type",
+        "layout",
+        "lane_width_m",
+        "lanes_per_direction",
+        "safety_shoulder_width_m"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "mode": {"const": "generated_open_drive"},
+        "road_type": {
+          "description": "Source-grounded road environment/function classification.",
+          "enum": [
+            "motorway",
+            "rural",
+            "town",
+            "townArterial",
+            "townCollector",
+            "townLocal",
+            "lowSpeed",
+            "unknown"
+          ]
+        },
+        "junction_type": {
+          "description": "Source-grounded junction/topology classification, separate from generated layout.",
+          "enum": [
+            "none",
+            "cross_intersection",
+            "t_junction",
+            "y_junction",
+            "roundabout",
+            "merge",
+            "fork",
+            "two_leg_turn",
+            "curve",
+            "unknown"
+          ]
+        },
+        "layout": {
+          "enum": [
+            "common_cross_junction",
+            "cross_junction_with_bike_lane",
+            "t_junction",
+            "orthogonal_turn_left",
+            "orthogonal_turn_right",
+            "y_junction",
+            "single_corridor",
+            "straight_corridor",
+            "curbside_parking_corridor",
+            "straight_with_centerline_passing"
+          ]
+        },
+        "xodr_path": {"type": "string"},
+        "notes": {"type": "string"},
+        "lane_width_m": {
+          "description": "Benchmark physical lane width from 001_Zoox_April_11_2025; each driving lane in generated maps is 6.0 m wide.",
+          "const": 6.0
+        },
+        "lanes_per_direction": {
+          "description": "Generated drivable lane count per direction. Use 1 for same-lane/rear-end scenes, 2 when adjacent lanes are required, and 3 when the source explicitly requires three same-direction lanes.",
+          "enum": [1, 2, 3]
+        },
+        "lane_types_present": {
+          "description": "Source-grounded lane/facility types relevant to the replay.",
+          "type": "array",
+          "items": {
+            "enum": [
+              "driving",
+              "biking",
+              "sidewalk",
+              "parking",
+              "shoulder",
+              "turn",
+              "median",
+              "crosswalk",
+              "bus",
+              "unknown"
+            ]
+          }
+        },
+        "lane_evidence": {
+          "description": "Source snippets and conclusion used to preserve lane count from Stage 2.",
+          "type": "object",
+          "required": ["source_snippets", "conclusion"],
+          "additionalProperties": true,
+          "properties": {
+            "source_snippets": {"type": "array", "items": {"type": "string"}},
+            "conclusion": {"type": "string"}
+          }
+        },
+        "adjacent_lane_required": {
+          "description": "Set true when the report requires an adjacent lane, such as sideswipe, lane-change, or parallel-lane conflict.",
+          "type": "boolean"
+        },
+        "safety_shoulder_width_m": {
+          "description": "CARLA safety shoulder/roadside width on both sides to prevent actor drop-off.",
+          "const": 10.0
+        },
+        "road_length": {
+          "description": "Standard cross-junction incoming road length for the 001 benchmark layout.",
+          "const": 100.0
+        },
+        "junction_radius": {
+          "description": "Standard cross-junction circular incoming-road radius for the 001 benchmark layout.",
+          "const": 65.0
+        },
+        "junction_id": {"const": 100}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "layout": {
+                "enum": [
+                  "common_cross_junction",
+                  "cross_junction_with_bike_lane",
+                  "t_junction",
+                  "orthogonal_turn_left",
+                  "orthogonal_turn_right",
+                  "y_junction"
+                ]
+              }
+            },
+            "required": ["layout"]
+          },
+          "then": {
+            "required": ["road_length", "junction_radius", "junction_id"]
+          }
+        }
+      ]
+    },
+    "incident": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "narrative": {"type": "string"},
+        "narrative_zh": {"type": ["string", "null"]}
+      }
+    },
+    "qa": {"type": "object", "additionalProperties": true},
+    "pipeline": {
+      "type": "object",
+      "required": ["stage", "generation_mode"],
+      "additionalProperties": true,
+      "properties": {
+        "stage": {"const": "trace_scene"},
+        "generation_mode": {"type": "string"}
+      }
+    }
+  },
+  "$defs": {
+    "pose": {
+      "type": "object",
+      "required": ["x", "y", "z", "h"],
+      "additionalProperties": true,
+      "properties": {
+        "x": {"type": "number"},
+        "y": {"type": "number"},
+        "z": {"type": "number"},
+        "h": {"type": "number"}
+      }
+    },
+    "trace_point": {
+      "type": "object",
+      "required": ["t", "x", "y", "z", "h", "action"],
+      "additionalProperties": true,
+      "properties": {
+        "t": {"type": "number", "minimum": 0},
+        "x": {"type": "number"},
+        "y": {"type": "number"},
+        "z": {"type": "number"},
+        "h": {"type": "number"},
+        "action": {"type": "string"}
+      }
+    }
+  }
+}

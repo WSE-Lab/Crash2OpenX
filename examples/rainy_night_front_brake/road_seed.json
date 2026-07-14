@@ -1,0 +1,9 @@
+{
+  "status": "supported",
+  "road": {
+    "topology": "straight",
+    "type": "town",
+    "lanes": { "forward": 1, "backward": 1 },
+    "center_line": "broken"
+  }
+}
