@@ -207,7 +207,7 @@ The legacy ssh driver for a remote CARLA host is still available with
 All gate regressions are covered by the static test suite:
 
 ```bash
-uv run pytest    # 39 tests, < 30 s, no CARLA and no API key needed
+uv run pytest    # 43 tests, < 30 s, no CARLA and no API key needed
 ```
 
 ## Troubleshooting
