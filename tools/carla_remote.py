@@ -50,15 +50,17 @@ _load_env_local()
 
 @dataclass(frozen=True)
 class RemoteCfg:
-    host: str = "10.134.142.199"
-    port: int = 2222
-    user: str = "server"
-    key: Path = Path("~/.ssh/road_scene_pipeline_ed25519").expanduser()
-    project_dir: str = "/home/server/workspace/LXJ/leaderboard_2.0"
-    python_bin: str = "/home/server/Software/miniconda3/envs/PCLA/bin/python"
+    # No real host is baked in: set CARLA_REMOTE_* in .env.local (see
+    # .env.example) when CARLA_MODE=remote.
+    host: str = ""
+    port: int = 22
+    user: str = "carla"
+    key: Path = Path("~/.ssh/id_ed25519").expanduser()
+    project_dir: str = "/home/carla/leaderboard_2.0"
+    python_bin: str = "/home/carla/miniconda3/envs/PCLA/bin/python"
     container_name: str = "carla-0916"
-    runs_root: str = "/home/server/road_scene_pipeline_runs"
-    runner_path: str = "/home/server/road_scene_pipeline_runs/runner.sh"
+    runs_root: str = "/home/carla/crash2openx_runs"
+    runner_path: str = "/home/carla/crash2openx_runs/runner.sh"
     rpc_port: int = 2000
 
     @classmethod
@@ -108,6 +110,11 @@ class CarlaRemoteError(RuntimeError):
 class CarlaRemoteClient:
     def __init__(self, cfg: RemoteCfg | None = None):
         self.cfg = cfg or RemoteCfg.from_env()
+        if not self.cfg.host:
+            raise CarlaRemoteError(
+                "CARLA_MODE=remote but CARLA_REMOTE_HOST is not set — "
+                "configure the CARLA_REMOTE_* variables in .env.local (see .env.example)"
+            )
 
     # ---- transport primitives ------------------------------------------------
 
@@ -159,8 +166,8 @@ class CarlaRemoteClient:
     # ---- runner deployment ---------------------------------------------------
 
     def deploy_runner(self) -> None:
-        runner_local = ROOT / "remote" / "runner.sh"
-        paper_renderer_local = ROOT / "remote" / "visualize_carla_paper.py"
+        runner_local = ROOT / "scripts" / "remote_legacy" / "runner.sh"
+        paper_renderer_local = ROOT / "scripts" / "remote_legacy" / "visualize_carla_paper.py"
         if not runner_local.is_file():
             raise FileNotFoundError(runner_local)
         if not paper_renderer_local.is_file():
@@ -171,6 +178,18 @@ class CarlaRemoteClient:
         remote_renderer = f"{self.cfg.project_dir}/src/visualize_carla_paper.py"
         self._push(paper_renderer_local, remote_renderer)
         self._ssh(f"chmod +x {shlex.quote(remote_renderer)}").check_returncode()
+
+    def _runner_env(self) -> str:
+        """Env assignments prefixed to every runner.sh invocation, so the
+        remote-side script never has to bake in deployment-specific paths."""
+        pairs = {
+            "RUNS_ROOT": self.cfg.runs_root,
+            "PROJECT_DIR": self.cfg.project_dir,
+            "PYTHON": self.cfg.python_bin,
+            "CONTAINER": self.cfg.container_name,
+            "CARLA_PORT": str(self.cfg.rpc_port),
+        }
+        return " ".join(f"{k}={shlex.quote(v)}" for k, v in pairs.items())
 
     # ---- operations ----------------------------------------------------------
 
@@ -209,7 +228,7 @@ class CarlaRemoteClient:
         self._push(xodr_path, f"{remote_run_dir}/inputs/map.xodr")
 
         cmd = (
-            f"bash {shlex.quote(self.cfg.runner_path)} extract "
+            f"{self._runner_env()} bash {shlex.quote(self.cfg.runner_path)} extract "
             f"{shlex.quote(run_id)} --spacing {spacing}"
         )
         cp = self._ssh(cmd, timeout=timeout)
@@ -378,7 +397,7 @@ class CarlaRemoteClient:
         extra_str = " ".join(shlex.quote(a) for a in extra)
 
         cmd = (
-            f"bash {shlex.quote(self.cfg.runner_path)} run "
+            f"{self._runner_env()} bash {shlex.quote(self.cfg.runner_path)} run "
             f"{shlex.quote(run_id)} {extra_str}"
         ).rstrip()
         cp = self._ssh(cmd, timeout=timeout)
@@ -568,7 +587,7 @@ def _cli() -> int:
     ap = argparse.ArgumentParser(description="Remote CARLA client (extract + run)")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
-    sub.add_parser("deploy-runner", help="scp remote/runner.sh to the server")
+    sub.add_parser("deploy-runner", help="scp scripts/remote_legacy/runner.sh to the server")
 
     ex = sub.add_parser("extract", help="extract roadgraph map_cache from an XODR")
     ex.add_argument("--xodr", required=True, type=Path)

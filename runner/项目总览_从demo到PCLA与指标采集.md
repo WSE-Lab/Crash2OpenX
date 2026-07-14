@@ -15,15 +15,15 @@
 
 和主流程最相关的目录/文件如下：
 
-- 入口脚本：[src/demo.py](/home/server/workspace/LXJ/leaderboard_2.0/src/demo.py)
-- 本地运行器封装：[src/scenario_runner_local.py](/home/server/workspace/LXJ/leaderboard_2.0/src/scenario_runner_local.py)
-- 本地场景管理器：[src/scenario_manager_local.py](/home/server/workspace/LXJ/leaderboard_2.0/src/scenario_manager_local.py)
-- OpenSCENARIO 配置解析：[src/openscenario_configuration.py](/home/server/workspace/LXJ/leaderboard_2.0/src/openscenario_configuration.py)
-- OpenSCENARIO 场景树构建：[src/open_scenario.py](/home/server/workspace/LXJ/leaderboard_2.0/src/open_scenario.py)
-- 运行时数据采集：[src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py)
-- external actor 控制器：[scenario_runner/srunner/scenariomanager/actorcontrols/external_control.py](/home/server/workspace/LXJ/leaderboard_2.0/scenario_runner/srunner/scenariomanager/actorcontrols/external_control.py)
-- PCLA 主入口：[PCLA/PCLA.py](/home/server/workspace/LXJ/leaderboard_2.0/PCLA/PCLA.py)
-- PCLA agent 索引：[PCLA/agents.json](/home/server/workspace/LXJ/leaderboard_2.0/PCLA/agents.json)
+- 入口脚本：[src/demo.py](./src/demo.py)
+- 本地运行器封装：[src/scenario_runner_local.py](./src/scenario_runner_local.py)
+- 本地场景管理器：[src/scenario_manager_local.py](./src/scenario_manager_local.py)
+- OpenSCENARIO 配置解析：[src/openscenario_configuration.py](./src/openscenario_configuration.py)
+- OpenSCENARIO 场景树构建：[src/open_scenario.py](./src/open_scenario.py)
+- 运行时数据采集：[src/data_collector.py](./src/data_collector.py)
+- external actor 控制器：[scenario_runner/srunner/scenariomanager/actorcontrols/external_control.py](../external/scenario_runner/srunner/scenariomanager/actorcontrols/external_control.py)
+- PCLA 主入口：[PCLA/PCLA.py](../external/PCLA/PCLA.py)
+- PCLA agent 索引：[PCLA/agents.json](../external/PCLA/agents.json)
 
 ---
 
@@ -49,7 +49,7 @@
 - `--record-video`：根据采集到的 actor 轨迹生成俯视视频 `trajectory_video.mp4`
 - `--video-fps` / `--video-frame-stride`：控制轨迹视频帧率和采样间隔
 
-定义位置在 [src/demo.py](/home/server/workspace/LXJ/leaderboard_2.0/src/demo.py#L27)。
+定义位置在 [src/demo.py](./src/demo.py#L27)。
 
 ### 2.2 解析场景并生成运行时 route
 
@@ -80,7 +80,7 @@ python src/demo.py \
   --port 2000
 ```
 
-这部分逻辑在 [src/demo.py](/home/server/workspace/LXJ/leaderboard_2.0/src/demo.py#L232) 到 [src/demo.py](/home/server/workspace/LXJ/leaderboard_2.0/src/demo.py#L284)。
+这部分逻辑在 [src/demo.py](./src/demo.py#L232) 到 [src/demo.py](./src/demo.py#L284)。
 
 ### 2.3 建立 episode 输出目录
 
@@ -94,7 +94,7 @@ python src/demo.py \
 - `route_preview.svg`
 - 如果传了 `--record-video`，还会生成 `trajectory_video.mp4`
 
-目录构造逻辑在 [src/demo.py](/home/server/workspace/LXJ/leaderboard_2.0/src/demo.py#L45) 和 [src/demo.py](/home/server/workspace/LXJ/leaderboard_2.0/src/demo.py#L404)。
+目录构造逻辑在 [src/demo.py](./src/demo.py#L45) 和 [src/demo.py](./src/demo.py#L404)。
 
 ### 2.4 启动 ScenarioRunner
 
@@ -104,11 +104,11 @@ python src/demo.py \
 - 如果开启采集，就把 `DataCollector` 注入 runner
 - 调用 `scenario_runner.run()`
 
-入口在 [src/demo.py](/home/server/workspace/LXJ/leaderboard_2.0/src/demo.py#L431)。
+入口在 [src/demo.py](./src/demo.py#L431)。
 
 ### 2.5 ScenarioRunner 做什么
 
-[src/scenario_runner_local.py](/home/server/workspace/LXJ/leaderboard_2.0/src/scenario_runner_local.py) 负责：
+[src/scenario_runner_local.py](./src/scenario_runner_local.py) 负责：
 
 - 创建 CARLA client
 - 校验 CARLA Python API 版本
@@ -119,11 +119,11 @@ python src/demo.py \
 - 启动场景运行循环
 - 在结束时统一收口数据采集与资源清理
 
-核心执行入口在 [src/scenario_runner_local.py](/home/server/workspace/LXJ/leaderboard_2.0/src/scenario_runner_local.py#L309)。
+核心执行入口在 [src/scenario_runner_local.py](./src/scenario_runner_local.py#L309)。
 
 ### 2.6 ScenarioManager 每 tick 做什么
 
-[src/scenario_manager_local.py](/home/server/workspace/LXJ/leaderboard_2.0/src/scenario_manager_local.py) 的 `_tick_scenario()` 每个仿真 tick 会：
+[src/scenario_manager_local.py](./src/scenario_manager_local.py) 的 `_tick_scenario()` 每个仿真 tick 会：
 
 1. 更新 `GameTime`
 2. 更新 `CarlaDataProvider`
@@ -132,7 +132,7 @@ python src/demo.py \
 5. 调用 `data_collector.collect_frame_data()`
 6. 如果 collector 请求终止，则停止场景
 
-关键位置在 [src/scenario_manager_local.py](/home/server/workspace/LXJ/leaderboard_2.0/src/scenario_manager_local.py#L164)。
+关键位置在 [src/scenario_manager_local.py](./src/scenario_manager_local.py#L164)。
 
 ---
 
@@ -151,8 +151,8 @@ python src/demo.py \
 
 `demo.py` 之所以会提前生成 route，并写回 `.xosc` 的 `route_file`，是为了让 `external_control` 初始化 PCLA 时能够直接拿到这条 route。
 
-`route_file` 回写逻辑在 [src/demo.py](/home/server/workspace/LXJ/leaderboard_2.0/src/demo.py#L162)。  
-`external_control` 读取 `route_file` 的逻辑在 [external_control.py](/home/server/workspace/LXJ/leaderboard_2.0/scenario_runner/srunner/scenariomanager/actorcontrols/external_control.py#L101)。
+`route_file` 回写逻辑在 [src/demo.py](./src/demo.py#L162)。  
+`external_control` 读取 `route_file` 的逻辑在 [external_control.py](../external/scenario_runner/srunner/scenariomanager/actorcontrols/external_control.py#L101)。
 
 ---
 
@@ -160,7 +160,7 @@ python src/demo.py \
 
 ### 4.1 external_control 如何初始化 PCLA
 
-[external_control.py](/home/server/workspace/LXJ/leaderboard_2.0/scenario_runner/srunner/scenariomanager/actorcontrols/external_control.py) 的 `_setup_pcla()` 会：
+[external_control.py](../external/scenario_runner/srunner/scenariomanager/actorcontrols/external_control.py) 的 `_setup_pcla()` 会：
 
 1. 读取当前 actor、world、client
 2. 读取 controller property 里的 `route_file`
@@ -168,11 +168,11 @@ python src/demo.py \
 4. 若 route 文件不存在，则退化成“从当前位置向前选一个 endpoint”再临时规划 route
 5. 创建 `PCLA(agent=..., vehicle=actor, route=route_file, client=client)`
 
-实现位置在 [external_control.py](/home/server/workspace/LXJ/leaderboard_2.0/scenario_runner/srunner/scenariomanager/actorcontrols/external_control.py#L50)。
+实现位置在 [external_control.py](../external/scenario_runner/srunner/scenariomanager/actorcontrols/external_control.py#L50)。
 
 ### 4.2 PCLA 做什么
 
-[PCLA/PCLA.py](/home/server/workspace/LXJ/leaderboard_2.0/PCLA/PCLA.py) 的职责可以分成三步：
+[PCLA/PCLA.py](../external/PCLA/PCLA.py) 的职责可以分成三步：
 
 1. `setup_agent()`  
    根据 agent 字符串找到 agent 文件和 config 路径，动态导入 agent 类并实例化
@@ -185,7 +185,7 @@ python src/demo.py \
 
 调用控制时，`get_action()` 会在当前 tick 更新 `GameTime`，然后执行 agent 推理并返回 `carla.VehicleControl`。
 
-关键代码在 [PCLA.py](/home/server/workspace/LXJ/leaderboard_2.0/PCLA/PCLA.py#L30)。
+关键代码在 [PCLA.py](../external/PCLA/PCLA.py#L30)。
 
 ---
 
@@ -197,7 +197,7 @@ python src/demo.py \
 - 事件触发日志
 - episode 聚合摘要
 
-实现集中在 [src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py)。
+实现集中在 [src/data_collector.py](./src/data_collector.py)。
 
 ### 5.1 逐 tick 采集：`frame_states.jsonl`
 
@@ -227,7 +227,7 @@ python src/demo.py \
 - `speed_limit`
 - `traffic_light_state`
 
-提取逻辑在 [src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py#L272)。
+提取逻辑在 [src/data_collector.py](./src/data_collector.py#L272)。
 
 ### 5.2 事件触发采集：`events.jsonl`
 
@@ -249,10 +249,10 @@ python src/demo.py \
 
 对应实现位置：
 
-- 碰撞：[src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py#L419)
-- 压线：[src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py#L447)
-- 红灯：[src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py#L694)
-- Stop sign：[src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py#L725)
+- 碰撞：[src/data_collector.py](./src/data_collector.py#L419)
+- 压线：[src/data_collector.py](./src/data_collector.py#L447)
+- 红灯：[src/data_collector.py](./src/data_collector.py#L694)
+- Stop sign：[src/data_collector.py](./src/data_collector.py#L725)
 
 ### 5.3 在线聚合：`summary.json`
 
@@ -277,12 +277,12 @@ python src/demo.py \
 
 这些指标的更新逻辑主要在：
 
-- jerk：[src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py#L495)
-- 最小 TTC / 最小距离：[src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py#L523)
-- off-road：[src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py#L598)
-- opposite lane：[src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py#L605)
-- blocked：[src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py#L642)
-- route completion：[src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py#L671)
+- jerk：[src/data_collector.py](./src/data_collector.py#L495)
+- 最小 TTC / 最小距离：[src/data_collector.py](./src/data_collector.py#L523)
+- off-road：[src/data_collector.py](./src/data_collector.py#L598)
+- opposite lane：[src/data_collector.py](./src/data_collector.py#L605)
+- blocked：[src/data_collector.py](./src/data_collector.py#L642)
+- route completion：[src/data_collector.py](./src/data_collector.py#L671)
 
 ### 5.4 当前终止机制
 
@@ -303,13 +303,13 @@ blocked 不是“静止 20 秒直接退出”，而是：
 - stop sign 影响范围内
 - 车辆处在 junction 内
 
-这部分在 [src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py#L648) 和 [src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py#L677)。
+这部分在 [src/data_collector.py](./src/data_collector.py#L648) 和 [src/data_collector.py](./src/data_collector.py#L677)。
 
 ---
 
 ## 6. PCLA 当前能加载哪些 agent
 
-PCLA 的 agent 索引来自 [PCLA/agents.json](/home/server/workspace/LXJ/leaderboard_2.0/PCLA/agents.json)。
+PCLA 的 agent 索引来自 [PCLA/agents.json](../external/PCLA/agents.json)。
 
 ### 6.1 名称格式
 
@@ -318,7 +318,7 @@ PCLA 期望的 agent 字符串格式是：
 - `<family>_<variant>`
 - 或 `<family>_<variant>_<seed>`
 
-解析逻辑在 [give_path.py](/home/server/workspace/LXJ/leaderboard_2.0/PCLA/pcla_functions/give_path.py#L5)。
+解析逻辑在 [give_path.py](../external/PCLA/pcla_functions/give_path.py#L5)。
 
 例如：
 
@@ -401,7 +401,7 @@ PCLA 期望的 agent 字符串格式是：
   - agent: `pcla_agents/simlingo/agent_simlingo.py`
   - config: `pcla_agents/simlingo_pretrained/checkpoints/epoch=013.ckpt/pytorch_model.pt`
 
-PCLA 在运行时会把 agent 文件动态导入，再调用该模块暴露的 `get_entry_point()` 找到类名，见 [PCLA.py](/home/server/workspace/LXJ/leaderboard_2.0/PCLA/PCLA.py#L51)。
+PCLA 在运行时会把 agent 文件动态导入，再调用该模块暴露的 `get_entry_point()` 找到类名，见 [PCLA.py](../external/PCLA/PCLA.py#L51)。
 
 ---
 
@@ -470,7 +470,7 @@ PCLA 在运行时会把 agent 文件动态导入，再调用该模块暴露的 `
 - `DIRECT`
 - `SAMPLE_TYPE`
 
-逻辑在 [give_path.py](/home/server/workspace/LXJ/leaderboard_2.0/PCLA/pcla_functions/give_path.py#L13)。
+逻辑在 [give_path.py](../external/PCLA/pcla_functions/give_path.py#L13)。
 
 这说明当前工程里所谓“agent config”不只是一个 yaml，而是：
 
@@ -488,7 +488,7 @@ PCLA 在运行时会把 agent 文件动态导入，再调用该模块暴露的 `
 - `BLOCKED_WARMUP_SECONDS`
 - `BLOCKED_TERMINATION_SECONDS`
 
-定义位置在 [src/data_collector.py](/home/server/workspace/LXJ/leaderboard_2.0/src/data_collector.py#L18)。
+定义位置在 [src/data_collector.py](./src/data_collector.py#L18)。
 
 目前这些阈值是代码常量，不是 argparse 参数。
 

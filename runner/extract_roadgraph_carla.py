@@ -1330,7 +1330,7 @@ def parse_args():
     parser.add_argument("--no-restart-carla-on-failure", dest="restart_carla_on_failure", action="store_false")
     parser.add_argument("--ensure-carla-at-start", dest="ensure_carla_at_start", action="store_true", default=True)
     parser.add_argument("--no-ensure-carla-at-start", dest="ensure_carla_at_start", action="store_false")
-    parser.add_argument("--carla-script", default="/home/server/carla/CarlaUE4.sh")
+    parser.add_argument("--carla-script", default=os.path.expanduser("~/carla/CarlaUE4.sh"))
     parser.add_argument("--carla-log", default="/tmp/carla_roadgraph_batch.log")
     parser.add_argument("--carla-startup-timeout", type=float, default=90.0)
     parser.add_argument("--carla-ready-timeout", type=float, default=10.0)

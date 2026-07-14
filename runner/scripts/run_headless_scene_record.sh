@@ -3,7 +3,7 @@ set -Eeuo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-CARLA_ROOT="${CARLA_ROOT:-/home/server/carla}"
+CARLA_ROOT="${CARLA_ROOT:-${HOME}/carla}"
 CARLA_SH="${CARLA_SH:-${CARLA_ROOT}/CarlaUE4.sh}"
 HOST="${HOST:-localhost}"
 PORT="${PORT:-2000}"
@@ -157,9 +157,10 @@ cleanup() {
 trap cleanup EXIT
 
 if [[ -n "${CONDA_ENV}" ]]; then
-  if [[ -f "/home/server/Software/miniconda3/etc/profile.d/conda.sh" ]]; then
+  CONDA_SH="${CONDA_SH:-${HOME}/miniconda3/etc/profile.d/conda.sh}"
+  if [[ -f "${CONDA_SH}" ]]; then
     # shellcheck disable=SC1091
-    source "/home/server/Software/miniconda3/etc/profile.d/conda.sh"
+    source "${CONDA_SH}"
     conda activate "${CONDA_ENV}"
   else
     echo "CONDA_ENV=${CONDA_ENV} was set, but conda.sh was not found." >&2

@@ -18,3 +18,10 @@ tmp/
 
 # Secrets
 .env
+.env.*
+!.env.example
+
+# Session/orchestration state
+.omc/
+**/.omc/
+.pytest_cache/

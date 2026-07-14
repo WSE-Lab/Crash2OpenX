@@ -951,8 +951,11 @@ def build_xosc(scene: dict, xodr_path: str, out_path: Path,
     for c in ["VehicleCatalog", "ControllerCatalog", "PedestrianCatalog", "MiscObjectCatalog", "EnvironmentCatalog"]:
         catalog.add_catalog(c, CATALOG_DIR)
 
+    # LogicFile carries just the basename: the runner rewrites it to the actual
+    # map path at load time (runner/src/demo.py), and a bare filename keeps the
+    # emitted XOSC free of machine-local absolute paths.
     sc = xosc.Scenario("scene_seed_block_scenario", "ads_testing", xosc.ParameterDeclarations(),
-                       entities, sb, xosc.RoadNetwork(roadfile=xodr_path), catalog, osc_minor_version=0)
+                       entities, sb, xosc.RoadNetwork(roadfile=Path(xodr_path).name), catalog, osc_minor_version=0)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     sc.write_xml(str(out_path))
     _patch_monitoring_criteria(out_path)

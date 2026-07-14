@@ -3,7 +3,7 @@ set -Eeuo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-CARLA_ROOT="${CARLA_ROOT:-/home/server/carla}"
+CARLA_ROOT="${CARLA_ROOT:-${HOME}/carla}"
 CARLA_SH="${CARLA_SH:-${CARLA_ROOT}/CarlaUE4.sh}"
 export CARLA_ROOT
 HOST="${HOST:-localhost}"

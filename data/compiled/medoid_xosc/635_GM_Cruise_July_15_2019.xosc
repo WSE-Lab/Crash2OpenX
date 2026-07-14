@@ -19,7 +19,7 @@
         </EnvironmentCatalog>
     </CatalogLocations>
     <RoadNetwork>
-        <LogicFile filepath="/Users/xijun/WSELab/road_scene_pipeline/outputs/opendrive_seed/635_GM_Cruise_July_15_2019.xodr" />
+        <LogicFile filepath="635_GM_Cruise_July_15_2019.xodr" />
     </RoadNetwork>
     <Entities>
         <ScenarioObject name="hero">

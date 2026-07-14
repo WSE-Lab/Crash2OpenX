@@ -49,7 +49,7 @@ def _load_carla():
         import carla
         return carla
     except ImportError:
-        root = os.environ.get("CARLA_ROOT", "/home/server/carla")
+        root = os.environ.get("CARLA_ROOT", os.path.expanduser("~/carla"))
         sys.path.append(os.path.join(root, "PythonAPI", "carla"))
         import glob
         sys.path.extend(glob.glob(os.path.join(root, "PythonAPI", "carla", "dist", "carla-*py3*.egg")))

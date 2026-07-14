@@ -14,14 +14,14 @@ MODE="${1:?need mode (extract|run)}"
 RUN_ID="${2:?need run_id}"
 shift 2
 
-RUNS_ROOT="${RUNS_ROOT:-/home/server/road_scene_pipeline_runs}"
+RUNS_ROOT="${RUNS_ROOT:-${HOME}/crash2openx_runs}"
 RUN_DIR="${RUNS_ROOT}/${RUN_ID}"
 INPUT_DIR="${RUN_DIR}/inputs"
 OUTPUT_DIR="${RUN_DIR}/outputs"
 LOG="${RUN_DIR}/runner.log"
 
-PROJECT_DIR="${PROJECT_DIR:-/home/server/workspace/LXJ/leaderboard_2.0}"
-PYTHON="${PYTHON:-/home/server/Software/miniconda3/envs/PCLA/bin/python}"
+PROJECT_DIR="${PROJECT_DIR:-${HOME}/leaderboard_2.0}"
+PYTHON="${PYTHON:-${HOME}/miniconda3/envs/PCLA/bin/python}"
 CONTAINER="${CONTAINER:-carla-0916}"
 CARLA_PORT="${CARLA_PORT:-2000}"
 
@@ -220,7 +220,9 @@ PY
     PROCESS_TIMEOUT=$(( MAX_SECONDS + 10 ))
     SCENE_OUT="${OUTPUT_DIR}/scene"
     mkdir -p "${SCENE_OUT}"
-    source /home/server/Software/miniconda3/etc/profile.d/conda.sh
+    # Derive conda.sh from the PCLA env interpreter (…/miniconda3/envs/PCLA/bin/python
+    # -> …/miniconda3/etc/profile.d/conda.sh); override with CONDA_SH if needed.
+    source "${CONDA_SH:-${PYTHON%%/envs/*}/etc/profile.d/conda.sh}"
     conda activate PCLA
     # PCLA_AGENT is propagated to src/runs/run_scene.py via the AGENT env var
     # — run_scene.py's argparse has no --agent flag (verified 2026-06-28),

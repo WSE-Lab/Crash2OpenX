@@ -5,7 +5,7 @@
   "reason": "缺少事故描述内容，无法判定参与者与交互，属于无信息输入导致的不可处理情况。",
   "evidence": {
     "source_snippets": [
-      "/Users/xijun/WSELab/road_scene_pipeline/inputs/dmv_reports/118_Waymo_March_3_2024.pdf"
+      "inputs/dmv_reports/118_Waymo_March_3_2024.pdf"
     ]
   },
   "pipeline": {
