@@ -7,15 +7,14 @@ Crash2OpenX is a model-transformation toolchain that turns a natural-language
 crash report (NHTSA / California DMV style, in PDF or plain text) into a pair
 of executable simulation artifacts — an OpenDRIVE 1.5 road network and a
 matching OpenSCENARIO 1.0 scene — and runs the pair in CARLA under an
-autonomous-driving agent loaded via PCLA. This repository is the
-implementation accompanying the MODELS 2026 Tools & Demonstrations submission.
+autonomous-driving agent loaded via PCLA.
 
 ## Demo video
 
 A 5-minute walkthrough of the full pipeline on two contrasting cases (a
 curved-ramp rear-end collision from a DMV PDF, and a foggy-dawn crosswalk
 safe pass from a plain-text report):
-[`demo/Crash2OpenX_demo.mp4`](demo/Crash2OpenX_demo.mp4).
+<https://www.modelcopilot.org/crash2openx.html>.
 
 ## Architecture
 
