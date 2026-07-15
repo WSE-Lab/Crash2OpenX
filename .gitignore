@@ -25,4 +25,3 @@ tmp/
 .omc/
 **/.omc/
 .pytest_cache/
-demo/

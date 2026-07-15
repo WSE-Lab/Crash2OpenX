@@ -10,6 +10,13 @@ matching OpenSCENARIO 1.0 scene — and runs the pair in CARLA under an
 autonomous-driving agent loaded via PCLA. This repository is the
 implementation accompanying the MODELS 2026 Tools & Demonstrations submission.
 
+## Demo video
+
+A 5-minute walkthrough of the full pipeline on two contrasting cases (a
+curved-ramp rear-end collision from a DMV PDF, and a foggy-dawn crosswalk
+safe pass from a plain-text report):
+[`demo/Crash2OpenX_demo.mp4`](demo/Crash2OpenX_demo.mp4).
+
 ## Architecture
 
 The tool has three layers; every artifact that crosses a layer boundary is
