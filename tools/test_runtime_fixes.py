@@ -7,6 +7,7 @@ or auto-corrects it. Run with:
 """
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -19,8 +20,8 @@ import xml.etree.ElementTree as ET
 import scenariogeneration.xosc as xosc
 
 from tools.osc_blocks import (
-    DEFAULT_GAP_M, WFViolation, _check_wf, build_xosc, resolve_ego_placement,
-    resolve_position,
+    DEFAULT_GAP_M, EGO_REAR_RUNWAY_M, WFViolation, _check_wf, build_xosc,
+    resolve_ego_placement, resolve_position,
 )
 
 
@@ -28,6 +29,29 @@ def _passing_road(forward=2, backward=1) -> dict:
     return {"road": {"topology": "straight", "type": "town",
                      "lanes": {"forward": forward, "backward": backward},
                      "center_line": "broken"}}
+
+
+# Frozen XODR fixtures. These live in the versioned benchmark data since the
+# release layout change; the tests used to point at the pre-release
+# `outputs/opendrive_seed/` scratch dir, which no longer exists in a fresh
+# clone — so every test below printed "· skipped" and still reported pass.
+# `test_xodr_fixtures_present` guards against that drift recurring.
+XODR_DIR = ROOT / "data/compiled/opendrive_seed"
+
+# Cases the tests below need a compiled road for.
+REQUIRED_XODR = (
+    "038_Waymo_December_17_2024",
+    "081_Zoox_July_20_2024_(A)",
+    "444_Waymo_November_6_2021_(1)",
+)
+
+
+def test_xodr_fixtures_present():
+    """Fail loudly if the fixture dir moves again — a silent skip hid a shipped crash."""
+    assert XODR_DIR.is_dir(), f"XODR fixture dir missing: {XODR_DIR}"
+    missing = [c for c in REQUIRED_XODR if not (XODR_DIR / f"{c}.xodr").is_file()]
+    assert not missing, f"XODR fixtures missing from {XODR_DIR}: {missing}"
+    print(f"  ✓ XODR fixtures present ({len(REQUIRED_XODR)} required)")
 
 
 def test_wf8_adjacent_left_requires_forward_ge_2():
@@ -84,7 +108,7 @@ def test_cut_in_auto_corrected_long():
 
 def test_ego_placement_picks_outer_lane_for_adjacent_left():
     """081 / 273 fix: ego must sit on outer forward lane when scene has adjacent/left."""
-    xodr = ROOT / "outputs/opendrive_seed/081_Zoox_July_20_2024_(A).xodr"
+    xodr = XODR_DIR / "081_Zoox_July_20_2024_(A).xodr"
     if not xodr.is_file():
         print(f"  · skipped (xodr missing: {xodr.name})")
         return
@@ -102,7 +126,7 @@ def test_ego_placement_picks_outer_lane_for_adjacent_left():
 
 def test_oncoming_ego_s_clearance():
     """444 / 665 IndexError fix: ego_s must be ≥ gap + EGO_EDGE_MARGIN + 5 for oncoming."""
-    xodr = ROOT / "outputs/opendrive_seed/444_Waymo_November_6_2021_(1).xodr"
+    xodr = XODR_DIR / "444_Waymo_November_6_2021_(1).xodr"
     if not xodr.is_file():
         print(f"  · skipped (xodr missing: {xodr.name})")
         return
@@ -126,7 +150,7 @@ def test_cut_in_event_has_simtime_gate():
                        "side": "right", "behavior": {"block": "cut_in"}}],
              "environment": {"weather": "clear", "time_of_day": "afternoon"}}
     out_path = ROOT / "outputs/medoid_xosc/_test_cut_in_gate.xosc"
-    xodr = ROOT / "outputs/opendrive_seed/038_Waymo_December_17_2024.xodr"
+    xodr = XODR_DIR / "038_Waymo_December_17_2024.xodr"
     if not xodr.is_file():
         print(f"  · skipped (xodr missing: {xodr.name})")
         return
@@ -151,9 +175,98 @@ def test_cut_in_event_has_simtime_gate():
     print("  ✓ cut event has both distance + simtime conditions ANDed")
 
 
+def test_cut_in_lane_change_is_npc_relative_and_distance_based():
+    """The cut event's LaneChangeAction must be NPC-relative and distance-based.
+
+    Both halves guard a crash/no-op that shipped to the 42-pattern batch:
+
+    * `RelativeTargetLane/@value="0"` (the ego-relative "end up in ego's lane"
+      form) makes openscenario_parser set `lane_changes = abs(0) = 0`, and
+      `generate_target_waypoint_list_multilane` then divides the lane-change
+      length by it → ZeroDivisionError on the first tick. The value has to be
+      ∓1 relative to the NPC itself, sign chosen so the parser's
+      `direction = "left" if value > 0 else "right"` points at ego.
+    * `dynamicsDimension="time"` leaves the parser's `distance` at inf, so
+      `waypoint.next(inf)` yields nothing and the NPC silently never merges.
+    """
+    xodr = XODR_DIR / "038_Waymo_December_17_2024.xodr"
+    if not xodr.is_file():
+        print(f"  · skipped (xodr missing: {xodr.name})")
+        return
+    out_path = ROOT / "outputs/medoid_xosc/_test_cut_in_lane_change.xosc"
+    # RHT lane ids decrease rightwards, so an NPC on ego's left must merge
+    # right (value=-1) and one on ego's right must merge left (value=+1).
+    for side, want_value in (("left", "-1"), ("right", "1")):
+        scene = {"sut": {"id": "ego", "kind": "vehicle", "maneuver": "straight"},
+                 "npcs": [{"id": "v2", "kind": "vehicle", "position": "adjacent",
+                           "side": side, "behavior": {"block": "cut_in"}}],
+                 "environment": {"weather": "clear", "time_of_day": "afternoon"}}
+        build_xosc(scene, str(xodr), out_path,
+                   road_seed=_passing_road(forward=2, backward=0))
+        root = ET.parse(out_path).getroot()
+        lca = next(root.iter("LaneChangeAction"), None)
+        assert lca is not None, f"side={side}: no LaneChangeAction emitted"
+
+        target = lca.find("LaneChangeTarget/RelativeTargetLane")
+        assert target is not None, f"side={side}: no RelativeTargetLane"
+        assert target.attrib.get("value") == want_value, (
+            f"side={side}: RelativeTargetLane value should be {want_value} "
+            f"(NPC-relative, non-zero), got {target.attrib.get('value')!r}"
+        )
+        assert target.attrib.get("entityRef") == "v2", (
+            f"side={side}: RelativeTargetLane must be relative to the NPC itself, "
+            f"got entityRef={target.attrib.get('entityRef')!r}"
+        )
+
+        dyn = lca.find("LaneChangeActionDynamics")
+        assert dyn is not None, f"side={side}: no LaneChangeActionDynamics"
+        assert dyn.attrib.get("dynamicsDimension") == "distance", (
+            f"side={side}: lane change must be distance-based (time leaves the "
+            f"parser's distance at inf), got {dyn.attrib.get('dynamicsDimension')!r}"
+        )
+        assert float(dyn.attrib["value"]) > 0.0, (
+            f"side={side}: lane-change distance must be positive, got {dyn.attrib['value']!r}"
+        )
+    out_path.unlink()
+    print("  ✓ cut_in LaneChangeAction: NPC-relative ∓1 + distance dynamics")
+
+
+def test_ego_rear_runway_survives_spinout():
+    """065 / 162 / 203: ego needs enough road behind it to absorb a spin-out.
+
+    Those runs died at ~8 s with `exception:IndexError` from
+    atomic_criteria.py:1214 `lane_waypoint.next(2.0)[0]`. The recorded traces
+    show why: after losing lane keeping the ego slid 14-16 m BACKWARDS, past
+    the s=0 road start, where WrongLaneTest snaps to the opposing lane (driving
+    direction s-decreasing) at its own lane end. The old 10 m floor made that
+    reachable, so a class-C ADS lane-keep finding was reported as a pipeline
+    exception instead.
+    """
+    for cid in ("065_Waymo_September_29_2024", "162_Waymo_September_3_2023",
+                "203_Cruise_June_9_2023"):
+        xodr = XODR_DIR / f"{cid}.xodr"
+        if not xodr.is_file():
+            print(f"  · skipped (xodr missing: {xodr.name})")
+            return
+        seed = ROOT / f"data/seeds/scene_seed/{cid}.json"
+        scene = (json.loads(seed.read_text()).get("scene") or {}) if seed.is_file() else {}
+        _, _, ego_s = resolve_ego_placement(str(xodr), scene)
+        assert ego_s >= 16.0 + 5.0, (
+            f"{cid}: ego_s={ego_s} leaves less than the observed 16 m rearward "
+            f"excursion plus margin before the road start"
+        )
+    # A scene with no rear constraint at all must still get the floor, not 10 m.
+    plain = {"npcs": [{"id": "v1", "kind": "vehicle", "position": "ahead_same_lane",
+                       "behavior": {"block": "front_brake"}}]}
+    _, _, ego_s = resolve_ego_placement(
+        str(XODR_DIR / "065_Waymo_September_29_2024.xodr"), plain)
+    assert ego_s >= EGO_REAR_RUNWAY_M, f"rear runway floor not applied: {ego_s}"
+    print(f"  ✓ ego rear runway ≥ {EGO_REAR_RUNWAY_M} m (065/162/203 spin-out clearance)")
+
+
 def test_front_brake_has_lane_follow_goal():
     """A cruising lead vehicle must follow the generated road before braking."""
-    xodr = ROOT / "outputs/opendrive_seed/038_Waymo_December_17_2024.xodr"
+    xodr = XODR_DIR / "038_Waymo_December_17_2024.xodr"
     if not xodr.is_file():
         print(f"  · skipped (xodr missing: {xodr.name})")
         return
@@ -236,7 +349,7 @@ def test_ego_goal_uses_roadgraph_exit_for_left_right():
     target sits past the junction in the original lane and the planner trips
     WrongLane / lane-invasion (observed on 665 and 435, 2026-06-26)."""
     cid = "435_Waymo_November_26_2021"  # cross_intersection + left, HAS map_cache
-    xodr = ROOT / f"outputs/opendrive_seed/{cid}.xodr"
+    xodr = XODR_DIR / f"{cid}.xodr"
     scene_path = ROOT / f"outputs/scene_seed/{cid}.json"
     if not (xodr.is_file() and scene_path.is_file()
             and (ROOT / f"outputs/map_cache/{cid}/route_candidates.json").is_file()):
@@ -371,7 +484,7 @@ def test_no_zero_length_lanesections():
     # been rebuilt with the patch active). Iterate every <road> and assert
     # no <laneSection s=...> sits at or past <road length=...>.
     import xml.etree.ElementTree as _ET
-    seed_dir = ROOT / "outputs/opendrive_seed"
+    seed_dir = XODR_DIR
     if not seed_dir.is_dir():
         print("  · skipped (no opendrive_seed dir)")
         return
@@ -400,12 +513,15 @@ def test_no_zero_length_lanesections():
 
 def main() -> int:
     print("=== 2026-06-26 runtime-fix regression tests ===\n")
+    test_xodr_fixtures_present()
     test_wf8_adjacent_left_requires_forward_ge_2()
     test_wf9_cut_in_long_clearance()
     test_cut_in_auto_corrected_long()
     test_ego_placement_picks_outer_lane_for_adjacent_left()
     test_oncoming_ego_s_clearance()
     test_cut_in_event_has_simtime_gate()
+    test_cut_in_lane_change_is_npc_relative_and_distance_based()
+    test_ego_rear_runway_survives_spinout()
     test_front_brake_has_lane_follow_goal()
     test_front_brake_supports_simtime_trigger()
     test_default_gap_bumped_to_25()
@@ -413,7 +529,7 @@ def main() -> int:
     test_wf10_oncoming_on_turning_junction()
     test_d2_closing_speed_defaults()
     test_no_zero_length_lanesections()
-    print("\n=== all 13 static checks passed ===")
+    print("\n=== all 16 static checks passed ===")
     return 0
 
 

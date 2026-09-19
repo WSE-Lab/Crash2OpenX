@@ -33,6 +33,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from tools.replay_geom import parse_xodr_lines  # noqa: E402
+from tools.model_transport import model_settings
 
 DEFAULT_OUT_ROOT = REPO_ROOT / "outputs" / "web_runs"
 DEFAULT_ENV = REPO_ROOT / ".env.local"
@@ -40,10 +41,7 @@ DEFAULT_ENV = REPO_ROOT / ".env.local"
 app = Flask(__name__)
 CONFIG: dict[str, Any] = {
     "out_root": DEFAULT_OUT_ROOT,
-    "model": "deepseek/deepseek-v4-pro",
-    "base_url": "https://openrouter.ai/api/v1",
-    "api_key_env": "OPENROUTER_API_KEY",
-    "vlm_model": "xiaomi/mimo-v2.5",
+    **model_settings(),
 }
 
 # In-process job registry. Key is run name. Value: queue.Queue for SSE events,
@@ -344,6 +342,9 @@ def detail(name: str):
 @app.get("/run/<name>/video")
 def run_video(name: str):
     mp4 = _run_dir(name) / "carla_rgb.mp4"
+    annotated = _run_dir(name) / 'ads_review/ads_review.mp4'
+    if request.args.get('raw') != '1' and annotated.is_file() and (annotated.parent/'review.json').is_file():
+        mp4 = annotated
     if not mp4.is_file():
         abort(404)
     return send_file(str(mp4), mimetype="video/mp4", conditional=True)
@@ -1460,12 +1461,13 @@ def main() -> int:
     CONFIG["out_root"] = out_root
     out_root.mkdir(parents=True, exist_ok=True)
 
-    # Load .env.local once so OPENROUTER_API_KEY is available to background jobs.
+    # Resolve all inference stages from the same provider after loading config.
     try:
         from tools.coordinator import load_env
         load_env(DEFAULT_ENV)
     except Exception:
         pass
+    CONFIG.update(model_settings())
 
     runs = _scan_runs()
     missing_map = [r["name"] for r in runs if not r["has_map"]]
@@ -1474,8 +1476,8 @@ def main() -> int:
         print(f"[web] {len(missing_map)} run(s) without map.xodr will render trajectories only:")
         for n in missing_map:
             print(f"  - {n}")
-    if "OPENROUTER_API_KEY" not in __import__("os").environ:
-        print("[web] WARN: OPENROUTER_API_KEY not in env; /new pipelines will fail at inference",
+    if CONFIG["api_key_env"] not in __import__("os").environ:
+        print(f"[web] WARN: {CONFIG['api_key_env']} not in env; /new pipelines will fail at inference",
               file=sys.stderr)
     print(f"[web] serving on http://{args.host}:{args.port}  (threaded=True for SSE)")
     app.run(host=args.host, port=args.port, debug=args.debug, threaded=True)

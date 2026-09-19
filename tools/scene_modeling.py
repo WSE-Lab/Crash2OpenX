@@ -40,6 +40,7 @@ class Trigger:
     type: str            # sim_time | longitudinal_distance | cartesian_distance | ttc | traveled_distance
     value: float
     on_entity: str | None = None
+    conditions: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -100,6 +101,7 @@ class Scenario:
     relations: list[Relation] = field(default_factory=list)
     phases: list[Phase] = field(default_factory=list)
     environment: EnvironmentCondition = field(default_factory=EnvironmentCondition)
+    contact_sequence: list[dict] = field(default_factory=list)
 
 
 # ============================================================
@@ -146,10 +148,12 @@ def _infer_scenario_type(scene: dict) -> str:
     # priority: junction > cut_in > VRU > car-following > rear / oncoming > static
     if "junction_cross" in blocks:
         return "junction_crossing"
-    if "junction_turn" in blocks:
+    if "junction_turn" in blocks or "junction_merge" in blocks:
         return "junction_turn"
     if "cut_in" in blocks:
         return "cut_in"
+    if "partial_lane_intrusion" in blocks:
+        return "partial_lane_intrusion"
     if "front_brake" in blocks:
         return "car_following"
     if "rear_hit" in blocks:
@@ -167,14 +171,15 @@ def _infer_scenario_type(scene: dict) -> str:
 
 def _infer_relation_from_position(npc: dict) -> Relation | None:
     pos = npc.get("position")
+    reference = npc.get('relative_to', 'ego')
     if pos == "ahead_same_lane":
-        return Relation("lead_follow", from_actor=npc["id"], to_actor="ego")
+        return Relation("lead_follow", from_actor=npc["id"], to_actor=reference)
     if pos == "behind_same_lane":
-        return Relation("lead_follow", from_actor="ego", to_actor=npc["id"])
+        return Relation("lead_follow", from_actor=reference, to_actor=npc["id"])
     if pos == "adjacent":
-        return Relation("parallel", from_actor="ego", to_actor=npc["id"])
+        return Relation("parallel", from_actor=reference, to_actor=npc["id"])
     if pos == "oncoming":
-        return Relation("oncoming", from_actor="ego", to_actor=npc["id"])
+        return Relation("oncoming", from_actor=reference, to_actor=npc["id"])
     if pos == "roadside":
         return Relation("roadside", from_actor=npc["id"], to_actor="ego")
     if pos in ("cross", "opposing_leg"):
@@ -186,10 +191,11 @@ def _infer_role(npc_id: str, scene: dict) -> str:
     """Use collision pairing as primary signal: whoever is paired with ego in
     collision is the *target*. Other movers are *interferers*; stationary
     obstacles are *background*."""
-    coll = scene.get("collision") or {}
-    a, b = coll.get("a"), coll.get("b")
-    if npc_id in (a, b) and ("ego" in (a, b)):
-        return "target"
+    from tools.scene_contacts import contact_sequence
+    for coll in contact_sequence(scene):
+        a, b = coll.get("a"), coll.get("b")
+        if npc_id in (a, b) and ("ego" in (a, b)):
+            return "target"
     # background = static / stopped
     for n in scene.get("npcs", []):
         if n["id"] != npc_id:
@@ -215,6 +221,14 @@ def _phases_for_npc(npc: dict, start_order: int) -> list[Phase]:
         out.append(Phase(id=f"{nid}_{name}", actor_id=nid, action=action,
                          order=start_order + len(out)))
 
+    if block == 'sequence':
+        from tools.scene_sequences import normalize_steps
+        for index, step in enumerate(normalize_steps(npc['behavior'].get('steps'))):
+            when = step['when']
+            add(f'step_{index+1}', Action(step['action'], dict(step['params']),
+                Trigger(when['condition'], float(when.get('delay', 0)),
+                        on_entity=when.get('target', step.get('target')))))
+        return out
     if block == "front_brake":
         add("cruise", Action("maintain_speed", {"speed": speed},
                              Trigger("sim_time", 0.0)))
@@ -224,7 +238,7 @@ def _phases_for_npc(npc: dict, start_order: int) -> list[Phase]:
                             Trigger("longitudinal_distance",
                                     float(p.get("trig_dist", 18.0)),
                                     on_entity=nid)))
-    elif block in ("rear_hit", "oncoming"):
+    elif block in ("rear_hit", "oncoming", "cruise"):
         add("travel", Action("maintain_speed", {"speed": speed},
                              Trigger("sim_time", 0.0)))
     elif block == "cut_in":
@@ -233,6 +247,10 @@ def _phases_for_npc(npc: dict, start_order: int) -> list[Phase]:
         add("lane_change", Action("lane_change", {"target": "ego_lane"},
                                   Trigger("ttc", float(p.get("trig_ttc", 3.0)),
                                           on_entity=nid)))
+    elif block == 'partial_lane_intrusion':
+        add('cruise', Action('maintain_speed', {'speed':speed}, Trigger('sim_time',0.0)))
+        add('partial_intrusion', Action('partial_lane_offset', {'toward':'ego','offset_fraction':p.get('offset_fraction',.4)},
+                                        Trigger('sim_time',1.5)))
     elif block == "cross":
         add("wait", Action("stop", {}, Trigger("sim_time", 0.0)))
         add("cross", Action("cross_road", {"speed": float(p.get("speed", 1.5))},
@@ -242,14 +260,24 @@ def _phases_for_npc(npc: dict, start_order: int) -> list[Phase]:
     elif block == "walk_along":
         add("walk", Action("walk_along", {"speed": float(p.get("speed", 1.5))},
                            Trigger("sim_time", 0.0)))
-    elif block in ("stopped_ahead", "static_block"):
+    elif block in ("stopped_ahead", "static_block", "static_hold"):
         add("stationary", Action("stop", {}, Trigger("sim_time", 0.0)))
-    elif block in ("junction_cross", "junction_turn"):
+    elif block in ("junction_cross", "junction_turn", "junction_merge"):
         add("approach", Action("maintain_speed", {"speed": speed},
                                Trigger("sim_time", 0.0)))
         add("traverse", Action("follow_path", {"path": "junction_route"},
                                Trigger("ttc", float(p.get("trig_ttc", 3.0)),
                                        on_entity=nid)))
+    from tools.ads_trigger import normalize_ads_trigger
+    config = normalize_ads_trigger(npc)
+    if config is not None:
+        if block in {'junction_cross', 'junction_turn'}:
+            out[0].action = Action('stop', {}, Trigger('sim_time', 0.0))
+            out[-1].action.type = 'accelerate_to'
+            out[-1].action.params = {'speed': speed, 'path': 'junction_route_installed_at_start'}
+        # The last phase is the hazard action; cruising remains immediate.
+        out[-1].action.trigger = Trigger('ads_relative_window', config['distance_m'],
+                                         on_entity='ego', conditions=config)
     return out
 
 
@@ -305,7 +333,7 @@ def _infer_causal_relations(scene: dict, npcs: list[dict],
         nid = n["id"]
         block = (n.get("behavior") or {}).get("block")
         position = n.get("position")
-        if block in ("cut_in", "cross", "walk_along"):
+        if block in ("cut_in", "partial_lane_intrusion", "cross", "walk_along"):
             lane_competitors.append(nid)
         if block in ("junction_cross", "junction_turn") or \
                 position in ("cross", "opposing_leg"):
@@ -318,7 +346,7 @@ def _infer_causal_relations(scene: dict, npcs: list[dict],
             out.append(Relation("competes_for", from_actor=a, to_actor=b))
 
     # ---- precedes: ego -> any NPC with a spatial trigger ----
-    spatial = {"longitudinal_distance", "cartesian_distance",
+    spatial = {"longitudinal_distance", "cartesian_distance", "ads_relative_window",
                "ttc", "traveled_distance"}
     reactive_npcs: set[str] = set()
     for ph in phases:
@@ -378,10 +406,12 @@ def infer_scene_model(scene_seed: dict, *, name: str = "scenario") -> Scenario:
         phases.extend(npc_phs)
 
     # Collision pair as a first-class relation.
-    coll = scene.get("collision") or {}
-    if coll.get("a") and coll.get("b"):
-        relations.append(Relation("collision",
-                                   from_actor=coll["a"], to_actor=coll["b"]))
+    from tools.scene_contacts import contact_sequence
+    contacts = contact_sequence(scene)
+    for coll in contacts:
+        if coll.get("a") and coll.get("b"):
+            relations.append(Relation("collision",
+                                       from_actor=coll["a"], to_actor=coll["b"]))
 
     # Traffic control as an infrastructure actor + yields_to relation.
     if control in _CONTROL_TO_INFRA:
@@ -400,6 +430,7 @@ def infer_scene_model(scene_seed: dict, *, name: str = "scenario") -> Scenario:
         name=name,
         type=scenario_type,
         sut_maneuver=sut.get("maneuver", "straight"),
+        contact_sequence=contacts,
         control=control,
         actors=actors,
         relations=relations,
@@ -581,6 +612,8 @@ def to_plantuml_instance(sc: Scenario) -> str:
 def _trigger_label(t: Trigger | None) -> str:
     if t is None:
         return ""
+    if t.type == 'ads_relative_window':
+        return f" [ADS body gap {t.conditions['min_clearance_m']:g}..{t.value:g} m; live speed guards]"
     sym = {"sim_time": "t",
            "longitudinal_distance": "d_long",
            "cartesian_distance": "d_xy",

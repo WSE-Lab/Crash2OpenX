@@ -55,6 +55,9 @@ class LocalCfg:
     container_name: str = "carla-0916"
     rpc_port: int = 2000
     compose_file: str = str(ROOT / "docker" / "docker-compose.yml")
+    keep_remote_runs: bool = True
+    compact_artifacts: bool = False
+    min_free_gib: float = 10.0
 
     @classmethod
     def from_env(cls) -> "LocalCfg":
@@ -67,6 +70,7 @@ class LocalCfg:
             container_name=os.environ.get("CARLA_LOCAL_CONTAINER", d.container_name),
             rpc_port=int(os.environ.get("CARLA_LOCAL_RPC_PORT", d.rpc_port)),
             compose_file=os.environ.get("CARLA_LOCAL_COMPOSE_FILE", d.compose_file),
+            min_free_gib=float(os.environ.get("CARLA_LOCAL_MIN_FREE_GIB", d.min_free_gib)),
         )
 
 
@@ -78,7 +82,12 @@ class CarlaLocalClient(CarlaRemoteClient):
 
     # ---- transport primitives (local overrides) ------------------------------
 
-    def _runner_env(self) -> dict:
+    def _runner_env(self) -> str:
+        # The inherited operations prepend this to a shell command. Local
+        # configuration is passed separately through subprocess's env mapping.
+        return ""
+
+    def _process_env(self) -> dict:
         env = dict(os.environ)
         env.update({
             "RUNS_ROOT": self.cfg.runs_root,
@@ -94,7 +103,7 @@ class CarlaLocalClient(CarlaRemoteClient):
         return subprocess.run(
             ["bash", "-c", remote_cmd],
             capture_output=True, text=True, timeout=timeout, check=False,
-            env=self._runner_env(),
+            env=self._process_env(),
         )
 
     def _push(self, local: Path, remote: str) -> None:
@@ -115,6 +124,9 @@ class CarlaLocalClient(CarlaRemoteClient):
             shutil.copy2(str(src), str(local_dir / src.name))
         else:
             raise CarlaRemoteError(f"local pull failed: no such path {src}")
+
+    def _pull_tree(self, remote: str, local_dir: Path) -> None:
+        self._pull(remote, local_dir)
 
     # ---- runner deployment: nothing to ship locally ---------------------------
 

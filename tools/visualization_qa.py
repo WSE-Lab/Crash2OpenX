@@ -424,17 +424,16 @@ def xodr_lane_center_segments(path: Path) -> list[dict[str, Any]]:
             lanes = []
             for lane in side.findall("./lane"):
                 lane_id = int(lane.get("id", "0"))
-                if lane.get("type") != "driving":
-                    continue
                 width_node = lane.find("./width")
                 width = float(width_node.get("a", 0.0)) if width_node is not None else 0.0
                 if width <= 0.0:
                     continue
-                lanes.append((abs(lane_id), lane_id, width))
+                lanes.append((abs(lane_id), lane_id, width, lane.get('type')))
             lanes.sort()
             cumulative = 0.0
-            for _, lane_id, width in lanes:
-                lane_offsets.append((lane_id, sign * (cumulative + width / 2.0), width))
+            for _, lane_id, width, lane_type in lanes:
+                if lane_type == 'driving':
+                    lane_offsets.append((lane_id, sign * (cumulative + width / 2.0), width))
                 cumulative += width
 
         for geom in road.findall("./planView/geometry"):

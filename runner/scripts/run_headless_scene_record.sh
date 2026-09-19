@@ -334,7 +334,8 @@ if [[ "${RECORD_RGB}" == "1" ]]; then
   echo "  log: ${RGB_LOG}"
   (
     cd "${ROOT_DIR}"
-    SDL_VIDEODRIVER=dummy "${PYTHON_BIN}" src/visualize_carla.py \
+    export SDL_VIDEODRIVER=dummy
+    exec "${PYTHON_BIN}" -u src/visualize_carla.py \
       --host "${HOST}" \
       --port "${PORT}" \
       --mode rgb \
@@ -356,6 +357,7 @@ if [[ "${RECORD_RGB}" == "1" ]]; then
 fi
 
 demo_args=(
+  "--replay-control" "${REPLAY_CONTROL:-kinematic}"
   "--host" "${HOST}"
   "--port" "${PORT}"
   "--timeout" "${TIMEOUT}"
@@ -367,6 +369,10 @@ demo_args=(
   "--video-fps" "${VIDEO_FPS}"
   "--video-frame-stride" "${VIDEO_FRAME_STRIDE}"
 )
+
+if [[ "${CONTINUE_AFTER_COLLISION:-0}" == "1" ]]; then
+  demo_args+=("--continue-after-collision")
+fi
 
 if [[ "${DEMO_RECORD_TRAJECTORY}" == "1" ]]; then
   demo_args+=("--record-video")

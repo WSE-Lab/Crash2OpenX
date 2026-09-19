@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use Crash2OpenX, please cite the paper below."
+type: software
+title: Crash2OpenX
+authors:
+  - family-names: Liu
+    given-names: Xijun
+    orcid: https://orcid.org/0009-0005-2000-8864
+  - family-names: Yue
+    given-names: Tao
+    orcid: https://orcid.org/0000-0003-3262-5577
+  - family-names: Zhang
+    given-names: Man
+    orcid: https://orcid.org/0000-0003-1204-9322
+repository-code: https://github.com/WSE-Lab/Crash2OpenX
+license: MIT
+preferred-citation:
+  type: conference-paper
+  title: "From Natural-Language Crash Reports to Executable Driving Scenarios via Model Transformation"
+  authors:
+    - family-names: Liu
+      given-names: Xijun
+    - family-names: Yue
+      given-names: Tao
+    - family-names: Zhang
+      given-names: Man
+  year: 2026
+  doi: 10.1145/3837062.3838870
+  collection-title: MODELS Companion 2026

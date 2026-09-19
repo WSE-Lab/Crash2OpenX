@@ -84,12 +84,13 @@ def system_prompt(schema_md: str) -> str:
 
 核心原则：
 1. 只推理道路，不推理 actor、轨迹、碰撞时间、OpenDRIVE ID、laneLink 或 waypoint。
-2. road seed 必须严格使用 Road Seed Schema v2 中的 topology/type/lanes/center_line。
+2. road seed 必须严格使用 Road Seed Schema v2 中的 topology/type/lanes/center_line 和可选 parking。
 3. 如果支持的 topology 无法覆盖该场景，不要强行选择最近项。必须返回 unsupported 特殊标准，并说明原因。
 4. 不要输出 parking_lot、parking_area、parking_access、driveway_connection、custom_topology 或 allowed_maneuvers。
    也不要输出 roundabout（环岛）：当前 OpenDRIVE 生成工具链不支持环岛几何，遇到环岛场景请返回 status=unsupported。
 5. cross_intersection 天然隐含四向 approach 和所有合法直行/左转/右转，不要额外列 allowed maneuvers。
 6. 不要输出 left_turn/right_turn。转弯是机动行为，不是道路几何：路口处的左转/右转用 cross_intersection 或 t_junction/y_junction 表达（路口已隐含所有转向 connector）；只有当道路本身是一段独立弯曲的连接道路、且不构成路口时，才用 curve。转弯方向和进出路由属于后续机动/路由阶段，绝不在 road seed 中表达。
+   反向同理：若事故地点本身就是平面交叉口（"X at Y"、"X and Y"、"intersection of …"、在路口停等红灯/停车标志等），topology 必须选路口模板（四向用 cross_intersection，三向按形状用 t_junction/y_junction），即使涉事各车都在直行——路口的存在由事故地点决定，不由机动方向决定。
 7. lanes 是方向感知对象 {{"forward": N, "backward": M}}，相对 ego 的行驶方向：forward = 同向车道数（>=1），backward = 对向车道数（0..5）。
    - 单行道（one-way street）：backward = 0（明确只有一个行驶方向、无对向车道时）。
    - 不对称（如北向1条、南向2条）：forward/backward 取各自实际值。
@@ -99,7 +100,8 @@ def system_prompt(schema_md: str) -> str:
    - broken / dashed / 允许借道或超车 → "broken"。
    - 事实不明确时默认 "broken"（保守地保留绕行空间）。单行道（backward=0）时 center_line 仍填，但无实际意义。
 9. type 直接使用 OpenDRIVE 1.5M road type 白名单；事实不明确时默认 town。
-10. 必须额外输出 description_zh：一句简洁中文，描述该道路的几何（topology/type/lanes/center_line）及判断依据，供人工快速浏览。unsupported 时也要给出一句中文说明为什么无法覆盖。
+10. 路边停车带可用可选 parking: {{"left":true,"right":false}}，相对同向交通方向，不计入lanes.forward/backward，不是parking_lot。当前仅straight支持；left表示紧邻最左同向车道的路缘停车带，须backward=0。原文明示从最左同向车道直接进入左侧路缘停车带时，保留这一邻接关系；不得在二者之间添加对向交通车道。未提停车带时省略parking；不支持的复杂停车区仍返回unsupported。
+11. 必须额外输出 description_zh：一句简洁中文，描述该道路的几何（topology/type/lanes/center_line）及判断依据，供人工快速浏览。unsupported 时也要给出一句中文说明为什么无法覆盖。
 
 支持输出格式一：supported
 {{
@@ -182,6 +184,9 @@ def normalize_supported(data: dict[str, Any], input_path: Path, model: str) -> d
         "lanes": {"forward": forward, "backward": backward},
         "center_line": center_line,
     }
+    if 'parking' in road:
+        from tools.road_parking import normalize_parking
+        normalized['parking'] = normalize_parking({**normalized, 'parking': road['parking']})
     if normalized["topology"] not in TOPOLOGIES:
         raise ValueError(f"unsupported road.topology: {normalized['topology']!r}")
     if normalized["type"] not in ROAD_TYPES:
@@ -263,7 +268,8 @@ def call_model(args: argparse.Namespace, data: dict[str, Any]) -> dict[str, Any]
         kwargs["reasoning_effort"] = args.reasoning_effort
     if args.enable_thinking:
         kwargs["extra_body"] = {"thinking": {"type": "enabled"}}
-    response = client.chat.completions.create(**kwargs)
+    from tools.model_transport import complete_chat_completion
+    response = complete_chat_completion(client, **kwargs)
     return extract_json(response.choices[0].message.content or "")
 
 
@@ -272,14 +278,18 @@ def default_output_path(input_path: Path, output_dir: Path) -> Path:
 
 
 def parse_args() -> argparse.Namespace:
+    from tools.coordinator import load_env
+    from tools.model_transport import model_settings
+    load_env(REPO_ROOT / ".env.local")
+    defaults = model_settings()
     parser = argparse.ArgumentParser(description="Infer road_seed JSON from facts or semantic scene JSON via API")
     parser.add_argument("--input", required=True, type=Path, help="Facts or semantic scene JSON")
     parser.add_argument("--output", type=Path, help="Output road_seed JSON path")
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/road_seed"))
     parser.add_argument("--schema-md", type=Path, default=SCHEMA_MD)
-    parser.add_argument("--model", default="deepseek/deepseek-v4-pro")
-    parser.add_argument("--base-url", default="https://openrouter.ai/api/v1")
-    parser.add_argument("--api-key-env", default="OPENROUTER_API_KEY")
+    parser.add_argument("--model", default=defaults["model"])
+    parser.add_argument("--base-url", default=defaults["base_url"])
+    parser.add_argument("--api-key-env", default=defaults["api_key_env"])
     parser.add_argument("--reasoning-effort", default="high")
     parser.add_argument("--enable-thinking", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--temperature", type=float, default=0.0)

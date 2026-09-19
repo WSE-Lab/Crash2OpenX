@@ -4,6 +4,7 @@ import os
 import shutil
 import subprocess
 import time
+import threading
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
@@ -11,6 +12,11 @@ from typing import Any, Dict, List, Optional, Tuple
 import carla
 import numpy as np
 import shapely.geometry
+from storyboard_observer import StoryboardObserver
+try:
+    from scene_contacts import read_xosc_contacts
+except ModuleNotFoundError:
+    from tools.scene_contacts import read_xosc_contacts
 
 
 class DataCollector:
@@ -47,6 +53,8 @@ class DataCollector:
         record_video: bool = False,
         video_fps: int = 10,
         video_frame_stride: int = 2,
+        stop_on_collision: bool = True,
+        collision_tail_seconds: float = 2.0,
     ):
         self.scenario_name = scenario_name
         self.scenario_path = scenario_path
@@ -56,6 +64,11 @@ class DataCollector:
         self.record_video = bool(record_video)
         self.video_fps = max(1, int(video_fps))
         self.video_frame_stride = max(1, int(video_frame_stride))
+        self.expected_contact_sequence = read_xosc_contacts(scenario_path)
+        self._storyboard_observer = StoryboardObserver(scenario_path)
+        self.stop_on_collision = bool(stop_on_collision) and len(self.expected_contact_sequence) <= 1
+        self.collision_tail_seconds = max(0.0, float(collision_tail_seconds))
+        self._collision_deadline = None
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         base_dir = output_dir or os.path.join(os.getcwd(), "eval", f"{scenario_name}_{timestamp}")
@@ -106,6 +119,8 @@ class DataCollector:
         self._last_failed_stop = None
 
         self._collision_sensor = None
+        self._collision_sensors = {}
+        self._physical_pairs_by_frame = {}
         self._lane_invasion_sensor = None
 
         self._frame_file = None
@@ -120,6 +135,7 @@ class DataCollector:
         }
         self._trace_records: List[Dict[str, Any]] = []
         self._event_records: List[Dict[str, Any]] = []
+        self._event_lock = threading.RLock()
         self._offroad_detected = False
         self._teleport_detected = False
         self._previous_trace_state: Dict[str, Dict[str, Any]] = {}
@@ -143,6 +159,10 @@ class DataCollector:
             "opposite_lane_occupancy_time": 0.0,
             "blocked_time": 0.0,
             "collision_count": 0,
+            "geometric_overlap_count": 0,
+            "collision_evidence": "carla_collision_sensor",
+            "expected_contact_sequence": self.expected_contact_sequence,
+            "early_exit_on_first_sut_contact": self.stop_on_collision,
             "lane_invasion_count": 0,
             "red_light_violation_count": 0,
             "stop_sign_violation_count": 0,
@@ -200,12 +220,36 @@ class DataCollector:
 
         ego_state = self._extract_ego_state(snapshot, sim_time, dt)
         actor_states = self._extract_expected_actor_states(snapshot, sim_time, dt)
+        self._sync_collision_sensors()
+        if self._storyboard_observer.elements:
+            import py_trees
+            from srunner.scenariomanager.timer import GameTime
+            for event in self._storyboard_observer.sample(
+                    py_trees.blackboard.Blackboard(), GameTime.get_time(), frame, sim_time):
+                self._write_event(event)
         route_completion = self._compute_route_completion(ego_state["location_obj"])
 
         self._update_jerk(sim_time, frame, dt, ego_state)
         self._update_distance_metrics(sim_time, frame)
         self._check_synthetic_collisions(frame, sim_time)
+        if self._collision_deadline is not None and sim_time >= self._collision_deadline:
+            self._termination_requested = True
+            self._requested_termination_reason = "collision_exit"
         self._update_offroad_time(dt, ego_state["location_obj"])
+        # A finite procedural OpenDRIVE mesh has no terrain beyond its edge.
+        # End an autonomous test at the first measured departure, recording a
+        # failure outcome instead of continuing an uninformative free fall.
+        # No control, transform or velocity is changed here.
+        if (os.environ.get("C2X_TERMINATE_MAP_EXIT") == "1"
+                and ego_state["location_obj"].z < -.3
+                and not self._termination_requested):
+            self._termination_requested = True
+            self._requested_termination_reason = "sut_left_map_surface"
+            self.summary["autonomous_test_outcome"] = "map_surface_exit_failure"
+            self._write_event({"event_type": "map_surface_exit", "frame": frame,
+                               "simulation_time": sim_time,
+                               "payload": {"source": "carla_actor_state", "z_m": ego_state["location_obj"].z,
+                                           "threshold_z_m": -.3, "outcome": "failure"}})
         self._update_actor_feedback_flags(actor_states, dt)
         self._update_wrong_lane_time(dt, ego_state["location_obj"])
         self._update_blocked_time(
@@ -263,12 +307,12 @@ class DataCollector:
             }
         )
 
+        self._cleanup_sensors()
         self._write_sim_feedback()
 
         with open(self.paths["summary"], "w", encoding="utf-8") as file_obj:
             json.dump(self.summary, file_obj, indent=2, ensure_ascii=False)
 
-        self._cleanup_sensors()
         if self._frame_file:
             self._frame_file.close()
             self._frame_file = None
@@ -455,7 +499,21 @@ class DataCollector:
             "vy": round(velocity.y, 6),
             "vz": round(velocity.z, 6),
             "speed_mps": round(speed, 6),
+            "planar_speed_mps": round(math.hypot(velocity.x, velocity.y), 6),
+            "bounding_box_world_vertices": [
+                [round(v.x, 6), round(v.y, 6), round(v.z, 6)]
+                for v in actor.bounding_box.get_world_vertices(transform)
+            ],
         }
+        if actor.type_id.startswith("vehicle."):
+            control = actor.get_control()
+            state["applied_control"] = {
+                "throttle": round(control.throttle, 6),
+                "brake": round(control.brake, 6),
+                "steer": round(control.steer, 6),
+                "hand_brake": control.hand_brake,
+                "reverse": control.reverse,
+            }
         waypoint = self.map.get_waypoint(
             transform.location,
             project_to_road=True,
@@ -478,11 +536,12 @@ class DataCollector:
         self._frame_file.write(json.dumps(record, ensure_ascii=False) + "\n")
 
     def _write_event(self, event: Dict[str, Any]):
-        self._event_records.append(event)
-        if not self._event_file:
-            return
-        self._event_file.write(json.dumps(event, ensure_ascii=False) + "\n")
-        self._event_file.flush()
+        with self._event_lock:
+            self._event_records.append(event)
+            if not self._event_file:
+                return
+            self._event_file.write(json.dumps(event, ensure_ascii=False) + "\n")
+            self._event_file.flush()
 
     def _write_trace_state(self, snapshot, sim_time: float, actor_states: Dict[str, Dict[str, Any]]):
         if self.hero_actor and self.hero_actor.is_alive and "hero" not in actor_states:
@@ -574,31 +633,56 @@ class DataCollector:
 
     def _setup_event_sensors(self):
         blueprint_library = self.world.get_blueprint_library()
-
-        collision_bp = blueprint_library.find("sensor.other.collision")
-        self._collision_sensor = self.world.spawn_actor(collision_bp, carla.Transform(), attach_to=self.hero_actor)
-        self._collision_sensor.listen(self._on_collision)
+        self._sync_collision_sensors()
 
         lane_bp = blueprint_library.find("sensor.other.lane_invasion")
         self._lane_invasion_sensor = self.world.spawn_actor(lane_bp, carla.Transform(), attach_to=self.hero_actor)
         self._lane_invasion_sensor.listen(self._on_lane_invasion)
 
-    def _cleanup_sensors(self):
-        if self._collision_sensor is not None:
-            self._collision_sensor.stop()
-            self._collision_sensor.destroy()
-            self._collision_sensor = None
-        if self._lane_invasion_sensor is not None:
-            self._lane_invasion_sensor.stop()
-            self._lane_invasion_sensor.destroy()
-            self._lane_invasion_sensor = None
+    def _sync_collision_sensors(self):
+        """Observe NPC-NPC contacts too, including the first hit in chain crashes."""
+        actors = self._get_expected_live_actors()
+        if self.hero_actor is not None and all(a.id != self.hero_actor.id for a in actors):
+            actors.append(self.hero_actor)
+        for actor in actors:
+            if actor.id in self._collision_sensors or not actor.is_alive:
+                continue
+            if not actor.type_id.startswith(("vehicle.", "walker.")):
+                continue
+            blueprint = self.world.get_blueprint_library().find("sensor.other.collision")
+            sensor = self.world.spawn_actor(blueprint, carla.Transform(), attach_to=actor)
+            sensor.listen(lambda event, owner=actor: self._on_collision(event, owner))
+            self._collision_sensors[actor.id] = sensor
+        self.summary["collision_sensor_actor_ids"] = sorted(self._collision_sensors)
 
-    def _on_collision(self, event):
-        actor_location = self.hero_actor.get_location()
+    def _cleanup_sensors(self):
+        sensors = list(self._collision_sensors.values())
+        self._collision_sensors.clear()
+        if self._lane_invasion_sensor is not None:
+            sensors.append(self._lane_invasion_sensor)
+            self._lane_invasion_sensor = None
+        errors = self.summary.setdefault('sensor_cleanup_errors', [])
+        for sensor in sensors:
+            for operation in ('stop', 'destroy'):
+                try:
+                    getattr(sensor, operation)()
+                except RuntimeError as exc:
+                    detail = {'sensor_id':sensor.id, 'operation':operation, 'error':str(exc)}
+                    errors.append(detail)
+                    print('C2X_SENSOR_CLEANUP_ERROR '+json.dumps(detail), flush=True)
+        self.summary['sensor_cleanup_status'] = 'completed_with_errors' if errors else 'complete'
+
+    def _on_collision(self, event, sensor_actor=None):
+        with self._event_lock:
+            self._record_collision(event, sensor_actor)
+
+    def _record_collision(self, event, sensor_actor=None):
+        sensor_actor = sensor_actor if sensor_actor is not None else self.hero_actor
+        actor_location = sensor_actor.get_location()
         impulse = event.normal_impulse
         other_role = event.other_actor.attributes.get("role_name") if hasattr(event.other_actor, "attributes") else None
         other_type = event.other_actor.type_id
-        ego_role = self.hero_actor.attributes.get("role_name") if hasattr(self.hero_actor, "attributes") else "hero"
+        ego_role = sensor_actor.attributes.get("role_name") if hasattr(sensor_actor, "attributes") else None
         if other_type == "static.unknown":
             if not self._static_contact_ignored:
                 elapsed = event.timestamp - (self._episode_start_sim_time or event.timestamp)
@@ -622,23 +706,41 @@ class DataCollector:
                 self._static_contact_ignored = True
             return
 
+        # Both attached sensors report a contact. Keep one physical event per
+        # actor pair per frame; repeated frames still describe sustained contact.
+        pair = tuple(sorted((sensor_actor.id, event.other_actor.id)))
+        pairs = self._physical_pairs_by_frame.setdefault(event.frame, set())
+        if pair in pairs:
+            return
+        pairs.add(pair)
+        for old_frame in list(self._physical_pairs_by_frame):
+            if old_frame < event.frame - 10:
+                del self._physical_pairs_by_frame[old_frame]
         self.summary["collision_count"] += 1
-        self._termination_requested = True
-        self._requested_termination_reason = "collision_exit"
+        sut_involved = self.hero_actor.id in pair
+        if sut_involved and self.stop_on_collision and self._collision_deadline is None:
+            self._collision_deadline = event.timestamp + self.collision_tail_seconds
         self._write_event(
             {
                 "event_type": "collision",
                 "frame": event.frame,
                 "simulation_time": round(event.timestamp, 6),
                 "payload": {
+                    "source": "carla_collision_sensor",
+                    "sensor_actor_id": sensor_actor.id,
+                    "sensor_actor_role_name": ego_role,
+                    "sut_involved": sut_involved,
+                    "sensor_actor_location": {
+                        "x": round(actor_location.x, 6), "y": round(actor_location.y, 6), "z": round(actor_location.z, 6),
+                    },
                     "other_actor_id": event.other_actor.id,
                     "other_actor_type_id": other_type,
                     "other_actor_role_name": other_role,
                     "actors": [name for name in [other_role, ego_role] if name],
                     "ego_location": {
-                        "x": round(actor_location.x, 6),
-                        "y": round(actor_location.y, 6),
-                        "z": round(actor_location.z, 6),
+                        "x": round(self.hero_actor.get_location().x, 6),
+                        "y": round(self.hero_actor.get_location().y, 6),
+                        "z": round(self.hero_actor.get_location().z, 6),
                     },
                     "normal_impulse": {
                         "x": round(impulse.x, 6),
@@ -685,15 +787,12 @@ class DataCollector:
 
                 self._synthetic_collision_pairs.add(pair_key)
                 sut_involved = self.hero_actor.id in pair_key
-                if sut_involved:
-                    self.summary["collision_count"] += 1
-                    self._termination_requested = True
-                    self._requested_termination_reason = "collision_exit"
+                self.summary["geometric_overlap_count"] += 1
                 first_name = first_actor.attributes.get("role_name") if hasattr(first_actor, "attributes") else None
                 second_name = second_actor.attributes.get("role_name") if hasattr(second_actor, "attributes") else None
                 self._write_event(
                     {
-                        "event_type": "collision",
+                        "event_type": "geometric_overlap",
                         "frame": frame,
                         "simulation_time": round(sim_time, 6),
                         "payload": {

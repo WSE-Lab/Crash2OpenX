@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Input normalization: any supported source -> raw text blob for the agents.
 
-PDF goes through a VLM (xiaomi/mimo-v2.5 by default) that reads every page as an
+PDF goes through a VLM (deepseek-flash by default) that reads every page as an
 image and emits a faithful event-description text. Other formats stay text-only.
 
     .pdf                          -> VLM (page images -> description blob)
@@ -16,13 +16,68 @@ image and emits a faithful event-description text. Other formats stay text-only.
 from __future__ import annotations
 
 import base64
+import difflib
+import hashlib
+import json
 import os
+import re
 import sys
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 MARKITDOWN_SUFFIXES = {".docx", ".pptx", ".xlsx", ".html", ".htm", ".csv"}
 TEXT_SUFFIXES = {".txt", ".md"}
 KNOWN_SUFFIXES = {".pdf"} | MARKITDOWN_SUFFIXES | TEXT_SUFFIXES
+
+
+def pdf_narrative_coverage(source: Path, text: str) -> dict:
+    """Detect lost long form fields, especially DMV's accident description.
+
+    This verifies the VLM output against the same original PDF; field text is
+    never substituted for model output. Scans without form fields remain subject
+    to image review and cannot pass this particular completeness check by proxy.
+    """
+    if source.suffix.lower() != ".pdf":
+        return {"applicable": False, "passed": True, "fields": []}
+    import fitz
+    fields = []
+    output = re.findall(r"[a-z0-9]+", text.lower())
+    with fitz.open(source) as document:
+        for page_number, page in enumerate(document, 1):
+            for widget in page.widgets() or []:
+                value = str(widget.field_value or "").strip()
+                if len(value) < 200:
+                    continue
+                words = re.findall(r"[a-z0-9]+", value.lower())
+                if not words:
+                    continue
+                matched = sum(b.size for b in difflib.SequenceMatcher(
+                    None, words, output, autojunk=False).get_matching_blocks())
+                fields.append({"page": page_number, "field": widget.field_name,
+                               "word_count": len(words), "coverage": round(matched / len(words), 4)})
+    return {"applicable": bool(fields), "passed": all(f["coverage"] >= .85 for f in fields),
+            "fields": fields}
+
+
+def load_extraction_checkpoint(source: Path, checkpoint: Path, *, model: str, base_url: str):
+    """Resume a recorded PDF read only when its source and text are unchanged."""
+    record = json.loads((checkpoint / "source_extraction.json").read_text())
+    payload = (checkpoint / "source_text.txt").read_bytes()
+    expected = {"source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+                "text_sha256": hashlib.sha256(payload).hexdigest(),
+                "vlm_model": model, "base_url": base_url}
+    for key, value in expected.items():
+        if record.get(key) != value:
+            raise ValueError(f"Source extraction checkpoint mismatch: {key}")
+    text = payload.decode("utf-8")
+    if not text.strip() or not record.get("extracted_at"):
+        raise ValueError("Incomplete source extraction checkpoint")
+    if not pdf_narrative_coverage(source, text)["passed"]:
+        raise ValueError("Source extraction checkpoint omits PDF narrative fields")
+    return text, record
 
 
 VLM_SYSTEM_PROMPT = (
@@ -101,17 +156,38 @@ def _extract_pdf_vlm(
         user_content.append({"type": "image_url",
                              "image_url": {"url": f"data:image/png;base64,{b64}"}})
     client = OpenAI(api_key=api_key, base_url=base_url)
-    resp = client.chat.completions.create(
-        model=model,
-        stream=False,
-        temperature=0.0,
-        max_tokens=max_tokens,
-        messages=[
-            {"role": "system", "content": VLM_SYSTEM_PROMPT},
-            {"role": "user", "content": user_content},
-        ],
+    # Reasoning VLMs occasionally burn the whole token budget thinking and
+    # return an empty content string; providers also hiccup. Retry (with a
+    # bigger budget) instead of silently handing "" to the seed agents.
+    finish = None
+    coverage = None
+    for attempt in range(3):
+        from tools.model_transport import chat_completion
+        resp = chat_completion(client,
+            model=model,
+            stream=False,
+            temperature=0.0,
+            max_tokens=max_tokens * (2 ** attempt),
+            messages=[
+                {"role": "system", "content": VLM_SYSTEM_PROMPT},
+                {"role": "user", "content": user_content},
+            ],
+        )
+        text = (resp.choices[0].message.content or "").strip()
+        finish = resp.choices[0].finish_reason
+        coverage = pdf_narrative_coverage(path, text)
+        if text and finish != "length" and coverage["passed"]:
+            return text
+        if text:
+            print(f"[extract] Incomplete PDF read (finish={finish}, narrative={coverage}); retrying", flush=True)
+            if attempt == 0:
+                user_content.insert(0, {"type": "text", "text":
+                    "上次读取遗漏或截断了内容。请优先完整逐字转写 SECTION 5 的事故经过，"
+                    "再输出其他各页事实，务必读完每页底部与所有后续页面，不要只转写前半部分表单。"})
+    raise RuntimeError(
+        f"VLM PDF extraction returned incomplete text after 3 attempts "
+        f"(model={model}, last finish_reason={finish}, coverage={coverage})"
     )
-    return (resp.choices[0].message.content or "").strip()
 
 
 def _extract_markitdown(path: Path) -> str:
@@ -143,16 +219,13 @@ def extract_any(
 
     suffix = path.suffix.lower()
     if suffix == ".pdf":
-        if not vlm_model:
-            raise RuntimeError(
-                "PDF extraction now requires a VLM. Pass vlm_model/vlm_base_url/vlm_api_key_env "
-                "(or set VLM_MODEL/OPENROUTER_BASE_URL/OPENROUTER_API_KEY in .env.local)."
-            )
+        from tools.model_transport import model_settings
+        defaults = model_settings()
         return _extract_pdf_vlm(
             path,
-            model=vlm_model,
-            base_url=vlm_base_url or "https://openrouter.ai/api/v1",
-            api_key_env=vlm_api_key_env or "OPENROUTER_API_KEY",
+            model=vlm_model or defaults["vlm_model"],
+            base_url=vlm_base_url or defaults["base_url"],
+            api_key_env=vlm_api_key_env or defaults["api_key_env"],
         )
     if suffix in MARKITDOWN_SUFFIXES:
         return _extract_markitdown(path)
@@ -174,12 +247,7 @@ def main() -> int:
                 continue
             k, _, v = line.partition("=")
             os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
-    text = extract_any(
-        sys.argv[1],
-        vlm_model=os.environ.get("VLM_MODEL"),
-        vlm_base_url=os.environ.get("OPENROUTER_BASE_URL"),
-        vlm_api_key_env="OPENROUTER_API_KEY",
-    )
+    text = extract_any(sys.argv[1])
     print(f"[extract] chars={len(text)}")
     print("=" * 40)
     print(text[:2000])

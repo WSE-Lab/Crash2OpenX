@@ -28,7 +28,21 @@ CARLA_PORT="${CARLA_PORT:-2000}"
 mkdir -p "${INPUT_DIR}" "${OUTPUT_DIR}"
 exec > >(tee -a "${LOG}") 2>&1
 
+RUN_LOG_START=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+capture_server_log() {
+  local status=$?
+  docker logs --timestamps --since "${RUN_LOG_START}" "${CONTAINER}" \
+    >"${OUTPUT_DIR}/carla_server.log" 2>&1 || true
+  gzip -f "${OUTPUT_DIR}/carla_server.log" || true
+  return "${status}"
+}
+trap capture_server_log EXIT
+
 echo "==== runner.sh mode=${MODE} run_id=${RUN_ID} ts=$(date -Iseconds) ===="
+cp "$0" "${OUTPUT_DIR}/runner_entry.sh"
+if [[ -f "${PROJECT_DIR}/src/runtime_provenance.py" ]]; then
+  "${PYTHON}" "${PROJECT_DIR}/src/runtime_provenance.py" "${PROJECT_DIR}" "${OUTPUT_DIR}"
+fi
 
 ensure_carla() {
   local state
@@ -166,7 +180,7 @@ with open(xodr_path) as f:
     xodr = f.read()
 params = carla.OpendriveGenerationParameters(
     vertex_distance=2.0, max_road_length=500.0, wall_height=0.0,
-    additional_width=0.6, smooth_junctions=True, enable_mesh_visibility=False,
+    additional_width=0.6, smooth_junctions=True, enable_mesh_visibility=True,
 )
 client.generate_opendrive_world(xodr, params)
 print("warmup OK", flush=True)

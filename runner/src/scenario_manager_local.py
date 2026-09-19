@@ -74,6 +74,7 @@ class ScenarioManager(object):
         self._spectator_location = None
         self.real_time_factor = 1.0
         self.post_run_hold = 0.0
+        self._night_light_actors = set()
 
 
     def _reset(self):
@@ -87,6 +88,7 @@ class ScenarioManager(object):
         self.start_system_time = None
         self.end_system_time = None
         self._spectator_location = None
+        self._night_light_actors.clear()
         GameTime.restart()
 
     def cleanup(self):
@@ -233,6 +235,7 @@ class ScenarioManager(object):
 
             # Tick scenario
             self.scenario_tree.tick_once()
+            self._enable_night_vehicle_lights()
             self._update_spectator_camera()
 
             # 数据收集 - 在每次tick时收集数据
@@ -252,6 +255,20 @@ class ScenarioManager(object):
         if self._sync_mode and self._running and self._watchdog.get_status():
             self._sleep_for_realtime_pacing(tick_wall_start)
             CarlaDataProvider.get_world().tick()
+
+    def _enable_night_vehicle_lights(self):
+        world = CarlaDataProvider.get_world()
+        if world is None or world.get_weather().sun_altitude_angle >= 0:
+            return
+        for actor in world.get_actors().filter('vehicle.*'):
+            if actor.id in self._night_light_actors:
+                continue
+            actor.set_light_state(carla.VehicleLightState(
+                int(actor.get_light_state())
+                | int(carla.VehicleLightState.Position)
+                | int(carla.VehicleLightState.LowBeam)
+            ))
+            self._night_light_actors.add(actor.id)
 
     def _sleep_for_realtime_pacing(self, tick_wall_start):
         """

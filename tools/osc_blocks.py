@@ -9,8 +9,8 @@ placed RELATIVE to ego, assembled into one XOSC modeled on CARLA's official exam
   - triggers fire on the HERO entity (condition references the NPC)
   - Environment with Sun; scenario_runner criteria_* monitoring patched in
 
-Triggers are NOT a scene_seed axis: each block hardcodes its trigger TYPE; the threshold is a
-block param (default + mutable). scene_seed carries only position + behavior(block+params).
+Blocks have default trigger types and thresholds. An explicit behavior.ads_trigger
+replaces the hazard onset with a live ADS-relative clearance/speed window.
 
 Junction blocks (cross / opposing_leg) need the RoadGraph (option B) and raise BlockUnsupported.
 
@@ -39,6 +39,9 @@ from tools.replay_scene_tools import (
 
 XSD = ROOT / "xsd" / "OpenSCENARIO.xsd"
 EGO = "hero"
+from tools.scene_contacts import CONTACT_PARAMETER, runtime_contacts
+from tools.scene_positions import ordered_npcs
+from tools.ads_trigger import build_ads_trigger, normalize_ads_trigger, trigger_manifest, PARAMETER as ADS_TRIGGER_PARAMETER
 EGO_ROAD, EGO_LANE, EGO_S0 = 1, -1, 30.0
 CATALOG_DIR = "openscenarios/catalogs"
 ACT_STOP_DIST = 200.0
@@ -47,6 +50,26 @@ ACT_STOP_DIST = 200.0
 # road boundary that returns [] and raises IndexError on the first tick. 5 m is
 # enough on every map we've seen to keep a 2 m forward lookup inside the lane.
 EGO_EDGE_MARGIN = 5.0
+# Runway ego keeps BEHIND its spawn point, i.e. its minimum distance from the
+# road's s=0 end (2026-08-05, from the 42-pattern batch evidence for 065 / 162 /
+# 203). Those three don't fail the way the old `next(2.0)` comment above
+# assumes — they never get near the far end. What happens is:
+#   1. ego boots at _hero_cruise (12 m/s here) and the PCLA agent loses lane
+#      keeping within ~4 s, swerving across the centerline (19 / 13 / 15 lane
+#      invasions recorded). That drift IS the test result — deadlock class C,
+#      an ADS lane-keep deficiency the tool correctly exposed.
+#   2. the spin-out carries ego ~14-16 m BACKWARDS along the lane. With the old
+#      10 m floor that puts it past s=0, off the road start.
+#   3. straddling the centerline just off the road start, WrongLaneTest's
+#      `self._map.get_waypoint(...)` snaps to the OPPOSING lane (whose driving
+#      direction is s-decreasing) clamped to s=0. Its lane end is right there,
+#      so `lane_waypoint.next(2.0)` is empty and `[0]` raises IndexError —
+#      terminating the run at ~8 s with `exception:IndexError`.
+# So the crash doesn't cause the failure, it MASKS it: a legitimate class-C
+# finding is reported as a pipeline exception instead. 30 m absorbs the observed
+# 16 m worst-case rearward excursion and still leaves 170 m of forward road on
+# the 200 m templates (the `length - s < ahead` fallback below covers shorter ones).
+EGO_REAR_RUNWAY_M = 30.0
 # Default ego↔NPC longitudinal spacing for positions that consume `gap`.
 # 2026-06-27 (D3): split position-aware after the A-fix one-size-fits-all
 # 25 m hurt `rear_hit`: NPC at 25 m behind ego only closes at ~2-8 m/s, often
@@ -196,7 +219,7 @@ def resolve_ego_placement(xodr_path: str, scene: dict) -> tuple[int, int, float]
         # so that walk stays inside the road.
         if npc.get("position") == "oncoming" or (npc.get("behavior") or {}).get("block") == "oncoming":
             needs_oncoming_clear = max(needs_oncoming_clear, gap + EGO_EDGE_MARGIN + 5.0)
-    s = max(behind, needs_oncoming_clear, 10.0)
+    s = max(behind, needs_oncoming_clear, EGO_REAR_RUNWAY_M)
     if length - s < ahead:
         s = max(5.0, length * 0.3)
     return road_id, lane, round(s, 2)
@@ -224,6 +247,16 @@ HERO_STATIC_LEAD_TAKEOVER_MPS = 12.0
 
 
 def _hero_cruise(scene: dict) -> float:
+    params = ((scene.get("sut") or {}).get("params") or {})
+    # Source-derived speeds take precedence over the legacy takeover heuristic.
+    # An initial stop may coexist with a later reported cruising speed.
+    for key in ("initial_speed_mps", "speed"):
+        if key in params:
+            value = params[key]
+            if (not isinstance(value, (int, float)) or isinstance(value, bool)
+                    or not math.isfinite(value) or value < 0):
+                raise ValueError(f"sut.params.{key} must be finite and non-negative")
+            return float(value)
     # PCLA-style learned planners regress badly when handed off at 0 m/s with a static
     # obstacle in the near field. Init hero at the leading NPC's cruise speed *plus a
     # small closing delta* so (a) takeover happens inside the "tracking traffic"
@@ -252,9 +285,34 @@ def _hero_cruise(scene: dict) -> float:
 import re as _re
 
 JUNCTION_POSITIONS = {"cross", "opposing_leg"}
-JUNCTION_BLOCKS = {"junction_cross", "junction_turn"}
+JUNCTION_BLOCKS = {"junction_cross", "junction_turn", "junction_merge"}
 # scene maneuver -> route.type as emitted by outputs/map_cache/<name>/route_candidates.json
 MANEUVER_TO_ROUTE_TYPE = {"straight": "straight", "left": "left_turn", "right": "right_turn"}
+
+
+def _route_type(route: dict) -> str:
+    """Accept the extractor's left/right names and older *_turn caches."""
+    value = route.get("type", route.get("turn_type", ""))
+    return {"left": "left_turn", "right": "right_turn"}.get(value, value)
+
+
+def _junction_route_action(W: dict, route: dict, actor_id: str):
+    """Assign the selected lane sequence before an NPC enters the junction."""
+    ids = _route_ids(route)
+    if not ids or any(wid not in W for wid in ids):
+        raise BlockUnsupported("junction route contains unresolved waypoints")
+    route_action = xosc.Route(actor_id + "_junction_route")
+    for wid in ids:
+        # The extractor rounds s values. At a connector endpoint this can turn
+        # a valid sampled waypoint into s == road.length, which CARLA's XODR
+        # lookup rejects. Preserve the actual sampled centerline transform;
+        # these points still come exclusively from this map's CARLA roadgraph.
+        wx, wy, wz, yaw = _wpos(W, wid)
+        route_action.add_waypoint(
+            xosc.WorldPosition(x=wx, y=wy, z=wz + 0.2, h=math.radians(yaw)),
+            xosc.RouteStrategy.shortest,
+        )
+    return xosc.AssignRouteAction(route_action)
 
 
 def _s_of(wid: str) -> float:
@@ -324,6 +382,102 @@ def _route_ids(route: dict) -> list[str]:
             + route.get("departure_waypoint_ids", []))
 
 
+def _waiting_junction_route(W, route, distance):
+    """Start on a sampled approach waypoint near the junction entrance.
+
+    Keep the selected connector and exit; trim only the unused approach.
+    Distance is measured backwards along the extracted approach centerline.
+    """
+    if isinstance(distance, bool) or not isinstance(distance, (int, float)) or not math.isfinite(distance) or distance < 5:
+        raise BlockUnsupported('junction approach_distance_m must be finite and at least 5 m')
+    approach = route.get('approach_waypoint_ids', [])
+    ids = _route_ids(route)
+    if len(approach) < 2 or any(wid not in W or wid not in ids for wid in approach):
+        raise BlockUnsupported('waiting junction actor requires a sampled approach')
+    remaining = 0.0
+    anchor = None
+    for left, right in zip(reversed(approach[:-1]), reversed(approach[1:])):
+        a, b = _wpos(W, left), _wpos(W, right)
+        remaining += math.hypot(a[0]-b[0], a[1]-b[1])
+        if remaining >= distance:
+            anchor = left
+            break
+    if anchor is None:
+        raise BlockUnsupported('junction approach is shorter than approach_distance_m')
+    return {**route, 'waypoint_ids': ids[ids.index(anchor):],
+            'approach_waypoint_ids': approach[approach.index(anchor):]}
+
+
+def _corridor_route_from_spawn(W, road_id, lane_id, station):
+    """Follow a uniquely connected sampled corridor, including curved roads."""
+    direction = 1 if lane_id < 0 else -1
+    candidates = [wid for wid, w in W.items() if w['road_id'] == road_id
+                  and w['lane_id'] == lane_id and direction*(float(w['s'])-station) >= -1e-4]
+    if not candidates:
+        raise BlockUnsupported('No sampled corridor after NPC spawn')
+    first = min(candidates, key=lambda wid: abs(float(W[wid]['s'])-station))
+    ids, seen = [first], {first}
+    while True:
+        following = [wid for wid in W[ids[-1]].get('next_ids', []) if wid in W and wid not in seen
+                     and W[wid].get('lane_type', '').lower() == 'driving']
+        if not following:
+            break
+        if len(following) != 1 or W[following[0]].get('is_junction'):
+            raise BlockUnsupported('Corridor has a branch; use a generated junction route')
+        ids.append(following[0]); seen.add(following[0])
+    if len(ids) < 2:
+        raise BlockUnsupported('Insufficient sampled corridor after NPC spawn')
+    return {'waypoint_ids': ids, 'start_road_id': road_id, 'start_lane_id': lane_id}
+
+
+def _straight_route_from_spawn(W, routes, road_id, lane_id, station):
+    route = next((r for r in routes if r.get('start_road_id') == road_id
+                  and r.get('start_lane_id') == lane_id and _route_type(r) == 'straight'), None)
+    if route is None:
+        raise BlockUnsupported('No generated straight route for continuing partial-intrusion participant')
+    ids = _route_ids(route)
+    direction = 1 if lane_id < 0 else -1
+    first = next((i for i, wid in enumerate(ids) if W[wid]['road_id'] != road_id
+                  or direction*(float(W[wid]['s'])-station) >= -1e-4), len(ids))
+    if len(ids)-first < 2:
+        raise BlockUnsupported('Continuing participant has insufficient generated route after its spawn')
+    ids = ids[first:]
+    # Route candidates stop a short distance after the junction. A continuing
+    # participant must follow the rest of that same extracted departure lane;
+    # otherwise the lateral controller steers back toward the truncated endpoint.
+    # Never select a new junction branch or synthesize trajectory coordinates.
+    end = W[ids[-1]]
+    seen = set(ids)
+    while True:
+        candidates = [wid for wid in W[ids[-1]].get('next_ids', [])
+                      if wid in W and W[wid]['road_id'] == end['road_id']
+                      and W[wid]['lane_id'] == end['lane_id']]
+        if not candidates:
+            # Junction-route samples and the full-road samples can use slightly
+            # different stations (e.g. 239.98 vs 240.00). A dangling next ID is
+            # not the road end. Continue on the same extracted lane by station,
+            # with the same spatial gap bound as the roadgraph self-check.
+            current = W[ids[-1]]
+            travel = 1 if int(end['lane_id']) < 0 else -1
+            ahead = [(travel*(float(node['s'])-float(current['s'])), wid)
+                     for wid,node in W.items() if wid not in seen
+                     and node['road_id'] == end['road_id'] and node['lane_id'] == end['lane_id']
+                     and node.get('section_id') == current.get('section_id')
+                     and travel*(float(node['s'])-float(current['s'])) > .05]
+            if not ahead:
+                break
+            gap, wid = min(ahead)
+            x,y,_,yaw = _wpos(W,ids[-1]); nx,ny,_,nyaw = _wpos(W,wid)
+            if gap > 3.5 or math.hypot(nx-x,ny-y) > 3.5 or abs((nyaw-yaw+180)%360-180) > 2:
+                raise BlockUnsupported('Discontinuous extracted straight departure lane')
+            candidates = [wid]
+        if len(candidates) != 1 or candidates[0] in seen:
+            raise BlockUnsupported('Ambiguous or cyclic generated departure lane')
+        ids.append(candidates[0])
+        seen.add(candidates[0])
+    return {**route, 'waypoint_ids':ids}
+
+
 def scene_needs_junction(scene: dict) -> bool:
     for n in scene.get("npcs", []):
         if n.get("position") in JUNCTION_POSITIONS or (n.get("behavior") or {}).get("block") in JUNCTION_BLOCKS:
@@ -356,7 +510,7 @@ def _leg_of_route(W: dict, route: dict, ego_route: dict) -> str:
 
 def _npc_leg_constraint(position: str, side: str) -> set[str]:
     """schema position+side -> allowed legs for the NPC's incoming route."""
-    if position == "opposing_leg":
+    if position in {"opposing_leg", "oncoming"}:
         return {"opposing"}
     if position == "cross":
         if side == "left":
@@ -390,8 +544,16 @@ def _speed(v: float, t: float = 1.0):
 
 # ----------------------------- entities -----------------------------
 
-def _vehicle(name: str, ego: bool) -> xosc.Vehicle:
-    v = xosc.Vehicle(name, xosc.VehicleCategory.car, xosc.BoundingBox(2.1, 4.5, 1.8, 1.5, 0.0, 0.9),
+def _vehicle(name: str, ego: bool, vehicle_class: str | None = None) -> xosc.Vehicle:
+    from tools.scene_actor_catalog import VEHICLE_CLASSES
+    vehicle_class = vehicle_class or "car"
+    if vehicle_class not in VEHICLE_CLASSES:
+        raise ValueError(f"unknown vehicle_class {vehicle_class!r}")
+    # Vehicle/@name is a CARLA blueprint selector, not the ScenarioObject id.
+    # A role such as "tesla" matched Cybertruck; unknown roles invoked the
+    # runner's random fallback. Keep default passenger cars deterministic.
+    name, category = VEHICLE_CLASSES[vehicle_class]
+    v = xosc.Vehicle(name, getattr(xosc.VehicleCategory, category), xosc.BoundingBox(2.1, 4.5, 1.8, 1.5, 0.0, 0.9),
                      xosc.Axle(0.5, 0.6, 1.8, 3.1, 0.3), xosc.Axle(0.0, 0.6, 1.8, 0.0, 0.3), 69.4, 200.0, 10.0)
     v.add_property("type", "ego_vehicle" if ego else "simulation")
     return v
@@ -404,13 +566,20 @@ def _pedestrian(name: str) -> xosc.Pedestrian:
     return p
 
 
-def _entity(kind: str, name: str):
+def _entity(kind: str, name: str, vehicle_class: str | None = None):
     if kind == "pedestrian":
         return _pedestrian(name)
-    v = _vehicle(name, False)
     if kind == "cyclist":
+        # The runner selects the CARLA blueprint from Vehicle/@name. Merely
+        # adding semantic_type to a car still spawned a four-wheel sedan.
+        v = xosc.Vehicle("vehicle.diamondback.century", xosc.VehicleCategory.bicycle,
+                         xosc.BoundingBox(0.6, 1.8, 1.8, 0.0, 0.0, 0.9),
+                         xosc.Axle(0.7, 0.7, 0.1, 0.6, 0.35),
+                         xosc.Axle(0.0, 0.7, 0.1, -0.6, 0.35), 15.0, 4.0, 8.0)
+        v.add_property("type", "simulation")
         v.add_property("semantic_type", "cyclist")
-    return v
+        return v
+    return _vehicle(name, False, vehicle_class)
 
 
 def _ego_controller(init: xosc.Init) -> None:
@@ -426,14 +595,66 @@ def _ego_controller(init: xosc.Init) -> None:
 
 # ----------------------------- axis 1: position -----------------------------
 
-def resolve_position(npc: dict):
+def _relative_lane_delta(npc: dict, ego_lane_id: int) -> int:
+    """Map semantic left/right/opposing lanes in either travel direction."""
+    if ego_lane_id == 0:
+        raise BlockUnsupported("ego cannot occupy the OpenDRIVE center lane")
+    toward_center = 1 if ego_lane_id < 0 else -1
+    if npc.get("position") == "adjacent":
+        return toward_center if npc.get("side") == "left" else -toward_center
+    if npc.get("position") == "oncoming":
+        opposing_lane = 1 if ego_lane_id < 0 else -1
+        return opposing_lane - ego_lane_id
+    return 0
+
+
+def _route_supports_relative_positions(route: dict, scene: dict, lane_ids: dict) -> bool:
+    ego_lane = int(route["start_lane_id"])
+    available = lane_ids.get(str(route["start_road_id"]), set())
+    for npc in scene.get("npcs", []):
+        if npc.get("position") in {"adjacent", "oncoming"}:
+            target = ego_lane + _relative_lane_delta(npc, ego_lane)
+            if target == 0 or target not in available:
+                return False
+            if npc["position"] == "adjacent" and target * ego_lane < 0:
+                return False
+    return True
+
+
+def _junction_merge_route(W: dict, routes: list, ego_route: dict, npc: dict) -> dict:
+    """Find an adjacent incoming lane joining the SUT's actual exit lane.
+
+    Uses only route candidates extracted from this generated map. This is a
+    junction turn/merge, not a lateral lane-change over disconnected roads.
+    """
+    if npc.get("position") != "adjacent":
+        raise BlockUnsupported("junction_merge requires an adjacent incoming lane")
+    if _route_type(ego_route) not in {"left_turn", "right_turn"}:
+        raise BlockUnsupported("junction_merge requires a turning SUT route")
+    lane = int(ego_route["start_lane_id"]) + _relative_lane_delta(npc, int(ego_route["start_lane_id"]))
+    ego_end = W[_route_ids(ego_route)[-1]]
+    for route in routes:
+        ids = _route_ids(route)
+        if not ids or any(wid not in W for wid in ids):
+            continue
+        end = W[ids[-1]]
+        if (str(route["start_road_id"]) == str(ego_route["start_road_id"])
+                and int(route["start_lane_id"]) == lane
+                and _route_type(route) == _route_type(ego_route)
+                and str(end["road_id"]) == str(ego_end["road_id"])
+                and int(end["lane_id"]) == int(ego_end["lane_id"])):
+            return route
+    raise BlockUnsupported("no adjacent junction route merges into the SUT exit lane")
+
+
+def resolve_position(npc: dict, ego_lane_id: int = -1, reference_actor: str = EGO):
     pos, side = npc.get("position"), npc.get("side", "none")
     p = _params(npc)
     gap = float(p.get("gap", _default_gap_for(npc)))
     if pos == "ahead_same_lane":
-        return xosc.RelativeLanePosition(0, EGO, ds=gap)
+        return xosc.RelativeLanePosition(0, reference_actor, ds=gap)
     if pos == "behind_same_lane":
-        return xosc.RelativeLanePosition(0, EGO, ds=-gap)
+        return xosc.RelativeLanePosition(0, reference_actor, ds=-gap)
     if pos == "adjacent":
         # Block-aware default for `long` (2026-06-26): cut_in starts the NPC
         # in the adjacent lane and then fires a RelativeLaneChangeAction once
@@ -446,14 +667,33 @@ def resolve_position(npc: dict):
         # long=5 m default — they don't share the lane-change action.
         block = (npc.get("behavior") or {}).get("block")
         default_long = 16.0 if block == "cut_in" else 5.0
-        return xosc.RelativeLanePosition(1 if side == "left" else -1, EGO,
+        return xosc.RelativeLanePosition(_relative_lane_delta(npc, ego_lane_id), reference_actor,
                                          ds=float(p.get("long", default_long)))
     if pos == "oncoming":
-        return xosc.RelativeLanePosition(2, EGO, ds=gap, orientation=xosc.Orientation(h=math.pi))
+        # scenario_runner walks ds along the TARGET lane's driving direction.
+        # An oncoming vehicle ahead of ego must be placed opposite that walk;
+        # positive ds put it behind ego, heading farther away from the scene.
+        return xosc.RelativeLanePosition(_relative_lane_delta(npc, ego_lane_id), reference_actor,
+                                         ds=-gap, orientation=xosc.Orientation(h=0))
     if pos == "roadside":
+        if npc.get('kind') == 'cyclist' and (npc.get('behavior') or {}).get('block') == 'cruise':
+            gap = float(p.get('gap', 0.0))
         off = float(p.get("lateral", 3.5)) * (1 if side == "left" else -1)
-        h = math.pi / 2 * (1 if side == "left" else -1)  # face across the road
-        return xosc.RelativeLanePosition(0, EGO, ds=gap, offset=off, orientation=xosc.Orientation(h=h))
+        if ego_lane_id > 0:
+            off = -off  # OpenDRIVE t is relative to the road reference direction.
+        heading = npc.get("parked_heading")
+        if heading is not None and heading not in {"parallel", "opposite", "perpendicular"}:
+            raise ValueError(f"invalid parked_heading {heading!r}")
+        crosses = (npc.get("behavior") or {}).get("block") == "cross"
+        if heading == "opposite":
+            h = math.pi
+        elif heading == "perpendicular" or (heading is None and crosses):
+            # OSC heading is right-handed; the parser negates it for CARLA.
+            # A person on the right faces left, toward the carriageway.
+            h = math.pi / 2 * (-1 if side == "left" else 1)
+        else:
+            h = 0.0  # Parked vehicles and along-road actors face along the lane.
+        return xosc.RelativeLanePosition(0, reference_actor, ds=gap, offset=off, orientation=xosc.Orientation(h=h))
     if pos in ("cross", "opposing_leg"):
         raise BlockUnsupported(f"position {pos} needs RoadGraph (option B)")
     raise BlockUnsupported(f"unknown position {pos}")
@@ -499,6 +739,14 @@ def _trig_simtime(npc_id: str, value: float = 0.0) -> xosc.Trigger:
     t = xosc.Trigger(); t.add_conditiongroup(cg); return t
 
 
+def _trig_event_end(event_name: str) -> xosc.Trigger:
+    condition = xosc.StoryboardElementStateCondition(
+        xosc.StoryboardElementType.event, event_name, xosc.StoryboardElementState.endTransition)
+    trigger = xosc.ValueTrigger(event_name + "_finished", 0.0, xosc.ConditionEdge.rising, condition)
+    group = xosc.ConditionGroup(); group.add_condition(trigger)
+    result = xosc.Trigger(); result.add_conditiongroup(group); return result
+
+
 def _ego_travel_trigger(value: float, point: str) -> xosc.Trigger:
     et = xosc.EntityTrigger(f"act_{point}", 0.0, xosc.ConditionEdge.rising,
                             xosc.TraveledDistanceCondition(value), EGO, triggeringpoint=point)
@@ -515,16 +763,129 @@ def _event(name: str, trigger: xosc.Trigger, action) -> xosc.Event:
     return e
 
 
-def block_events(npc: dict) -> list[xosc.Event]:
+def _cut_in_lane_change(npc: dict) -> xosc.RelativeLaneChangeAction:
+    """Lane-change action that moves an `adjacent` NPC into ego's lane.
+
+    Two scenario_runner facts shape this emission — both were observed as
+    hard runtime failures on the 42-pattern batch (2026-07-15):
+
+    1. `openscenario_parser` reads only `RelativeTargetLane/@value` and drops
+       `@entityRef`, then sets `lane_changes = abs(value)`. Emitting the
+       ego-relative form (`value=0 entityRef="hero"`, i.e. "end up in ego's
+       lane") is standard-legal but leaves `lane_changes=0`, and
+       `generate_target_waypoint_list_multilane` divides the lane-change
+       length by it → `ZeroDivisionError` at the first tick. So the value has
+       to be expressed relative to the NPC itself: ∓1, sign chosen so the
+       parser's `direction = "left" if value > 0 else "right"` points at ego.
+       RHT lane ids decrease rightwards, so an NPC on ego's left (dLane=+1)
+       merges right (value=-1) and one on ego's right merges left (value=+1).
+
+    2. `ChangeActorLateralMotion` consumes only the *distance* form of
+       `LaneChangeActionDynamics`; with `dynamicsDimension="time"` the parser
+       leaves `distance=inf`, `waypoint.next(inf)` returns no waypoints and
+       the atomic installs an empty plan — the NPC silently never cuts in.
+       Emit metres instead.
+    """
+    side = npc.get("side", "none")
+    value = -1 if side == "left" else 1
+    length = float(_params(npc).get("cut_dist", 20.0))
+    dyn = xosc.TransitionDynamics(xosc.DynamicsShapes.linear,
+                                  xosc.DynamicsDimension.distance, length)
+    return xosc.RelativeLaneChangeAction(value, npc["id"], dyn)
+
+
+def _validate_lateral_sequence(npc, xodr_path, road_id, lane_id):
+    """Reject missing/non-traversable lateral destinations before execution."""
+    road = ET.parse(xodr_path).find(f"road[@id='{road_id}']")
+    if road is None or road.get('junction', '-1') != '-1' or road.find('.//arc') is not None or road.find('.//spiral') is not None:
+        raise BlockUnsupported('lateral sequences currently require a straight non-junction road')
+    lanes = {int(l.get('id')): l.get('type') for l in road.findall('./lanes/laneSection/*/lane')}
+    current = lane_id
+    for step in npc['behavior']['steps']:
+        if step['action'] != 'lane_change':
+            continue
+        params = step['params']
+        delta = (1 if params['direction'] == 'left' else -1) * (1 if current < 0 else -1)
+        for _ in range(params.get('lanes', 1)):
+            target = current + delta
+            if target * current <= 0 or lanes.get(target) not in {'driving', 'parking'}:
+                raise BlockUnsupported('lateral sequence requires existing same-direction driving/parking lanes')
+            current = target
+
+
+def _sequence_events(npc: dict) -> list[xosc.Event]:
+    from tools.scene_sequences import normalize_steps
+    steps = normalize_steps(npc['behavior'].get('steps'))
+    nid = npc['id']
+    events = []
+    canonical = lambda name: EGO if name == 'ego' else name
+    for index, step in enumerate(steps):
+        name = f'{nid}_step_{index+1}'
+        when, params = step['when'], step['params']
+        group = xosc.ConditionGroup()
+        if index == 0:
+            group.add_condition(xosc.ValueTrigger(name+'_start', 0, xosc.ConditionEdge.rising,
+                xosc.SimulationTimeCondition(0, xosc.Rule.greaterThan)))
+        else:
+            group.add_condition(xosc.ValueTrigger(name+'_after_previous', float(when.get('delay', 0)),
+                xosc.ConditionEdge.rising, xosc.StoryboardElementStateCondition(
+                    xosc.StoryboardElementType.event, f'{nid}_step_{index}',
+                    xosc.StoryboardElementState.completeState)))
+        condition = when['condition']
+        if condition == 'contact':
+            group.add_condition(xosc.EntityTrigger(name+'_contact', 0, xosc.ConditionEdge.rising,
+                xosc.CollisionCondition(canonical(when['target'])), nid))
+        elif condition == 'separated_and_target_stopped':
+            target = canonical(when['target'])
+            group.add_condition(xosc.EntityTrigger(name+'_separated', 0, xosc.ConditionEdge.rising,
+                xosc.RelativeDistanceCondition(float(when.get('clearance', 2)), xosc.Rule.greaterThan,
+                    xosc.RelativeDistanceType.cartesianDistance, target, freespace=True), nid))
+            group.add_condition(xosc.EntityTrigger(name+'_target_stopped', 0, xosc.ConditionEdge.rising,
+                xosc.StandStillCondition(float(when.get('standstill_duration', .5))), target))
+        trigger = xosc.Trigger(); trigger.add_conditiongroup(group)
+        duration = float(params.get('duration', 1.0))
+        if step['action'] == 'match_speed':
+            action = xosc.RelativeSpeedAction(1.0, canonical(step['target']), _lin(duration),
+                valuetype=xosc.SpeedTargetValueType.factor, continuous=False)
+        elif step['action'] == 'brake':
+            action = _speed(float(params.get('end_speed', 0)), duration)
+        elif step['action'] == 'lane_change':
+            delta = int(params.get('lanes', 1)) * (1 if params['direction'] == 'left' else -1)
+            dynamics = xosc.TransitionDynamics(xosc.DynamicsShapes.sinusoidal,
+                xosc.DynamicsDimension.distance, float(params.get('distance', 20)))
+            action = xosc.RelativeLaneChangeAction(delta, nid, dynamics)
+        else:
+            action = _speed(float(params.get('speed', 8)), duration)
+        events.append(_event(name, trigger, action))
+    return events
+
+
+def block_events(npc: dict, *, intrusion=None) -> list[xosc.Event]:
     nid = npc["id"]
     block = npc.get("behavior", {}).get("block")
     p = _params(npc)
     speed = float(p.get("speed", 8.0))
+    ads_trigger = build_ads_trigger(npc) if normalize_ads_trigger(npc) is not None else None
+    if block == 'sequence':
+        return _sequence_events(npc)
+    if block == 'partial_lane_intrusion':
+        if intrusion is None:
+            raise BlockUnsupported('partial intrusion requires a generated-road geometry plan')
+        return [_event(nid+'_go', _trig_simtime(nid), _speed(speed)),
+                _event(nid+'_partial_intrusion', ads_trigger or _trig_simtime(nid, 1.5),
+                       xosc.AbsoluteLaneOffsetAction(intrusion['target_offset_xodr_m'],
+                           xosc.DynamicsShapes.sinusoidal,
+                           intrusion['max_lateral_acceleration_mps2'], continuous=True))]
+    if block == "cruise":
+        cruise_speed = float(p.get("speed", 3.0 if npc.get("kind") == "cyclist" else 8.0))
+        return [_event(f"{nid}_cruise", _trig_simtime(nid), _speed(cruise_speed))]
     if block == "front_brake":
         # Cruise is now set in Init (see CRUISE_BLOCKS in build_xosc), so this event only
         # needs to fire the brake when hero closes in — no keep event, no storyboard-state
         # gating, no t=0 double-trigger race.
-        if "trig_simtime" in p:
+        if ads_trigger is not None:
+            brake_trigger = ads_trigger
+        elif "trig_simtime" in p:
             brake_trigger = _trig_simtime(nid, float(p["trig_simtime"]))
         else:
             brake_trigger = _trig_hero_distance(nid, float(p.get("trig_dist", 18.0)))
@@ -583,11 +944,10 @@ def block_events(npc: dict) -> list[xosc.Event]:
         cg.add_condition(vt)
         cut_trig = xosc.Trigger()
         cut_trig.add_conditiongroup(cg)
-        cut = _event(f"{nid}_cut", cut_trig,
-                     xosc.RelativeLaneChangeAction(0, EGO, _lin(2.0)))
+        cut = _event(f"{nid}_cut", ads_trigger or cut_trig, _cut_in_lane_change(npc))
         return [go, cut]
     if block in ("cross", "walk_along"):
-        return [_event(f"{nid}_move", _trig_hero_distance(nid, float(p.get("trig_dist", 15.0)),
+        return [_event(f"{nid}_move", ads_trigger or _trig_hero_distance(nid, float(p.get("trig_dist", 15.0)),
                        xosc.RelativeDistanceType.cartesianDistance), _speed(float(p.get("speed", 1.5)), 0.5))]
     if block in ("stopped_ahead", "static_block", "static_hold"):
         # stationary: a hold event so the Act is non-empty (keeps it at speed 0).
@@ -669,14 +1029,15 @@ def _check_wf(scene: dict, road_seed: dict) -> list[str]:
             "(need ≥1; oncoming requires an opposing lane to exist)"
         )
     # WF7
-    if sut_maneuver == "overtake_oncoming":
+    if sut_maneuver in {"overtake_oncoming", "overtake_solid_centerline"}:
         if backward < 1:
             issues.append(
-                f"WF7: sut.maneuver=overtake_oncoming requires road.lanes.backward≥1, got {backward}"
+                f"WF7: sut.maneuver={sut_maneuver} requires road.lanes.backward≥1, got {backward}"
             )
-        if center != "broken":
+        expected_center = "solid" if sut_maneuver == "overtake_solid_centerline" else "broken"
+        if center != expected_center:
             issues.append(
-                f"WF7: sut.maneuver=overtake_oncoming requires road.center_line=broken, got '{center}'"
+                f"WF7: sut.maneuver={sut_maneuver} requires road.center_line={expected_center}, got '{center}'"
             )
 
     # WF8: adjacent/left needs ≥2 forward lanes so the NPC can live on an
@@ -732,7 +1093,8 @@ def _check_wf(scene: dict, road_seed: dict) -> list[str]:
         issues.append(
             f"WF10: sut.maneuver={sut_maneuver} on topology={topology} cannot collide with an "
             f"NPC at position=oncoming (NPC stays on ego's original road after the turn); "
-            f"use position=cross + block=junction_cross/junction_turn (or opposing_leg) instead"
+            f"use position=cross on the correct incoming leg with block=static_hold for a stopped "
+            f"participant or junction_cross/junction_turn for a moving participant instead"
         )
 
     return issues
@@ -746,6 +1108,7 @@ def build_xosc(scene: dict, xodr_path: str, out_path: Path,
                auto_extract: bool = False,
                remote_client=None,
                road_seed: dict | None = None) -> Path:
+    ads_plans = trigger_manifest(scene)
     entities = xosc.Entities()
     init = xosc.Init()
     init.add_global_action(_build_env_action({"environment": _env_for_compile(scene.get("environment") or {})}))
@@ -757,7 +1120,9 @@ def build_xosc(scene: dict, xodr_path: str, out_path: Path,
         if wf_issues:
             raise WFViolation(" ; ".join(wf_issues))
 
-    junction = scene_needs_junction(scene)
+    # A straight SUT also has to traverse a generated intersection. Without
+    # this, same-lane scenarios stopped at the end of the incoming road.
+    junction = scene_needs_junction(scene) or bool(ET.parse(xodr_path).findall('junction'))
     maneuver = (scene.get("sut") or {}).get("maneuver", "straight")
     # RoadGraph cache is REQUIRED for junction NPCs (so legs can be classified
     # against ego's chosen route). It is also USEFUL — but not required —
@@ -768,7 +1133,9 @@ def build_xosc(scene: dict, xodr_path: str, out_path: Path,
     # lane-invasion drift on turning scenes (observed across the 18-medoid
     # CARLA batch 2026-06-26). auto_extract is still gated on junction=True;
     # for non-junction turns we use whatever cache happens to exist.
-    wants_rg = junction or maneuver in ("left", "right")
+    curved = bool(ET.parse(xodr_path).findall('.//planView/geometry/arc')
+                  or ET.parse(xodr_path).findall('.//planView/geometry/spiral'))
+    wants_rg = junction or maneuver in ("left", "right") or curved
     rg = load_roadgraph(name) if (wants_rg and name) else None
     if junction and not rg and auto_extract and name and xodr_path:
         try:
@@ -783,22 +1150,21 @@ def build_xosc(scene: dict, xodr_path: str, out_path: Path,
     if junction and not rg:
         raise BlockUnsupported(f"junction scene needs roadgraph_map_cache/{name}")
 
-    entities.add_scenario_object(EGO, _vehicle(EGO, True))
+    entities.add_scenario_object(EGO, _vehicle(EGO, True, (scene.get("sut") or {}).get("vehicle_class")))
     ego_route = None
     W = None
     if rg:
         W, routes = rg
         route_type = MANEUVER_TO_ROUTE_TYPE.get(maneuver, "straight")
-        # For non-junction scenes a missing match is acceptable — ego_route stays
-        # None and placement / goal fall back to the legacy non-rg branch.
-        # Junction scenes require some route to anchor NPC leg classification,
-        # so we keep the legacy strict path (any route is better than none).
-        ego_route = next((r for r in routes if r.get("type") == route_type),
-                         routes[0] if (junction and routes) else None)
-        if junction and ego_route is None:
-            raise BlockUnsupported("no routes in roadgraph for ego")
+        lane_ids = {road.get("id"): {int(l.get("id")) for l in road.findall(".//lane")
+                    if l.get("type") == "driving"}
+                    for road in ET.parse(xodr_path).getroot().findall("road")}
+        ego_route = next((r for r in routes if _route_type(r) == route_type
+                          and _route_supports_relative_positions(r, scene, lane_ids)), None)
+        if ego_route is None and (junction or maneuver in ("left", "right")):
+            raise BlockUnsupported(f"no {route_type} route in roadgraph for ego supporting the NPC lane positions")
 
-    if junction and ego_route is not None:
+    if ego_route is not None and W is not None:
         ap = ego_route.get("approach_waypoint_ids") or _route_ids(ego_route)
         ego_road_id = ego_route["start_road_id"]
         ego_lane_id = ego_route["start_lane_id"]
@@ -809,13 +1175,14 @@ def build_xosc(scene: dict, xodr_path: str, out_path: Path,
         # Margin must respect lane direction: in OpenDRIVE, lane_id<0 drives
         # s-increasing, lane_id>0 drives s-decreasing.
         road_len = _xodr_road_length(xodr_path, ego_road_id)
-        ap_s = (_s_of(ap[0]) if ap else 20.0)
-        if ego_lane_id > 0:
-            # Spawn near the high-s end (lane head from driving perspective).
-            base = (road_len - EGO_EDGE_MARGIN) if road_len is not None else max(20.0, ap_s)
-            ego_s = min(base, max(EGO_EDGE_MARGIN, road_len - ap_s if road_len else ap_s))
-        else:
-            ego_s = max(EGO_EDGE_MARGIN, ap_s - 40.0)
+        # The extracted approach already contains an interior spawn anchor.
+        # Read its actual s in either lane direction; subtracting an arbitrary
+        # 40 m only for ego desynchronizes otherwise symmetric crossing routes.
+        anchor = W.get(ap[0], {}) if ap else {}
+        ap_s = float(anchor.get("s", _s_of(ap[0]) if ap else 20.0))
+        ego_s = max(EGO_EDGE_MARGIN, ap_s)
+        if road_len is not None:
+            ego_s = min(road_len - EGO_EDGE_MARGIN, ego_s)
     else:
         er, el, es = resolve_ego_placement(xodr_path, scene)
         ego_s, ego_road_id, ego_lane_id = es, er, el
@@ -828,7 +1195,7 @@ def build_xosc(scene: dict, xodr_path: str, out_path: Path,
 
     story = xosc.Story("scene_story")
     act = xosc.Act("scene_act",
-                   starttrigger=_ego_travel_trigger(1.0, "start"),
+                   starttrigger=_trig_simtime("scene_act", 0.0),
                    stoptrigger=_ego_travel_trigger(ACT_STOP_DIST, "stop"))
 
     # EGO destination so PCLA's build_pcla_sut_route_from_xosc can synthesize a
@@ -857,37 +1224,34 @@ def build_xosc(scene: dict, xodr_path: str, out_path: Path,
     # in-lane goal forces ADS to decide (overtake / stop / fail). That decision
     # IS the test outcome.
     ego_goal_pos = xosc.LanePosition(goal_s, 0.0, ego_lane_id, ego_road_id)
-    # For LEFT / RIGHT maneuvers with a RoadGraph cache available, retarget the
-    # goal to the EXIT lane (last vertex of the matched ego_route, snapped to a
-    # LanePosition on the exit road by _lane_position_or_world). This gives
-    # PCLA a target that matches the scene's intended turn — without it the
-    # 200m-ahead in-same-lane fallback makes PCLA drive past the junction in
-    # the original lane and trip WrongLane / lane-invasion criteria (observed
-    # 665 / 435, 2026-06-26). overtake_oncoming is explicitly excluded (see
-    # the comment above). Scenes whose turn cache is missing still fall back
-    # to the straight goal and accept the regression — the alternative would
-    # be to require map_cache for every left/right scene, which we don't yet
-    # have for the non-junction-NPC 4 cases (032, 665, 091, 273).
+    # Every selected junction route, including straight, ends on its exit leg.
+    # A goal clamped to the incoming road stops the SUT before the junction.
     if rg is not None and ego_route is not None and W is not None \
-            and maneuver in ("left", "right"):
+            and (junction or maneuver in ("left", "right")):
         ids = _route_ids(ego_route)
         if ids:
             ego_goal_pos, _ = _lane_position_or_world(W, ids[-1])
     ego_goal_man = xosc.Maneuver(f"{EGO}_goal_man")
+    ego_action = ( _junction_route_action(W, ego_route, EGO)
+                  if ego_route is not None and W is not None else xosc.AcquirePositionAction(ego_goal_pos))
     ego_goal_man.add_event(_event(f"{EGO}_acquire_goal",
                                   _trig_simtime(EGO, 0.0),
-                                  xosc.AcquirePositionAction(ego_goal_pos)))
+                                  ego_action))
     ego_goal_grp = xosc.ManeuverGroup(f"{EGO}_grp")
     ego_goal_grp.add_actor(EGO)
     ego_goal_grp.add_maneuver(ego_goal_man)
     act.add_maneuver_group(ego_goal_grp)
 
-    for npc in scene.get("npcs", []):
+    spawn_lane_ids = {'ego': ego_lane_id}
+    spawn_stations = {'ego': ego_s}
+    crossing_plans = {}
+    intrusion_plans = {}
+    for npc in ordered_npcs(scene.get("npcs", [])):
         nid, kind = npc["id"], npc["kind"]
         block = (npc.get("behavior") or {}).get("block")
         is_junc = npc.get("position") in JUNCTION_POSITIONS or block in JUNCTION_BLOCKS
         is_static = block in ("stopped_ahead", "static_block", "static_hold")
-        entities.add_scenario_object(nid, _entity(kind, nid))
+        entities.add_scenario_object(nid, _entity(kind, nid, npc.get("vehicle_class")))
         if is_junc:
             W, routes = rg
             # cache may emit routes referencing waypoint ids that are not in waypoints.json
@@ -897,19 +1261,39 @@ def build_xosc(scene: dict, xodr_path: str, out_path: Path,
                 ids = _route_ids(r)
                 return bool(ids) and ids[0] in W and ids[-1] in W
 
-            base = [r for r in routes
-                    if r.get("start_road_id") != ego_route.get("start_road_id")
-                    and _endpoints_resolvable(r)]
-            want_legs = _npc_leg_constraint(npc.get("position"), npc.get("side", "none"))
-            want_types = _npc_type_constraint(block)
-            leg_pool = [r for r in base if _leg_of_route(W, r, ego_route) in want_legs] if want_legs else base
-            strict = [r for r in leg_pool if r.get("type") in want_types]
-            # progressive fallback: relax type first, then leg
-            chosen_list = strict or leg_pool or [r for r in base if r.get("type") in want_types] or base
-            if not chosen_list:
-                raise BlockUnsupported("no crossing route from a different leg")
-            cr = chosen_list[0]
+            if block == "junction_merge":
+                cr = _junction_merge_route(W, routes, ego_route, npc)
+            else:
+                same_approach = npc.get('position') == 'ahead_same_lane'
+                base = [r for r in routes if _endpoints_resolvable(r)
+                        and ((r.get('start_road_id') == ego_route.get('start_road_id')
+                              and r.get('start_lane_id') == ego_route.get('start_lane_id'))
+                             if same_approach else r.get('start_road_id') != ego_route.get('start_road_id'))]
+                want_legs = _npc_leg_constraint(npc.get("position"), npc.get("side", "none"))
+                want_types = _npc_type_constraint(block)
+                leg_pool = [r for r in base if _leg_of_route(W, r, ego_route) in want_legs] if want_legs else base
+                chosen_list = [r for r in leg_pool if _route_type(r) in want_types]
+                if not chosen_list:
+                    raise BlockUnsupported(f"no NPC route matching leg={sorted(want_legs)} and maneuver={sorted(want_types)}")
+                cr = chosen_list[0]
+                if same_approach and 'approach_distance_m' not in _params(npc):
+                    gap = float(_params(npc).get('gap', DEFAULT_GAP_M))
+                    direction = 1 if ego_lane_id < 0 else -1
+                    approach = cr.get('approach_waypoint_ids', [])
+                    first = next((wid for wid in approach
+                                  if direction*(float(W[wid]['s'])-ego_s) >= gap), None)
+                    if not math.isfinite(gap) or gap <= 0 or first is None:
+                        raise BlockUnsupported('No generated same-lane turning spawn ahead of ego')
+                    route_ids = _route_ids(cr)
+                    cr = {**cr, 'waypoint_ids': route_ids[route_ids.index(first):],
+                          'approach_waypoint_ids': approach[approach.index(first):]}
+            if 'approach_distance_m' in _params(npc):
+                if nid not in ads_plans or is_static:
+                    raise BlockUnsupported('approach_distance_m requires a moving ADS-triggered junction actor')
+                cr = _waiting_junction_route(W, cr, _params(npc)['approach_distance_m'])
             ids = _route_ids(cr)
+            spawn_lane_ids[nid] = int(cr['start_lane_id'])
+            spawn_stations[nid] = float(W[ids[0]]['s'])
             if is_static:
                 # static_hold at a junction position (e.g. stopped vehicle at the
                 # opposing-leg stop line). Teleport at the END of the approach so
@@ -925,28 +1309,109 @@ def build_xosc(scene: dict, xodr_path: str, out_path: Path,
                 sx, sy, sz, syaw = _wpos(W, ids[0])
                 init.add_init_action(nid, xosc.TeleportAction(
                     xosc.WorldPosition(x=sx, y=sy, z=sz + 0.2, h=math.radians(syaw))))
-                _add_vehicle_controller(init, nid)
-                init.add_init_action(nid, _speed(float(_params(npc).get("speed", 8.0))))
-                # NPC goal: snap to a LanePosition on the exit road. Raw WorldPosition
-                # from the route's last vertex often lands inside the junction body,
-                # which makes the remote ScenarioManager crash on first tick with
-                # IndexError: list index out of range when it tries to plan v2's path.
-                acquire_pos, _ = _lane_position_or_world(W, ids[-1])
+                _add_vehicle_controller(init, nid, generated_lane_route=[{
+                    'road_id':int(W[wid]['road_id']), 'lane_id':int(W[wid]['lane_id']),
+                    's':float(W[wid]['s']), 'x':_wpos(W,wid)[0], 'y':_wpos(W,wid)[1],
+                    'yaw':_wpos(W,wid)[3]} for wid in ids])
+                init.add_init_action(nid, _speed(0.0 if nid in ads_plans else float(_params(npc).get("speed", 8.0))))
+                # The NPC already moves from Init. A distance-delayed routing
+                # action lets LocalPlanner pick a random turn before the intended
+                # route is installed. Use the extracted lane sequence from t=0.
                 ev = _event(f"{nid}_cross",
-                            _trig_hero_distance(nid, float(_params(npc).get("trig_dist", 40.0)),
-                                                xosc.RelativeDistanceType.cartesianDistance),
-                            xosc.AcquirePositionAction(acquire_pos))
-                events = [ev]
+                            _trig_simtime(nid, 0.0),
+                            _junction_route_action(W, cr, nid))
+                # Finite generated maps have no continuation beyond the route.
+                # Once the selected route completes, stop instead of allowing
+                # the controller to invent a path and eventually drive off mesh.
+                stop = _event(f"{nid}_route_stop", _trig_event_end(f"{nid}_cross"), _speed(0.0))
+                events = [ev, stop]
+                if nid in ads_plans:
+                    # Install the generated route at t=0, then depart only when
+                    # ADS enters the window. Never delay route installation.
+                    departure_speed = float(_params(npc).get('speed', 8.0))
+                    events.insert(1, _event(nid+'_depart', build_ads_trigger(npc),
+                                          _speed(departure_speed, max(1.0, departure_speed/3.0))))
         else:
-            init.add_init_action(nid, xosc.TeleportAction(resolve_position(npc)))
+            reference = npc.get('relative_to', 'ego')
+            reference_lane = spawn_lane_ids[reference]
+            spawn_lane_ids[nid] = reference_lane + _relative_lane_delta(npc, reference_lane)
+            reference_actor = EGO if reference == 'ego' else reference
+            pedestrian_cross = kind == 'pedestrian' and block == 'cross'
+            if pedestrian_cross:
+                if reference != 'ego' or npc.get('position') != 'roadside':
+                    raise BlockUnsupported('finite pedestrian cross currently requires roadside relative to ego')
+                from tools.pedestrian_crossing import crossing_geometry
+                parameters = _params(npc)
+                try:
+                    plan = crossing_geometry(xodr_path, ego_road_id, reference_lane, ego_s,
+                        side=npc.get('side'), gap=parameters.get('gap', DEFAULT_GAP_M),
+                        lateral=parameters.get('lateral'))
+                except ValueError as exc:
+                    raise BlockUnsupported(str(exc)) from exc
+                crossing_plans[nid] = plan
+                heading = math.pi/2 * (-1 if plan['side']=='left' else 1)
+                position = xosc.LanePosition(plan['s'], plan['start_offset'], reference_lane,
+                                             ego_road_id, orientation=xosc.Orientation(h=heading))
+            else:
+                position = resolve_position(npc, reference_lane, reference_actor)
+            init.add_init_action(nid, xosc.TeleportAction(position))
+            relative_position = position.get_element().find('RelativeLanePosition')
+            if relative_position is not None:
+                spawn_stations[nid] = spawn_stations[reference] + (
+                    1 if spawn_lane_ids[nid] < 0 else -1) * float(relative_position.get('ds'))
+            continuing_route = None
+            alongside_intruder = (kind == 'cyclist' and block == 'cruise'
+                and any(n.get('id') == reference and (n.get('behavior') or {}).get('block') == 'partial_lane_intrusion'
+                        for n in scene.get('npcs', [])))
+            # A longitudinal NPC on an incoming lane must not pick a random
+            # junction turn. Its source maneuver remains lane following.
+            longitudinal = kind == 'vehicle' and (block in {'cruise','front_brake','cut_in'} or
+                (block == 'sequence' and all(step['action'] != 'lane_change'
+                                            for step in npc['behavior']['steps'])))
+            has_straight = rg and any(r.get('start_road_id') == ego_road_id
+                and r.get('start_lane_id') == spawn_lane_ids[nid] and _route_type(r) == 'straight'
+                for r in routes)
+            if rg and (block == 'partial_lane_intrusion' or alongside_intruder or
+                       (longitudinal and has_straight)):
+                continuing_route = _straight_route_from_spawn(W, routes, ego_road_id,
+                    spawn_lane_ids[nid], spawn_stations[nid])
+            elif rg and not junction and longitudinal:
+                continuing_route = _corridor_route_from_spawn(W, ego_road_id,
+                    spawn_lane_ids[nid], spawn_stations[nid])
             if kind in ("vehicle", "cyclist") and not is_static:
-                _add_vehicle_controller(init, nid)
+                initial_offset = None
+                if kind == 'cyclist' and npc.get('position') == 'roadside' and block == 'cruise':
+                    initial_offset = float(_params(npc).get('lateral', 3.5)) * (1 if npc['side']=='right' else -1)
+                generated_route = ([{'road_id':int(W[wid]['road_id']), 'lane_id':int(W[wid]['lane_id']),
+                    's':float(W[wid]['s']), 'x':_wpos(W,wid)[0], 'y':_wpos(W,wid)[1],
+                    'yaw':_wpos(W,wid)[3]} for wid in _route_ids(continuing_route)] if continuing_route else None)
+                _add_vehicle_controller(init, nid, initial_lane_offset=initial_offset, generated_lane_route=generated_route,
+                                        max_brake=_params(npc).get('max_brake'))
                 # Cruise-style NPCs start already moving so the "lead vehicle cruising → sudden
                 # brake" narrative is physical; pairs with hero's Init cruise speed above.
                 if block in CRUISE_BLOCKS:
                     init.add_init_action(nid, _speed(float(_params(npc).get("speed", 8.0)), 0.0))
-            events = block_events(npc)
-            if kind == "vehicle" and block == "front_brake":
+            if block == 'partial_lane_intrusion':
+                from tools.partial_lane_intrusion import intrusion_plan
+                try:
+                    intrusion_plans[nid] = intrusion_plan(npc, xodr_path, ego_road_id, spawn_lane_ids[nid])
+                except ValueError as exc:
+                    raise BlockUnsupported(str(exc)) from exc
+            events = block_events(npc, intrusion=intrusion_plans.get(nid))
+            if continuing_route:
+                events.insert(0, _event(nid+'_straight_route', _trig_simtime(nid,0.0),
+                                       _junction_route_action(W, continuing_route, nid)))
+            if pedestrian_cross:
+                condition = xosc.TraveledDistanceCondition(plan['distance_m'])
+                trigger = xosc.EntityTrigger(nid+'_crossed_road', 0.0,
+                    xosc.ConditionEdge.rising, condition, nid)
+                events.append(_event(nid+'_cross_stop', trigger, _speed(0.0, 0.0)))
+            lateral_sequence = block == 'sequence' and any(
+                step['action'] == 'lane_change' for step in npc['behavior']['steps'])
+            if lateral_sequence:
+                _validate_lateral_sequence(npc, xodr_path, ego_road_id, spawn_lane_ids[nid])
+            if (kind == "vehicle" and block in {"front_brake", "sequence"}
+                    and not lateral_sequence and not continuing_route):
                 events.insert(0, _event(
                     f"{nid}_follow_lane",
                     _trig_simtime(nid, 0.0),
@@ -973,7 +1438,21 @@ def build_xosc(scene: dict, xodr_path: str, out_path: Path,
     # LogicFile carries just the basename: the runner rewrites it to the actual
     # map path at load time (runner/src/demo.py), and a bare filename keeps the
     # emitted XOSC free of machine-local absolute paths.
-    sc = xosc.Scenario("scene_seed_block_scenario", "ads_testing", xosc.ParameterDeclarations(),
+    declarations = xosc.ParameterDeclarations()
+    declarations.add_parameter(xosc.Parameter('C2XADSActor', xosc.ParameterType.string, EGO))
+    if ads_plans:
+        declarations.add_parameter(xosc.Parameter(ADS_TRIGGER_PARAMETER, xosc.ParameterType.string, json.dumps(ads_plans)))
+    declarations.add_parameter(xosc.Parameter('C2XSourceManeuver', xosc.ParameterType.string, maneuver))
+    if crossing_plans:
+        declarations.add_parameter(xosc.Parameter('C2XPedestrianCrossings', xosc.ParameterType.string,
+                                                  json.dumps(crossing_plans)))
+    if intrusion_plans:
+        declarations.add_parameter(xosc.Parameter('C2XPartialLaneIntrusions', xosc.ParameterType.string,
+                                                  json.dumps(intrusion_plans)))
+    if scene.get('collisions'):
+        declarations.add_parameter(xosc.Parameter(CONTACT_PARAMETER, xosc.ParameterType.string,
+                                                  json.dumps(runtime_contacts(scene))))
+    sc = xosc.Scenario("scene_seed_block_scenario", "ads_testing", declarations,
                        entities, sb, xosc.RoadNetwork(roadfile=Path(xodr_path).name), catalog, osc_minor_version=0)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     sc.write_xml(str(out_path))
@@ -984,7 +1463,7 @@ def build_xosc(scene: dict, xodr_path: str, out_path: Path,
 
 def _assert_hero_has_route_anchor(xosc_path: Path) -> None:
     """Fail loudly if the emitted XOSC lacks a hero-owned ManeuverGroup carrying
-    an AcquirePosition / FollowTrajectory / waypoint property.
+    an AssignRoute / AcquirePosition / FollowTrajectory / waypoint property.
 
     The remote PCLA route builder needs ≥2 route vertices for the SUT (Init
     Teleport + at least one anchor). Earlier emit paths (before this commit)
@@ -1001,7 +1480,7 @@ def _assert_hero_has_route_anchor(xosc_path: Path) -> None:
             continue
         if not any(er.attrib.get("entityRef") == EGO for er in actors_node.findall("EntityRef")):
             continue
-        for tag in ("AcquirePositionAction", "FollowTrajectoryAction"):
+        for tag in ("AssignRouteAction", "AcquirePositionAction", "FollowTrajectoryAction"):
             if next(iter(mg.iter(tag)), None) is not None:
                 return
         if next((p for p in mg.iter("Property") if p.attrib.get("name", "").startswith("waypoint")), None):

@@ -80,7 +80,7 @@ def validate_seed(seed: dict[str, Any]) -> list[str]:
     if not isinstance(road, dict):
         return ["road must be an object"]
 
-    unknown = sorted(set(road) - {"topology", "type", "lanes", "center_line"})
+    unknown = sorted(set(road) - {"topology", "type", "lanes", "center_line", "parking"})
     if unknown:
         errors.append(f"road contains unsupported fields: {', '.join(unknown)}")
 
@@ -107,6 +107,12 @@ def validate_seed(seed: dict[str, Any]) -> list[str]:
     center_line = road.get("center_line")
     if center_line not in ALLOWED_CENTER_LINES:
         errors.append(f"road.center_line must be one of {sorted(ALLOWED_CENTER_LINES)}")
+
+    from tools.road_parking import normalize_parking
+    try:
+        normalize_parking(road)
+    except ValueError as exc:
+        errors.append(str(exc))
 
     return errors
 
@@ -154,6 +160,7 @@ def road_seed_to_trace(seed: dict[str, Any], xodr_path: Path) -> dict[str, Any]:
             "lanes_forward": forward,
             "lanes_backward": backward,
             "center_line": center_line,
+            "parking": road.get('parking', {}),
             "lanes_per_direction": forward,  # back-compat shim for callers reading the old field
             "road_length": defaults["road_length_m"],
             "junction_radius": defaults["junction_radius_m"],

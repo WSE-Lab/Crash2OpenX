@@ -442,6 +442,11 @@ class ScenarioRunner(object):
 
         self.world = self.client.get_world()
 
+        if os.environ.get("C2X_NATIVE_ROAD_MARKINGS") == "1":
+            from road_markings import draw_opendrive_markings
+            draw_opendrive_markings(self.world, brightness=float(
+                os.environ.get('C2X_ROAD_MARKING_BRIGHTNESS', str(4.0/245.0))))
+
         if self._args.sync:
             settings = self.world.get_settings()
             settings.synchronous_mode = True

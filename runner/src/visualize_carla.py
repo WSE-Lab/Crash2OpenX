@@ -11,11 +11,16 @@ running CARLA server, observes the current world, and either:
 """
 
 import argparse
+import json
 import math
 import os
 import queue
+import signal
 import sys
 import time
+import xml.etree.ElementTree as ET
+
+_STOP_REQUESTED = False
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scenario_runner"))
@@ -77,10 +82,12 @@ def find_actor_by_role(world, role_name):
 
 def wait_for_actor(world, role_name):
     actor = find_actor_by_role(world, role_name)
-    while actor is None:
+    while actor is None and not _STOP_REQUESTED:
         print(f"Waiting for actor with role_name={role_name!r} ...")
         time.sleep(1.0)
         actor = find_actor_by_role(world, role_name)
+    if actor is None:
+        raise KeyboardInterrupt
     return actor
 
 
@@ -113,8 +120,18 @@ def maybe_update_spectator(world, actor):
     world.get_spectator().set_transform(carla.Transform(location, rotation))
 
 
-def run_rgb_viewer(world, args):
-    actor = wait_for_actor(world, args.actor_role)
+def run_rgb_viewer(client, args):
+    # demo.py reloads the map after the recorder starts. An Actor obtained
+    # through the previous World proxy can have a stale is_alive snapshot.
+    while True:
+        if _STOP_REQUESTED:
+            raise KeyboardInterrupt
+        world = client.get_world()
+        actor = find_actor_by_role(world, args.actor_role)
+        if actor is not None:
+            break
+        print(f"Waiting for actor with role_name={args.actor_role!r} ...", flush=True)
+        time.sleep(.25)
     settings = world.get_settings()
     if getattr(settings, "no_rendering_mode", False):
         print("WARNING: world.no_rendering_mode=True. RGB camera images may be blank; use --mode topdown.")
@@ -124,12 +141,37 @@ def run_rgb_viewer(world, args):
     blueprint.set_attribute("image_size_y", str(args.height))
     blueprint.set_attribute("fov", str(args.fov))
     blueprint.set_attribute("sensor_tick", str(1.0 / max(args.fps, 1.0)))
+    # Generated roads have no street-light assets. Preserve the world's night
+    # weather and use a long-exposure observation camera for a legible recording.
+    # This only changes the separate recorder, not the PCLA sensor configuration.
+    source_night = False
+    scenario_file = os.environ.get("SCENARIO")
+    if scenario_file and os.path.isfile(scenario_file):
+        sun = ET.parse(scenario_file).find(".//Environment/Weather/Sun")
+        source_night = sun is not None and float(sun.get("elevation", "0")) < 0
+    if source_night or world.get_weather().sun_altitude_angle < 0:
+        for key, value in {"exposure_mode": "manual", "iso": "800",
+                           "shutter_speed": "60", "fstop": "2.8",
+                           "gamma": "2.2", "exposure_compensation": "0.0"}.items():
+            if blueprint.has_attribute(key):
+                blueprint.set_attribute(key, value)
+        print("Night observation camera: manual ISO=800, shutter=1/60, f/2.8; PCLA sensors unchanged", flush=True)
 
     camera_transform = carla.Transform(
         carla.Location(x=args.camera_x, y=args.camera_y, z=args.camera_z),
         carla.Rotation(pitch=args.camera_pitch, yaw=args.camera_yaw, roll=0.0),
     )
     camera = world.spawn_actor(blueprint, camera_transform, attach_to=actor)
+    timestamp_file = None
+    if args.save_dir:
+        os.makedirs(args.save_dir, exist_ok=True)
+        timestamp_file = open(os.path.join(args.save_dir, "timestamps.jsonl"), "w", encoding="utf-8")
+        with open(os.path.join(args.save_dir, "camera.json"), "w", encoding="utf-8") as handle:
+            json.dump({"source": "CARLA sensor.camera.rgb", "sensor_id": camera.id,
+                       "attached_actor_id": actor.id, "actor_role": args.actor_role,
+                       "attributes": dict(camera.attributes),
+                       "relative_pose": {"x": args.camera_x, "y": args.camera_y, "z": args.camera_z,
+                                         "pitch": args.camera_pitch, "yaw": args.camera_yaw}}, handle, indent=2)
     image_queue = queue.Queue(maxsize=2)
 
     def on_image(image):
@@ -141,12 +183,13 @@ def run_rgb_viewer(world, args):
         image_queue.put(image)
 
     camera.listen(on_image)
+    print(f"RGB attached actor={actor.id}, camera={camera.id}, world={world.id}", flush=True)
     display = make_window(args.width, args.height, "CARLA RGB Viewer")
     clock = pygame.time.Clock()
     frame_index = 0
 
     try:
-        while True:
+        while not _STOP_REQUESTED:
             if pump_quit_events():
                 break
             if args.spectator and actor.is_alive:
@@ -154,7 +197,13 @@ def run_rgb_viewer(world, args):
             try:
                 image = image_queue.get(timeout=1.0)
             except queue.Empty:
+                if client.get_world().id != world.id or world.get_actor(actor.id) is None:
+                    print("Recorded actor removed; ending RGB stream", flush=True)
+                    break
                 continue
+
+            if frame_index == 0:
+                print(f"First RGB image: frame={image.frame}, time={image.timestamp:.3f}", flush=True)
 
             array = np.frombuffer(image.raw_data, dtype=np.uint8)
             array = array.reshape((image.height, image.width, 4))[:, :, :3]
@@ -163,11 +212,20 @@ def run_rgb_viewer(world, args):
             display.blit(surface, (0, 0))
             pygame.display.flip()
             save_frame_if_needed(display, args.save_dir, frame_index, args.save_every)
+            if timestamp_file and frame_index % max(args.save_every, 1) == 0:
+                timestamp_file.write(json.dumps({"image_index": frame_index, "carla_frame": image.frame,
+                                                "simulation_time": image.timestamp}) + "\n")
+                timestamp_file.flush()
             frame_index += 1
             clock.tick(args.fps)
     finally:
-        camera.stop()
-        camera.destroy()
+        if timestamp_file:
+            timestamp_file.close()
+        try:
+            camera.stop()
+            camera.destroy()
+        except RuntimeError:
+            pass  # The scenario may already have destroyed the parent actor.
         pygame.quit()
 
 
@@ -232,7 +290,7 @@ def run_topdown_viewer(world, args):
     frame_index = 0
     font = pygame.font.Font(None, 24)
 
-    while True:
+    while not _STOP_REQUESTED:
         if pump_quit_events():
             break
         if not followed.is_alive:
@@ -276,10 +334,19 @@ def main():
     print(f"Connected to CARLA {args.host}:{args.port}, map={world.get_map().name}, mode={args.mode}")
 
     if args.mode == "rgb":
-        run_rgb_viewer(world, args)
+        run_rgb_viewer(client, args)
     else:
         run_topdown_viewer(world, args)
 
 
 if __name__ == "__main__":
-    main()
+    def stop_on_signal(signum, frame):
+        global _STOP_REQUESTED
+        # Finish the current image/timestamp pair before leaving the loop.
+        _STOP_REQUESTED = True
+
+    signal.signal(signal.SIGTERM, stop_on_signal)
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("CARLA recorder stopped; sensor and timestamp file closed", flush=True)

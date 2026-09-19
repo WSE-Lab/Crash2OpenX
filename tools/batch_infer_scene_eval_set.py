@@ -136,13 +136,13 @@ def main() -> int:
     ap.add_argument("--out-dir", type=Path, default=DEFAULT_OUT_DIR)
     ap.add_argument("--text-cache", type=Path, default=DEFAULT_TEXT_CACHE)
     ap.add_argument("--env", type=Path, default=DEFAULT_ENV)
-    ap.add_argument("--model", default="deepseek/deepseek-v4-pro")
-    ap.add_argument("--base-url", default="https://openrouter.ai/api/v1")
-    ap.add_argument("--api-key-env", default="OPENROUTER_API_KEY")
-    ap.add_argument("--vlm-model", default="xiaomi/mimo-v2.5",
+    ap.add_argument("--model", default="deepseek-flash")
+    ap.add_argument("--base-url", default="https://api.deepseek.com")
+    ap.add_argument("--api-key-env", default="DEEPSEEK_API_KEY")
+    ap.add_argument("--vlm-model", default="deepseek-flash",
                     help="used only if PDF needs VLM OCR (rare for these reports)")
     ap.add_argument("--workers", type=int, default=4,
-                    help="parallel LLM calls; OpenRouter handles burst fine")
+                    help="parallel model calls; lower this for endpoint rate limits")
     ap.add_argument("--smoke", type=int, default=0,
                     help="only run first N cases (0 = all)")
     ap.add_argument("--force", action="store_true",

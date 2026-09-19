@@ -151,6 +151,18 @@ def _repair_junction_connections(root, roads):
 
             incoming_contact = _road_junction_contact(incoming, junction.attrib.get("id"))
             reverse = _reverse_between_contacts(incoming_contact, contact)
+            # Explicit lane-to-lane connectors may map an outer approach lane
+            # onto connector lane 1. Matching numeric IDs is not required.
+            # Preserve valid direction-compatible mappings from the generator.
+            existing = connection.findall("laneLink")
+            incoming_ids = set(_driving_lane_ids(incoming))
+            connecting_ids = set(_driving_lane_ids(connecting))
+            if existing and all(
+                link.get("from") in incoming_ids and link.get("to") in connecting_ids
+                and ((int(link.get("from")) * int(link.get("to")) < 0) == reverse)
+                for link in existing
+            ):
+                continue
             lane_pairs = _lane_pairs(incoming, connecting, reverse)
             if lane_pairs:
                 changes += _clear_and_set_connection_lane_links(connection, lane_pairs)
@@ -184,11 +196,17 @@ def _repair_connector_lane_links(root, roads):
             lane_id = lane.attrib["id"]
             if predecessor_road is not None:
                 target_id = str(-int(lane_id)) if pred_reverse else lane_id
-                if target_id in _driving_lane_ids(predecessor_road):
+                existing = lane.find("link/predecessor")
+                valid = (existing is not None and existing.get("id") in _driving_lane_ids(predecessor_road)
+                         and ((int(existing.get("id")) * int(lane_id) < 0) == pred_reverse))
+                if not valid and target_id in _driving_lane_ids(predecessor_road):
                     changes += _ensure_lane_link(lane, "predecessor", target_id)
             if successor_road is not None:
                 target_id = str(-int(lane_id)) if succ_reverse else lane_id
-                if target_id in _driving_lane_ids(successor_road):
+                existing = lane.find("link/successor")
+                valid = (existing is not None and existing.get("id") in _driving_lane_ids(successor_road)
+                         and ((int(existing.get("id")) * int(lane_id) < 0) == succ_reverse))
+                if not valid and target_id in _driving_lane_ids(successor_road):
                     changes += _ensure_lane_link(lane, "successor", target_id)
     return changes
 
@@ -276,6 +294,37 @@ def _repair_straight_connectors(root, roads, straight_tolerance_degrees):
     return changes
 
 
+def _canonicalize_constant_spirals(root):
+    """Express constant curvature as arc/line before CARLA's spiral importer.
+
+    Clothoid fitting can emit two curvature values differing only by rounding.
+    CARLA 0.9.16 loses metres of position accuracy for these degenerate spirals.
+    Restrict replacement to floating-point equality and a sub-nanometre bound
+    on position change; genuine transition spirals retain their geometry.
+    """
+    changes = 0
+    for geometry in root.findall("./road/planView/geometry"):
+        spiral = geometry.find("spiral")
+        if spiral is None:
+            continue
+        start = float(spiral.get("curvStart"))
+        end = float(spiral.get("curvEnd"))
+        length = float(geometry.get("length"))
+        delta = abs(end - start)
+        if (not all(math.isfinite(v) for v in (start, end, length)) or length <= 0
+                or not math.isclose(start, end, rel_tol=1e-12, abs_tol=1e-15)
+                or delta * length * length / 2 > 1e-9):
+            continue
+        curvature = (start + end) / 2
+        geometry.remove(spiral)
+        if curvature == 0:
+            ET.SubElement(geometry, "line")
+        else:
+            ET.SubElement(geometry, "arc", {"curvature": repr(curvature)})
+        changes += 1
+    return changes
+
+
 def repair_opendrive_xml(opendrive_data, straighten=True, straight_tolerance_degrees=8.0):
     root = ET.fromstring(opendrive_data)
     roads = {road.attrib.get("id"): road for road in root.findall("road")}
@@ -285,6 +334,7 @@ def repair_opendrive_xml(opendrive_data, straighten=True, straight_tolerance_deg
     changes += _repair_boundary_road_links(root, roads)
     if straighten:
         changes += _repair_straight_connectors(root, roads, straight_tolerance_degrees)
+    changes += _canonicalize_constant_spirals(root)
     try:
         ET.indent(root, space="    ")
     except AttributeError:

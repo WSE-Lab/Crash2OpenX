@@ -25,3 +25,8 @@ tmp/
 .omc/
 **/.omc/
 .pytest_cache/
+
+# Local analysis state
+.mem-snapshot.txt
+.claude/
+.ruff_cache/

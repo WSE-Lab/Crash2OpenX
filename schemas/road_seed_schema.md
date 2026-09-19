@@ -18,7 +18,7 @@
 }
 ```
 
-`additionalProperties: false`，只允许这四个字段。
+`additionalProperties: false`。四个必填字段之外，2026-09-18运行词汇扩展允许可选 `parking`。
 
 ## 字段
 
@@ -28,6 +28,10 @@
 | `type` | enum | 是 | town, lowSpeed, rural, motorway, townArterial, townCollector, townLocal | town | OpenDRIVE 1.5M road type 白名单 |
 | `lanes` | object | 是 | `{forward: 1..5, backward: 0..5}` | `{forward:1, backward:1}` | **相对 ego 行驶方向**的车道数。forward=同向（≥1），backward=对向（0=单行道） |
 | `center_line` | enum | 是 | solid, broken | broken | 能否跨中心线借对向道（如绕障碍物）。solid=双黄禁跨；broken=可借道。单向时填但无意义 |
+
+## 路缘停车带扩展
+
+可选 `parking: {"left": true, "right": false}` 表示相对同向交通方向的路缘停车带，不计入行车道数。当前仅支持 straight；left 是紧邻最左同向车道的停车带，只允许 backward=0。每侧最多一条，编译默认宽2.5米，OpenDRIVE类型为parking。未明确时省略。不将停车带改为driving或停车场。左侧停车带作为第一条负ID车道，后续驾驶车道ID由编译器分配，不属于seed。
 
 ## 推理规则（脚本 prompt 内置）
 

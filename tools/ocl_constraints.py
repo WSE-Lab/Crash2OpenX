@@ -11,6 +11,9 @@ from __future__ import annotations
 
 from copy import deepcopy
 from typing import Any, Mapping
+from tools.scene_contacts import normalize_contacts
+from tools.scene_sequences import validate_sequence_targets
+from tools.scene_positions import ordered_npcs
 
 
 CONSTRAINT_IDS = tuple(
@@ -22,9 +25,11 @@ PEDESTRIAN_POSITIONS = {
     "roadside_left",
     "roadside_right",
     "ahead_same_lane",
+    "roadside",  # SceneSeed v2 splits side from position.
+    "cross",     # SceneSeed v2 pedestrian crossing position.
 }
-ADJACENT_POSITIONS = {"adjacent_left", "adjacent_right"}
-JUNCTION_BLOCKS = {"junction_cross", "junction_turn"}
+ADJACENT_POSITIONS = {"adjacent_left", "adjacent_right", "adjacent"}
+JUNCTION_BLOCKS = {"junction_cross", "junction_turn", "junction_merge"}
 TURN_MANEUVERS = {"left", "right"}
 LANE_CHANGE_MANEUVERS = {"lane_change_left", "lane_change_right"}
 
@@ -55,7 +60,11 @@ def _optional_positive(value: Any) -> bool:
 def evaluate_constraints(
     road: Mapping[str, Any], scene: Mapping[str, Any]
 ) -> dict[str, bool]:
-    """Evaluate I1--I9 and P1--P6 exactly as stated in Table 1."""
+    """Evaluate the paper invariants and documented runtime vocabulary additions.
+
+    Original vocabulary retains Table 1 semantics. P3 additionally distinguishes
+    a source-reported solid-line violation from permitted broken-line overtaking.
+    """
     forward, backward = _lanes(road)
     sut = scene.get("sut") if isinstance(scene.get("sut"), Mapping) else {}
     npcs = scene.get("npcs") if isinstance(scene.get("npcs"), list) else []
@@ -70,8 +79,13 @@ def evaluate_constraints(
 
     ids = [npc.get("id") for npc in npcs if isinstance(npc, Mapping)]
     actor_ids = set(ids) | {sut.get("id")}
-    striker = collision.get("striker_id")
-    struck = collision.get("struck_id")
+    unique_ids = len(ids) == len(set(ids)) and all(npc_id != sut.get("id") for npc_id in ids)
+    # Paper Table 1 names the pair striker_id/struck_id; the pipeline's JSON
+    # schema (scene_seed_schema_v2) uses the unordered {a, b}. Accept both,
+    # like _lanes() does for the road shapes.
+    striker = collision.get("striker_id", collision.get("a"))
+    struck = collision.get("struck_id", collision.get("b"))
+    friction = environment.get("friction_scale")
 
     params = []
     triggers = []
@@ -102,6 +116,16 @@ def evaluate_constraints(
     )
     maneuver = sut.get("maneuver")
     topology = road.get("topology")
+    try:
+        normalize_contacts(scene, actor_ids)
+        validate_sequence_targets(npcs, actor_ids)
+        # I5 owns duplicate identities; dependency references cannot be
+        # disambiguated until that invariant passes.
+        if unique_ids:
+            ordered_npcs(npcs)
+        contacts_valid = True
+    except (ValueError, TypeError):
+        contacts_valid = False
 
     return {
         "I1": _number_in_range(forward, 1, 5)
@@ -122,12 +146,9 @@ def evaluate_constraints(
             for npc in npcs
             if isinstance(npc, Mapping)
         ),
-        "I5": len(ids) == len(set(ids)) and all(npc_id != sut.get("id") for npc_id in ids),
-        "I6": {striker, struck}.issubset(actor_ids)
-        and striker is not None
-        and struck is not None
-        and striker != struck,
-        "I7": _number_in_range(environment.get("friction_scale"), 0.1, 1.0),
+        "I5": unique_ids,
+        "I6": contacts_valid,
+        "I7": friction is None or _number_in_range(friction, 0.1, 1.0),
         "I8": all(
             _optional_nonnegative(param.get("target_speed"))
             and _optional_positive(param.get("duration"))
@@ -141,10 +162,11 @@ def evaluate_constraints(
         ),
         "P1": not has_junction_block or topology in JUNCTION_TOPOLOGIES,
         "P2": not has_oncoming or _number_in_range(backward, 1, float("inf")),
-        "P3": maneuver != "overtake_oncoming"
+        "P3": maneuver not in {"overtake_oncoming", "overtake_solid_centerline"}
         or (
             _number_in_range(backward, 1, float("inf"))
-            and road.get("center_line") == "broken"
+            and road.get("center_line") == (
+                "solid" if maneuver == "overtake_solid_centerline" else "broken")
         ),
         "P4": not has_adjacent or _number_in_range(forward, 2, float("inf")),
         "P5": maneuver not in TURN_MANEUVERS or topology in JUNCTION_TOPOLOGIES,
