@@ -50,7 +50,7 @@ For a remote host, build the runtime on that host, then set
 own dedicated directory. Deploy the wrapper with:
 
 ```sh
-uv run python tools/carla_remote.py deploy
+uv run python tools/carla_remote.py deploy-runner
 ```
 
 The remote driver checks available bytes and inodes before uploading inputs.

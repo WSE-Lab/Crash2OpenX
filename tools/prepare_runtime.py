@@ -44,6 +44,7 @@ def prepare(output: Path) -> dict:
         for name in ('src', 'scripts'):
             shutil.copytree(ROOT/'runner'/name, stage/name,
                             ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '.DS_Store', 'runs'))
+        shutil.copy2(ROOT/'runner/extract_roadgraph_carla.py', stage/'extract_roadgraph_carla.py')
         (stage/'src/runs').mkdir(exist_ok=True)
         shutil.copy2(ROOT/'runner/src/runs/run_scene.py', stage/'src/runs/run_scene.py')
         for name in ('guarded_conditions', 'lane_coordinates', 'lane_offset_motion', 'standstill_condition'):

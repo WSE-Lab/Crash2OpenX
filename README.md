@@ -13,16 +13,21 @@ autonomous-driving agent loaded via PCLA.
 
 The October presentation release contains a 16-slide paper presentation, Chinese
 speaker notes, a narrated demonstration and traceable simulation evidence.
-Download it from [GitHub Releases](https://github.com/WSE-Lab/Crash2OpenX/releases).
+Download it from [the v0.2.0 release](https://github.com/WSE-Lab/Crash2OpenX/releases/tag/v0.2.0).
 For a clean setup, runtime patch installation and replay commands, see
 [Reproduce Crash2OpenX](docs/reproduce.md).
 
 ## Demo video
 
-A 5-minute walkthrough of the full pipeline on two contrasting cases (a
-curved-ramp rear-end collision from a DMV PDF, and a foggy-dawn crosswalk
-safe pass from a plain-text report):
-<https://www.modelcopilot.org/crash2openx.html>.
+The [3:51 narrated demonstration](https://github.com/WSE-Lab/Crash2OpenX/releases/download/v0.2.0/Crash2OpenX_demo_2026.mp4)
+walks through the paper's Case-165 input, seed models, OpenX artifacts and
+recorded CARLA execution, followed by four accident-inspired ADS test variants.
+The release includes source artifacts, raw recordings and measured outcomes.
+The variants use documented experimental parameters; they are not claims of
+exact accident reconstruction.
+
+The earlier two-case walkthrough remains available on the
+[project website](https://www.modelcopilot.org/crash2openx.html).
 
 ## Architecture
 
