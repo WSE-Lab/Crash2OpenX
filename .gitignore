@@ -10,6 +10,7 @@ runs/
 !runner/src/runs/
 runner/src/runs/*
 !runner/src/runs/run_scene.py
+!runner/src/runs/__init__.py
 output/
 outputs/
 tmp/

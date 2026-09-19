@@ -46,7 +46,8 @@ def prepare(output: Path) -> dict:
                             ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '.DS_Store', 'runs'))
         shutil.copy2(ROOT/'runner/extract_roadgraph_carla.py', stage/'extract_roadgraph_carla.py')
         (stage/'src/runs').mkdir(exist_ok=True)
-        shutil.copy2(ROOT/'runner/src/runs/run_scene.py', stage/'src/runs/run_scene.py')
+        for name in ('run_scene.py', '__init__.py'):
+            shutil.copy2(ROOT/'runner/src/runs'/name, stage/'src/runs'/name)
         for name in ('guarded_conditions', 'lane_coordinates', 'lane_offset_motion', 'standstill_condition'):
             shutil.copy2(ROOT/'runner/runtime_overrides'/f'{name}.py', stage/'src'/f'{name}.py')
         for name in ('opendrive_repair', 'scene_contacts'):

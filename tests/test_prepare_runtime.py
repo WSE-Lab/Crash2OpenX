@@ -27,6 +27,10 @@ def test_runtime_build_is_complete_and_refuses_overwrite(tmp_path):
         capture_output=True, text=True, check=True,
     )
     assert "--scenario" in help_result.stdout
+    subprocess.run(
+        [sys.executable, "-c", "from src.runs import run_map_scenario"],
+        cwd=output, check=True,
+    )
     before = (output / "crash2openx_runtime_manifest.json").read_bytes()
     with pytest.raises(FileExistsError, match="Refusing to replace"):
         prepare(output)
