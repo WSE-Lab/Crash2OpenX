@@ -736,6 +736,7 @@ def _add_straight_road(
     *,
     lanes_backward: int | None = None,
     center_mark_type: Any = None,
+    parking: dict | None = None,
 ) -> None:
     # lanes_per_direction = forward (travel-direction / right) lanes.
     # lanes_backward = oncoming (left) lanes; None -> symmetric (legacy callers).
@@ -753,6 +754,20 @@ def _add_straight_road(
     center = xodr.Lane(a=0.0)
     center.add_roadmark(xodr.RoadMark(center_mark_type, 0.2))
     section = xodr.LaneSection(0, center)
+    from tools.road_parking import PARKING_WIDTH_M
+    parking = parking or {}
+
+    def add_parking():
+        lane = xodr.Lane(lane_type=xodr.LaneType.parking, a=PARKING_WIDTH_M)
+        lane.add_roadmark(xodr.RoadMark(xodr.RoadMarkType.broken, 0.15))
+        section.add_right_lane(lane)
+
+    # Same-direction left parking is the innermost negative lane on a
+    # one-way road. Traffic lanes remain type=driving and keep their count.
+    if parking.get('left'):
+        if lanes_backward:
+            raise ValueError('left parking cannot replace an opposing traffic lane')
+        add_parking()
 
     for _ in range(lanes_backward):
         left = xodr.Lane(a=lane_width)
@@ -762,6 +777,8 @@ def _add_straight_road(
         right = xodr.Lane(a=lane_width)
         right.add_roadmark(xodr.RoadMark(xodr.RoadMarkType.broken, 0.2))
         section.add_right_lane(right)
+    if parking.get('right'):
+        add_parking()
 
     lanes = xodr.Lanes()
     lanes.add_lanesection(section)
@@ -902,6 +919,7 @@ def _dispatch_generated_opendrive(trace_scene: dict[str, Any], xodr_path: Path) 
                 lanes_per_direction,
                 lanes_backward=lanes_backward,
                 center_mark_type=center_mark_type,
+                parking=rg_dict.get('parking'),
             )
     else:
         # Do not create fake crossing roads without OpenDRIVE junction/lane links.
@@ -918,6 +936,7 @@ def _dispatch_generated_opendrive(trace_scene: dict[str, Any], xodr_path: Path) 
         _add_straight_road(
             odr, 1, x_start, y_start, heading, length, lane_width, lanes_per_direction,
             lanes_backward=lanes_backward, center_mark_type=center_mark_type,
+            parking=rg_dict.get('parking'),
         )
     odr.write_xml(str(xodr_path))
     _patch_safety_shoulders(xodr_path, shoulder_width)
@@ -1172,6 +1191,27 @@ def _write_trace_aligned_bike_lane_crossing(trace_scene: dict[str, Any], xodr_pa
     _patch_xodr_header(xodr_path, extent, _road_half_width_for(trace_scene, lane_width), shoulder_width)
 
 
+def _connect_directional_junction_lanes(creator, first_id, second_id, trace_scene):
+    """Keep asymmetric approach lanes connected through the junction.
+
+    CommonJunctionCreator's automatic unequal-lane mode connects only the
+    common lane count. Explicit extra connections let excess incoming lanes
+    merge into the outer outgoing lane (and reach extra outgoing lanes in
+    the reverse asymmetry) without changing the source's lane counts.
+    """
+    creator.add_connection(first_id, second_id)
+    incoming = _road_lanes_forward(trace_scene)
+    outgoing = _road_lanes_backward(trace_scene)
+    if not incoming or not outgoing or incoming == outgoing:
+        return
+    common = min(incoming, outgoing)
+    pairs = {(index, min(index, outgoing)) for index in range(common + 1, incoming + 1)}
+    pairs.update((min(index, incoming), index) for index in range(common + 1, outgoing + 1))
+    for source, destination in sorted(pairs):
+        creator.add_connection(first_id, second_id, -source, destination)
+        creator.add_connection(second_id, first_id, -source, destination)
+
+
 def _write_common_cross_junction(trace_scene: dict[str, Any], xodr_path: Path) -> None:
     """Write a real OpenDRIVE cross junction with connecting roads/laneLinks."""
     road_length = float(_as_dict(trace_scene.get("road_generation")).get("road_length", STANDARD_CROSS_JUNCTION_ROAD_LENGTH_M))
@@ -1195,7 +1235,7 @@ def _write_common_cross_junction(trace_scene: dict[str, Any], xodr_path: Path) -
         roads.append(road)
         junction_creator.add_incoming_road_circular_geometry(road, radius, angle, "successor")
         for previous_id in range(1, road_id):
-            junction_creator.add_connection(previous_id, road_id)
+            _connect_directional_junction_lanes(junction_creator, previous_id, road_id, trace_scene)
 
     odr = xodr.OpenDrive(xodr_path.stem)
     for road in roads:
@@ -1244,7 +1284,7 @@ def _write_three_leg_junction(trace_scene: dict[str, Any], xodr_path: Path, layo
         roads.append(road)
         junction_creator.add_incoming_road_circular_geometry(road, radius, angle, "successor")
         for previous_id in range(1, road_id):
-            junction_creator.add_connection(previous_id, road_id)
+            _connect_directional_junction_lanes(junction_creator, previous_id, road_id, trace_scene)
 
     odr = xodr.OpenDrive(xodr_path.stem)
     for road in roads:
@@ -1632,9 +1672,17 @@ def _make_follow_trajectory_action(
     )
 
 
-def _add_vehicle_controller(init: xosc.Init, actor_id: str) -> None:
+def _add_vehicle_controller(init: xosc.Init, actor_id: str, *, generated_lane_route=None, initial_lane_offset=None, max_brake=None) -> None:
     props = xosc.Properties()
     props.add_property("module", "npc_vehicle_control")
+    if max_brake is not None:
+        if isinstance(max_brake, bool) or not isinstance(max_brake, (int, float)) or not 0 < max_brake <= 1:
+            raise ValueError('max_brake must be a control fraction in (0, 1]')
+        props.add_property('C2XMaxBrake', str(max_brake))
+    if generated_lane_route is not None:
+        props.add_property('C2XGeneratedLaneRoute', json.dumps(generated_lane_route))
+    if initial_lane_offset is not None:
+        props.add_property('C2XInitialLaneOffset', str(initial_lane_offset))
     controller = xosc.Controller(f"{actor_id}_scripted_control", props)
     assign = xosc.AssignControllerAction(controller=controller)
     override = xosc.OverrideControllerValueAction()

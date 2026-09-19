@@ -44,6 +44,9 @@ SCHEMA_VERSION = "sig_v1"
 DEFAULT_CACHE_DIR = REPO_ROOT / "outputs/signature_cache"
 
 
+from tools.model_transport import complete_chat_completion
+
+
 def system_prompt() -> str:
     """sig_v1 prompt — structural-only extraction. Keep enums in sync with
     api_infer_scene_seed_v2.py; any vocabulary edit must bump SCHEMA_VERSION."""
@@ -269,7 +272,7 @@ def call_model(args: argparse.Namespace, pdf_text: str) -> dict[str, Any]:
     sp = system_prompt()
     last_err: Exception | None = None
     for attempt in (1, 2):
-        resp = client.chat.completions.create(
+        resp = complete_chat_completion(client,
             model=args.model,
             messages=[
                 {"role": "system", "content": sp},
@@ -318,9 +321,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap.add_argument("--out", type=Path, required=True,
                     help="path to write outputs/signature/<case>.json")
     ap.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR)
-    ap.add_argument("--model", default="deepseek/deepseek-v4-pro")
-    ap.add_argument("--base-url", default="https://openrouter.ai/api/v1")
-    ap.add_argument("--api-key-env", default="OPENROUTER_API_KEY")
+    ap.add_argument("--model", default="deepseek-flash")
+    ap.add_argument("--base-url", default="https://api.deepseek.com")
+    ap.add_argument("--api-key-env", default="DEEPSEEK_API_KEY")
     ap.add_argument("--temperature", type=float, default=0.0)
     ap.add_argument("--max-tokens", type=int, default=12000,
                     help="reasoning models (dsv4-pro) burn 1.5-5k tokens on the chain "

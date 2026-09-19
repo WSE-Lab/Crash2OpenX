@@ -1,0 +1,557 @@
+{
+  "benchmark": "baseline_42",
+  "review_date": "2026-09-17",
+  "status": "source_review_only_not_runtime_validation",
+  "method": "Read section 5 of all 42 original PDFs, preserving incident order, participant identity and stated contact region. Original PDF text and AcroForm fields are archived with SHA256 hashes under outputs/validated_42_20260917/cases. Numerical trajectories remain reconstruction assumptions unless explicitly stated in the source.",
+  "rules": [
+    "Keep all original 42 case IDs. The frozen signatures are historical selection metadata, not ground truth for the reconstructed incident.",
+    "Record which report participant is controlled by PCLA; do not silently equate the SUT with the report AV.",
+    "Separate physical collision sensor events from geometric overlaps and separate scripted reconstruction from autonomous PCLA outcomes.",
+    "Do not force an ADS collision by replacing its outputs, disabling its safety response or teleporting actors.",
+    "Retain multiple impacts and necessary third parties; disclose absent sensor pods, mirrors and bus bike racks when stock CARLA assets cannot represent them exactly."
+  ],
+  "cases": [
+    {
+      "id": "122",
+      "family": "stationary_rear_end",
+      "av": "Waymo stopped southbound at a red light",
+      "other": "Toyota Camry approaches from behind",
+      "required_events": [
+        "AV remains stopped",
+        "car front contacts AV rear"
+      ],
+      "source_quote": "The Waymo AV was stopped in traffic for a red light",
+      "legacy_risk": "SUT is the striking passenger car, not the reported AV; avoidance is a valid ADS outcome."
+    },
+    {
+      "id": "007",
+      "family": "stationary_rear_end",
+      "av": "Waymo stops in a southbound traffic queue and remains stopped at red",
+      "other": "Honda Accord approaches from behind",
+      "required_events": [
+        "AV stationary",
+        "Honda front contacts AV rear"
+      ],
+      "source_quote": "the front of the passenger car made contact with the rear of the stationary Waymo AV",
+      "legacy_risk": "Do not model the AV as moving into a stationary lead vehicle without disclosing role reassignment."
+    },
+    {
+      "id": "135",
+      "family": "three_vehicle_secondary_impact",
+      "av": "Zoox stopped northbound at red",
+      "other": "southbound Toyota SUV runs red and strikes an eastbound passenger car",
+      "required_events": [
+        "SUV collides with crossing car",
+        "SUV spins",
+        "SUV contacts stopped Zoox front driver side and driver side"
+      ],
+      "source_quote": "The SUV spun after making contact with the passenger car and collided with the stopped Zoox vehicle",
+      "legacy_risk": "A single crossing NPC omits both a participant and the causal first collision.",
+      "stock_asset_limitation": "The PDF identifies Vehicle 2 as a Toyota SUV but gives no model. CARLA stock Nissan/Jeep/Audi SUV substitutes do not reproduce the actual Toyota asset."
+    },
+    {
+      "id": "162",
+      "family": "parked_av_left_sideswipe",
+      "av": "Waymo parked on right side of road in manual mode",
+      "other": "Honda Odyssey approaches from the AV left; same-direction passing is a reconstruction assumption",
+      "required_events": [
+        "AV stationary at roadside",
+        "approaching vehicle contacts AV left mirror"
+      ],
+      "source_quote": "The Waymo AV was parked on the right side of East 8th Street",
+      "legacy_risk": "Mirror geometry may require an explicit approximation; frontal impact is not equivalent."
+    },
+    {
+      "id": "113",
+      "family": "two_separate_rear_impacts",
+      "av": "Waymo moves after a stop sign, then crosses next intersection and stops",
+      "other": "Tesla follows, runs stop sign, pushes AV, separates, then accelerates again",
+      "required_events": [
+        "rear contact while both moving",
+        "separation",
+        "AV stops beyond intersection",
+        "Tesla front right contacts AV rear left"
+      ],
+      "source_quote": "The passenger car then accelerated and the front right corner of the passenger car made contact with the rear left corner of the stationary Waymo AV",
+      "legacy_risk": "Stopping the episode at the first collision loses the second impact."
+    },
+    {
+      "id": "263",
+      "family": "moving_rear_end",
+      "av": "Zoox initially stopped in traffic, then follows departing traffic at low speed",
+      "other": "Nissan Frontier approaches from behind",
+      "required_events": [
+        "stop-to-low-speed transition",
+        "rear-end impact while AV moving"
+      ],
+      "source_quote": "When traffic ahead began to move the Zoox vehicle was appropriately following the car ahead at low speed",
+      "legacy_risk": "AV must move before impact; static rear-end is incomplete."
+    },
+    {
+      "id": "038",
+      "family": "av_left_nudge_truck_sideswipe",
+      "av": "Waymo northbound in rightmost of two lanes, partially enters left lane to give cyclist space",
+      "other": "heavy truck moves forward from behind in left lane; cyclist on AV right",
+      "required_events": [
+        "cyclist on right",
+        "AV partial left incursion",
+        "AV rear driver side meets truck front passenger side"
+      ],
+      "source_quote": "it partially entered the left adjacent lane to make room for a cyclist on its right",
+      "legacy_risk": "The AV changes lateral position; the truck is not the cut-in vehicle."
+    },
+    {
+      "id": "274",
+      "family": "overtake_then_cut_in",
+      "av": "Cruise westbound in left travel lane",
+      "other": "Honda starts behind in right lane, crosses AV lane into left parking lane and merges back",
+      "required_events": [
+        "Honda passes to left",
+        "Honda merges right into AV lane",
+        "AV brakes",
+        "contact at AV front left quarter and mirror"
+      ],
+      "source_quote": "The Honda Accord then began to merge back into the Cruise AV's lane",
+      "legacy_risk": "Preserve the left-side return cut-in and braking, not an arbitrary right-side cut-in."
+    },
+    {
+      "id": "448",
+      "family": "metered_ramp_rear_end",
+      "av": "WeRide stationary in metering-light queue on freeway on-ramp",
+      "other": "BMW behind accelerates to about 5 MPH",
+      "required_events": [
+        "AV stationary on ramp",
+        "low-speed rear impact"
+      ],
+      "source_quote": "While our car was stationary (0 MPH), the other car involved accelerated slightly to about 5 MPH",
+      "measured_speed_mps": 2.2352,
+      "legacy_risk": "Preserve ramp context and source speed; highway-speed crash would be wrong."
+    },
+    {
+      "id": "140",
+      "family": "three_vehicle_chain_rear_end",
+      "av": "Waymo stopped in rightmost non-HOV lane at green waiting for junction to clear",
+      "other": "passenger car immediately behind AV; pickup behind passenger car",
+      "required_events": [
+        "pickup rear-ends passenger car",
+        "passenger car is pushed into stopped AV"
+      ],
+      "source_quote": "The passenger car behind the Waymo AV was rear-ended by a pickup truck",
+      "legacy_risk": "Both physical contacts and the middle vehicle are required."
+    },
+    {
+      "id": "444",
+      "family": "oncoming_mirror_sideswipe",
+      "av": "Waymo travels west then stops to yield",
+      "other": "oncoming Toyota passes",
+      "required_events": [
+        "AV stops",
+        "opposing-direction passage",
+        "passenger-car driver mirror contacts AV sensor"
+      ],
+      "source_quote": "its driver side rearview mirror made contact with a Waymo AV sensor",
+      "legacy_risk": "Requires close lateral passage, not frontal impact or a static oncoming car."
+    },
+    {
+      "id": "323",
+      "family": "opposing_lane_overtake_left_turn",
+      "av": "Waymo westbound preparing left turn, manual at impact",
+      "other": "passenger car overtakes AV and car behind it via opposing lane, in the same travel direction",
+      "required_events": [
+        "overtaker passes background following car",
+        "overtaker enters opposing lane but travels same direction as AV",
+        "overtaker right side contacts AV front left"
+      ],
+      "source_quote": "A passenger car passed the Waymo AV and the vehicle directly behind the Waymo AV by crossing into and driving in the opposing lane of traffic",
+      "legacy_risk": "Oncoming lane occupancy does not mean oncoming travel direction."
+    },
+    {
+      "id": "097",
+      "family": "parking_exit_cut_in",
+      "av": "Zoox westbound on Chess Drive",
+      "other": "parallel-parked Nissan suddenly leaves right parking space without yielding",
+      "required_events": [
+        "Nissan initially parked",
+        "Nissan enters AV lane from right",
+        "AV right front meets Nissan driver door/front wheel"
+      ],
+      "source_quote": "abruptly entered the Zoox vehicle’s travel lane from a parking space in the right parking lane",
+      "legacy_risk": "A moving adjacent-lane NPC omits the parked-to-moving transition."
+    },
+    {
+      "id": "013",
+      "family": "right_adjacent_left_cut_in",
+      "av": "Zoox southwest in lane 4",
+      "other": "Camaro ahead in right adjacent lane 5 goes around a cyclist then swerves left",
+      "required_events": [
+        "cyclist in right lane",
+        "Camaro left incursion",
+        "Camaro driver quarter contacts AV passenger fender/front door"
+      ],
+      "source_quote": "Vehicle 2 then swerved left into\n lane 4 across the path of the Zoox vehicle",
+      "legacy_risk": "Preserve five-lane context and cyclist as causal participant."
+    },
+    {
+      "id": "035",
+      "family": "left_turn_crossing_red_runner",
+      "av": "Zoox northeast on Folsom turning left onto 6th, manual",
+      "other": "Volkswagen southeast on 6th runs red",
+      "required_events": [
+        "AV begins left turn",
+        "crossing car enters junction",
+        "car front driver side contacts AV driver rear wheel"
+      ],
+      "source_quote": "failed to stop for the red traffic light and entered the intersection",
+      "legacy_risk": "A head-on encounter or straight AV route misses contact geometry."
+    },
+    {
+      "id": "273",
+      "family": "pass_blocker_then_sideswipe",
+      "av": "Cruise southbound passes stopped eighteen-wheeler in right lane, then briefly stops while completing pass",
+      "other": "Dodge Charger comes from behind in left lane and passes AV on left",
+      "required_events": [
+        "stopped truck ahead",
+        "AV passes truck and stops",
+        "Dodge passes left and contacts AV front left region"
+      ],
+      "source_quote": "The Cruise AV began to navigate around the eighteen-wheeler and stopped briefly as it was completing its passing maneuver",
+      "legacy_risk": "The truck is background obstruction, not the crash partner."
+    },
+    {
+      "id": "157",
+      "family": "av_passes_double_parked_vehicle",
+      "av": "Apollo westbound stops for double-parked Lexus, driver takes over and passes",
+      "other": "Lexus remains double parked",
+      "required_events": [
+        "AV stops",
+        "AV begins passing in manual mode",
+        "AV sideswipes parked vehicle"
+      ],
+      "source_quote": "Then the AV side-swiped the double-parked vehicle while in conventional mode",
+      "legacy_risk": "Stationary obstacle plus braking alone cannot reproduce the reported later passage."
+    },
+    {
+      "id": "165",
+      "family": "lead_brake_av_stop_rear_end",
+      "av": "Mercedes manual on curved interchange, stops after lead vehicle abruptly stops",
+      "other": "lead traffic vehicle and trailing Chevrolet",
+      "required_events": [
+        "lead abrupt stop",
+        "Mercedes stops in lane",
+        "trailing car rear-ends Mercedes"
+      ],
+      "source_quote": "The vehicle behind him did not come to a stop in time and rear ended the Mercedes-Benz",
+      "legacy_risk": "Three narrative participants; the Mercedes is the middle vehicle, never autonomous during this incident."
+    },
+    {
+      "id": "203",
+      "family": "braking_av_rear_end",
+      "av": "Cruise northbound decelerates for stop sign",
+      "other": "Ford Transit van fails to stop behind",
+      "required_events": [
+        "AV decelerates toward stop sign",
+        "van contacts rear bumper"
+      ],
+      "source_quote": "As the Cruise AV was coming to a stop for a stop sign",
+      "legacy_risk": "Retain deceleration before impact; source does not say AV was stationary at impact."
+    },
+    {
+      "id": "009",
+      "family": "same_direction_pass_stopped_av",
+      "av": "Waymo parked in lane with hazard lights after prior collision",
+      "other": "Tesla SUV approaches from behind and passes left",
+      "required_events": [
+        "AV stationary",
+        "SUV passes left",
+        "SUV passenger side contacts AV rear driver side"
+      ],
+      "source_quote": "began to pass the Waymo AV on the left",
+      "legacy_risk": "The parked AV is struck during lateral passage, not rear-ended directly."
+    },
+    {
+      "id": "491",
+      "family": "oncoming_truck_sideswipe_moving_av",
+      "av": "Zoox creeps forward in manual mode while providing passing space",
+      "other": "oncoming truck",
+      "required_events": [
+        "opposing headings",
+        "AV slow forward motion",
+        "truck side contacts AV rear radar sensor"
+      ],
+      "source_quote": "was slowly moving forward in response to an oncoming truck",
+      "legacy_risk": "Not head-on collision; truck dimensions matter."
+    },
+    {
+      "id": "120",
+      "family": "bus_right_turn_protruding_rack",
+      "av": "Zoox northeast stopped at red on Mission then inches forward on green",
+      "other": "bus southeast on 9th turns right onto Mission; rack protrudes on bus driver side",
+      "required_events": [
+        "bus right turn into opposing direction",
+        "AV inches and steers away",
+        "protruding bike rack contacts AV driver fender"
+      ],
+      "source_quote": "a front-mounted triple-bike rack extending past the width of the bus on the driver's side",
+      "legacy_risk": "Stock bus hull is not an exact model of a protruding rack; disclose any asset approximation."
+    },
+    {
+      "id": "639",
+      "family": "rear_right_contact_waiting_left_turn",
+      "av": "Cruise southbound waits for oncoming traffic before left turn",
+      "other": "BMW contacts AV right rear; approach unspecified in narrative",
+      "required_events": [
+        "AV waiting to turn left",
+        "contact at AV right rear corner"
+      ],
+      "source_quote": "waiting for oncoming traffic to clear the intersection\nbefore making a left turn",
+      "legacy_risk": "Do not claim a precise lane change or approach direction as a reported fact."
+    },
+    {
+      "id": "065",
+      "family": "stationary_rear_end",
+      "av": "Waymo southwest left lane, stops in traffic queue",
+      "other": "Toyota Prius approaches behind",
+      "required_events": [
+        "AV stationary in left lane",
+        "Prius front bumper contacts AV rear bumper"
+      ],
+      "source_quote": "While the Waymo AV remained stationary, a passenger car approached the Waymo AV from behind",
+      "legacy_risk": "Static lead role reversal must be explicit."
+    },
+    {
+      "id": "235",
+      "family": "oncoming_truck_sideswipe_stopped_av",
+      "av": "Waymo northwest stops to yield",
+      "other": "heavy truck southeast passes",
+      "required_events": [
+        "AV stops",
+        "opposing truck passes",
+        "truck driver side contacts AV rear driver sensor"
+      ],
+      "source_quote": "a heavy truck traveling southeast on Randall Street",
+      "legacy_risk": "Legacy adjacent/static classification does not encode opposing passage."
+    },
+    {
+      "id": "259",
+      "family": "truck_right_turn_cut_across_av",
+      "av": "Zoox southbound yielding to pedestrian before right turn, manual",
+      "other": "large truck in left adjacent lane abruptly turns right",
+      "required_events": [
+        "pedestrian crossing AV intended route",
+        "AV yields",
+        "truck cuts right across AV",
+        "contact at AV left front sensor"
+      ],
+      "source_quote": "A large truck in the left adjacent lane abruptly turned right and cut in front of the Zoox vehicle",
+      "legacy_risk": "Both turn paths and the pedestrian conflict should remain visible."
+    },
+    {
+      "id": "262",
+      "family": "braking_av_rear_end",
+      "av": "Zoox slows to stop behind traffic",
+      "other": "Volvo hits from rear at approximately 10 MPH",
+      "required_events": [
+        "AV braking",
+        "rear contact"
+      ],
+      "source_quote": "a vehicle behind made contact at approximately 10mph",
+      "measured_speed_mps": 4.4704,
+      "legacy_risk": "Do not substitute a high-speed crash for stated low-speed contact."
+    },
+    {
+      "id": "330",
+      "family": "right_turn_rear_end",
+      "av": "Apple test vehicle makes right turn; driver takes over before collision",
+      "other": "Mazda3 contacts rear sensor",
+      "required_events": [
+        "AV right turn",
+        "rear contact during turn"
+      ],
+      "source_quote": "This occurred as the test vehicle was making a right\nturn",
+      "legacy_risk": "Requires a curved turn trajectory; stationary rear-end is not equivalent."
+    },
+    {
+      "id": "635",
+      "family": "adjacent_cut_in_right_front",
+      "av": "Cruise eastbound through intersection",
+      "other": "Toyota changes into AV lane",
+      "required_events": [
+        "other vehicle lane change",
+        "contact at AV right front corner"
+      ],
+      "source_quote": "another vehicle began to change into the Cruise AV’s lane",
+      "legacy_risk": "Source gives contact side but not a complete approach trajectory."
+    },
+    {
+      "id": "440",
+      "family": "stationary_red_light_rear_end",
+      "av": "Cruise stopped southbound at red",
+      "other": "passenger vehicle approaches behind",
+      "required_events": [
+        "AV remains stopped",
+        "rear bumper contact"
+      ],
+      "source_quote": "was at a complete stop in response to a red light",
+      "legacy_risk": "A static NPC in front is valid only with explicit SUT reassignment."
+    },
+    {
+      "id": "021",
+      "family": "wide_right_turn_head_on",
+      "av": "Zoox eastbound stopped at stop sign preparing LEFT turn, manual",
+      "other": "Chevrolet makes wide RIGHT turn from side road toward westbound",
+      "required_events": [
+        "AV stationary at stop sign",
+        "other vehicle wide right turn",
+        "front-to-front collision"
+      ],
+      "source_quote": "preparing to turn left onto\nTreat Avenue",
+      "legacy_risk": "Frozen signature incorrectly says SUT right turn; preserve the PDF's left-turn preparation."
+    },
+    {
+      "id": "008",
+      "family": "bus_opposing_lane_overtake",
+      "av": "Waymo northbound stationary in traffic queue",
+      "other": "bus directly behind crosses double yellow to pass left in same direction",
+      "required_events": [
+        "bus moves from behind into opposing lane",
+        "bus passenger side contacts AV rear driver side"
+      ],
+      "source_quote": "a bus traveling directly behind the Waymo AV attempted to maneuver around the stopped Waymo AV",
+      "legacy_risk": "The bus, not the AV, overtakes; solid centerline violation is an observed incident behavior."
+    },
+    {
+      "id": "040",
+      "family": "truck_opposing_lane_overtake",
+      "av": "Waymo stopped at unilluminated malfunctioning traffic light",
+      "other": "heavy truck initially stopped behind passes via opposing lane",
+      "required_events": [
+        "both initially stopped",
+        "truck passes left",
+        "truck passenger side contacts AV rear driver corner"
+      ],
+      "source_quote": "the traffic light was not illuminated",
+      "legacy_risk": "Do not treat malfunctioning signal as an ordinary green light or eliminate the overtaking phase."
+    },
+    {
+      "id": "533",
+      "family": "creep_then_stop_rear_end",
+      "av": "Waymo stops at stop sign, creeps preparing merge, then manual stop",
+      "other": "Volvo behind rear-ends at approximately 7 MPH",
+      "required_events": [
+        "stop",
+        "creep",
+        "stop again",
+        "rear contact"
+      ],
+      "source_quote": "As the Waymo\nAV proceeded slowly in preparation to merge",
+      "measured_speed_mps": 3.12928,
+      "legacy_risk": "Requires stop-creep-stop sequence before low-speed rear contact."
+    },
+    {
+      "id": "055",
+      "family": "ambulance_wide_right_turn_merge",
+      "av": "Waymo eastbound leftmost of two lanes enters intersection on yellow",
+      "other": "ambulance northbound makes right turn eastbound without lights/siren",
+      "required_events": [
+        "AV crosses junction",
+        "ambulance right turn extends into left lane",
+        "ambulance front driver side contacts AV rear passenger door"
+      ],
+      "source_quote": "While the ambulance\ncompleted its right turn it crossed into the lane the Waymo AV was travling in",
+      "legacy_risk": "A straight crossing NPC does not capture the same-direction merge contact."
+    },
+    {
+      "id": "638",
+      "family": "right_side_low_speed_pass",
+      "av": "Waymo stopped southbound at red",
+      "other": "passenger car passes on right at approximately 1 MPH",
+      "required_events": [
+        "AV stationary",
+        "other passes right",
+        "mirror contacts AV passenger front-fender sensor"
+      ],
+      "source_quote": "a passenger vehicle attempted to pass\nthe Waymo AV on the right",
+      "measured_speed_mps": 0.44704,
+      "legacy_risk": "Requires very low-speed close passage and an explicit sensor-housing approximation."
+    },
+    {
+      "id": "180",
+      "family": "yield_left_turn_rear_end",
+      "av": "Cruise northbound yields to oncoming traffic for left turn at green",
+      "other": "BMW behind fails to stop",
+      "required_events": [
+        "AV yielding before left turn",
+        "BMW rear-ends AV passenger rear region"
+      ],
+      "source_quote": "As the AV was yielding to oncoming traffic in preparation to make a left turn",
+      "legacy_risk": "The reported contact precedes completed left turn."
+    },
+    {
+      "id": "249",
+      "family": "turn_arrow_red_rear_end",
+      "av": "Waymo westbound stationary in dedicated left-turn lane at red arrow",
+      "other": "following Toyota starts moving when adjacent through traffic gets green",
+      "required_events": [
+        "adjacent through traffic departs",
+        "AV remains stopped at red arrow",
+        "following car accelerates into AV rear"
+      ],
+      "source_quote": "The left turn arrow signal for the dedicated turn lane occupied by the Waymo AV remained red",
+      "legacy_risk": "Preserve different permissions for turn lane and adjacent through lanes."
+    },
+    {
+      "id": "293",
+      "family": "illegal_left_turn_across_straight_av",
+      "av": "Zoox straight through intersection at green, brakes after takeover",
+      "other": "Nissan illegal left turn across AV path",
+      "required_events": [
+        "Nissan left turn into right of way",
+        "AV brakes",
+        "AV strikes Nissan right front corner"
+      ],
+      "source_quote": "The Zoox vehicle struck the right front corner of vehicle 2",
+      "legacy_risk": "Contact partner corner and crossing turn are required, not just any intersection collision."
+    },
+    {
+      "id": "435",
+      "family": "side_road_left_turn_narrow_pass",
+      "av": "Waymo southbound narrow road, slows and nudges right then stops at sign",
+      "other": "passenger car from AV right turns left into northbound opposing flow",
+      "required_events": [
+        "other turns left from side road",
+        "AV nudge right and stop",
+        "turning car at about 5 MPH contacts AV driver rear sensor"
+      ],
+      "source_quote": "A passenger vehicle approaching from the right of the Waymo AV on eastbound\nThornton Avenue made a left turn in front of the Waymo AV",
+      "measured_speed_mps": 2.2352,
+      "legacy_risk": "Not a static oncoming vehicle or an AV right turn."
+    },
+    {
+      "id": "032",
+      "family": "av_right_curve_parked_car_sideswipe",
+      "av": "AutoX follows right curve at 16 MPH, driver takes over, passes too close to parking",
+      "other": "Honda parked at roadside",
+      "required_events": [
+        "AV right-hand curvature",
+        "AV right sensor pod contacts parked car left mirror"
+      ],
+      "source_quote": "The AV was making a right turn along the Kingsbury Cir, traveling at 16 mph",
+      "measured_speed_mps": 7.15264,
+      "legacy_risk": "A forward blocker on straight road misses both curve and lateral contact."
+    },
+    {
+      "id": "144",
+      "family": "right_turn_crosswalk_cyclist",
+      "av": "Waymo eastbound waits for pedestrians and cyclist then manually turns right southbound",
+      "other": "cyclist approaches behind on sidewalk, continues east into crosswalk; pedestrians clear first",
+      "required_events": [
+        "pedestrians cross then clear",
+        "AV waits then begins right turn",
+        "cyclist enters crosswalk",
+        "cyclist contacts AV passenger rear quarter"
+      ],
+      "source_quote": "the cyclist entered the crosswalk and made contact with the passenger’s rear quarter panel of the Waymo AV",
+      "legacy_risk": "Cyclist is a bicycle, not a car; retain sidewalk approach, turn and pedestrian timing."
+    }
+  ]
+}

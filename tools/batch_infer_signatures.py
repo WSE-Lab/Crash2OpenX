@@ -172,10 +172,10 @@ def main() -> int:
     ap.add_argument("--text-cache", type=Path, default=DEFAULT_TEXT_CACHE)
     ap.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR)
     ap.add_argument("--env", type=Path, default=DEFAULT_ENV)
-    ap.add_argument("--model", default="deepseek/deepseek-v4-pro")
-    ap.add_argument("--base-url", default="https://openrouter.ai/api/v1")
-    ap.add_argument("--api-key-env", default="OPENROUTER_API_KEY")
-    ap.add_argument("--vlm-model", default="xiaomi/mimo-v2.5",
+    ap.add_argument("--model", default="deepseek-flash")
+    ap.add_argument("--base-url", default="https://api.deepseek.com")
+    ap.add_argument("--api-key-env", default="DEEPSEEK_API_KEY")
+    ap.add_argument("--vlm-model", default="deepseek-flash",
                     help="used only if PDF needs VLM OCR (rare for these reports)")
     ap.add_argument("--max-tokens", type=int, default=12000,
                     help="reasoning models burn the chain in this budget; default 12000 covers outliers")

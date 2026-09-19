@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 
 from tools.scene_outcome import (
@@ -93,8 +94,23 @@ def validate(run_dir: Path) -> dict:
         dynamic = len(hashes) >= 3
         detail = f"frames={len(frames)}, unique_sampled={len(hashes)}/{len(sample_indexes)}"
     else:
-        dynamic = False
-        detail = f"frames={len(frames)}"
+        # Compact transfers preserve the MP4 and timestamps without thousands
+        # of JPEGs. Judge the actual recording instead of treating absent JPEG
+        # intermediates as an empty/static video.
+        try:
+            decoded = subprocess.run(
+                ["ffmpeg", "-v", "error", "-i", str(video), "-an", "-vf",
+                 "fps=2,scale=160:-2", "-f", "framemd5", "-"],
+                capture_output=True, text=True, timeout=45, check=True,
+            )
+            hashes = {line.rsplit(",", 1)[-1].strip()
+                      for line in decoded.stdout.splitlines()
+                      if line.strip() and not line.startswith("#")}
+            dynamic = len(hashes) >= 3
+            detail = f"decoded MP4 at 2fps; unique_sampled={len(hashes)}; JPEG intermediates={len(frames)}"
+        except (OSError, subprocess.SubprocessError) as exc:
+            dynamic = False
+            detail = f"MP4 decode failed: {type(exc).__name__}; JPEG intermediates={len(frames)}"
     check("dynamic_video", dynamic, detail)
 
     passed = all(item["passed"] for item in checks)

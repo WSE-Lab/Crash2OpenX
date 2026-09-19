@@ -466,11 +466,10 @@ def xodr_lane_pose(
 
 
 def pose_for_wp(wp, roads: Optional[Dict[int, RoadInfo]] = None) -> Tuple[float, float, float]:
-    if roads is not None:
-        pose = xodr_lane_pose(roads, int(wp.road_id), int(wp.lane_id), float(wp.s))
-        if pose is not None:
-            return pose
-    return xyyaw(wp)
+    # Cache uses OpenDRIVE coordinates. Retain actual CARLA geometry with the
+    # handedness conversion; never replace it with the expected analytic pose.
+    x_value, y_value, yaw_value = xyyaw(wp)
+    return x_value, -y_value, normalize_degrees(-yaw_value)
 
 
 def xy_for_wp(wp, roads: Optional[Dict[int, RoadInfo]] = None) -> Tuple[float, float]:
@@ -921,6 +920,8 @@ def build_node_record(wp, spacing: float, roads: Dict[int, RoadInfo]):
             "z": round(float(wp.transform.location.z), 3),
             "yaw": round(yaw_value, 3),
         },
+        "carla_transform": dict(zip(("x", "y", "yaw"), xyyaw(wp))),
+        "analytic_xodr_pose": xodr_lane_pose(roads, int(wp.road_id), int(wp.lane_id), float(wp.s)),
         "road_id": int(wp.road_id),
         "section_id": int(wp.section_id),
         "lane_id": int(wp.lane_id),
@@ -991,6 +992,7 @@ def selfcheck(
                     }
                 )
 
+    geometry_check = check_imported_geometry(index, roads)
     turn_counts = {}
     for route in routes:
         turn_counts[route["type"]] = turn_counts.get(route["type"], 0) + 1
@@ -999,7 +1001,8 @@ def selfcheck(
         "spacing_m": spacing,
         "allowed_gap_m": round(allowed_gap, 3),
         "max_consecutive_gap_m": round(max_gap, 3),
-        "continuity_pass": not bad_segments and not missing_route_refs,
+        "continuity_pass": not bad_segments and not missing_route_refs and geometry_check["geometry_consistency_pass"],
+        **geometry_check,
         "route_count": len(routes),
         "turn_counts": turn_counts,
         "missing_route_ref_count": len(missing_route_refs),
@@ -1009,6 +1012,29 @@ def selfcheck(
         "diagnostic_count": len(diagnostics),
         "diagnostics": list(diagnostics)[:50],
     }
+
+
+def check_imported_geometry(index, roads):
+    mismatches = []
+    unchecked = []
+    max_distance = max_yaw = 0.0
+    for key, wp in index.items():
+        expected = xodr_lane_pose(roads, int(wp.road_id), int(wp.lane_id), float(wp.s))
+        if expected is None:
+            unchecked.append(key)
+            continue
+        actual = pose_for_wp(wp)
+        distance = dist_xy(actual[:2], expected[:2])
+        yaw = abs((actual[2] - expected[2] + 180) % 360 - 180)
+        max_distance, max_yaw = max(max_distance, distance), max(max_yaw, yaw)
+        if not math.isfinite(distance + yaw) or distance > 0.25 or yaw > 2:
+            mismatches.append({"waypoint_id": key, "distance_m": distance, "yaw_degrees": yaw,
+                               "carla_in_xodr_coordinates": actual, "analytic_xodr_pose": expected})
+    return {"geometry_check_version": 1, "geometry_consistency_pass": not mismatches and not unchecked,
+            "geometry_position_tolerance_m": 0.25, "geometry_yaw_tolerance_degrees": 2,
+            "geometry_max_distance_m": max_distance, "geometry_max_yaw_degrees": max_yaw,
+            "geometry_mismatch_count": len(mismatches), "geometry_mismatches": mismatches,
+            "geometry_unchecked_count": len(unchecked), "geometry_unchecked": unchecked}
 
 
 def write_json(path: Path, payload, indent: Optional[int] = 2) -> None:
@@ -1046,6 +1072,9 @@ def extract_one(args) -> dict:
         "prepared_xodr_sha256": sha256_text(xodr_text),
         "repair_enabled": not args.no_repair,
         "repair_change_count": repair_change_count,
+        "extractor_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "coordinate_system": "OpenDRIVE; actual CARLA x, -y, -yaw",
+        "geometry_check_version": 1,
         "carla_map_name": cmap.name,
         "spacing": args.spacing,
         "waypoint_count": len(nodes),

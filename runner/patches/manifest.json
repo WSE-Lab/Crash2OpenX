@@ -1,0 +1,61 @@
+{
+  "source": "Verified 2026-09-19 showcase, case 293 runtime snapshot",
+  "submodules": {
+    "PCLA": "e3050bd2d83257db3d9db42ef7349e29f93091e1",
+    "scenario_runner": "94ff3b8af752bad2b9d464ad5105868906aa34c0"
+  },
+  "files": {
+    "PCLA/pcla_agents/interfuser/interfuser_agent.py": {
+      "base_sha256": "514a3d808fbcae1817225ff2776044920c03ce68f06c22c1991f80d7d164b9a2",
+      "runtime_sha256": "043f01d84f8cba07d1093fb9c92fcdb60dd7bae2f433027afc1c892514a6e128"
+    },
+    "scenario_runner/srunner/scenariomanager/actorcontrols/actor_control.py": {
+      "base_sha256": "ca7bea75b09a31bd11eafdc6d8237d0e9bf60c1dfb11ceaf6f2a4afe21e1cd9d",
+      "runtime_sha256": "e0308b013708946d70d6e282a0dfed4bccd695f0944493652ac25e8ddab04882"
+    },
+    "scenario_runner/srunner/scenariomanager/actorcontrols/basic_control.py": {
+      "base_sha256": "5d5abf4a5fa7a1dee1995950fa0018f6b6d216fc80b333ce624eb1c8ab017f73",
+      "runtime_sha256": "e0fde61f7caa15d247a5ea745d54c424676a28f2d43f6902b2e1e7d7e0c3cb41"
+    },
+    "scenario_runner/srunner/scenariomanager/actorcontrols/external_control.py": {
+      "base_sha256": "fe7dab1cecc8604053dc140001c1f8c7afb16b25ac4b2d97bdb4f5db424bd192",
+      "runtime_sha256": "129b4e839623b6f422339cc4132984ca82e8e5e27649005abe9f7aa4f494e5f2"
+    },
+    "scenario_runner/srunner/scenariomanager/actorcontrols/generated_lane_route.py": {
+      "base_sha256": null,
+      "runtime_sha256": "5bdef54a57c285bd11949314a7b3675b22861619d2815e78597b2f05555ff3f2"
+    },
+    "scenario_runner/srunner/scenariomanager/actorcontrols/gnss_compat.py": {
+      "base_sha256": null,
+      "runtime_sha256": "fa61bdbf6a1c28c64b4e62bf0c651a1fbd29271946f887f9839b0dbccf983f3d"
+    },
+    "scenario_runner/srunner/scenariomanager/actorcontrols/npc_vehicle_control.py": {
+      "base_sha256": "a58c9b3ae983aef779e48ade4c497f4109c472268a2b24a4fff4b6a877fdbf8a",
+      "runtime_sha256": "50380dc85e6aa835eb41b162525777650b0c9f9e459f1567fa96f586021ad74b"
+    },
+    "scenario_runner/srunner/scenariomanager/actorcontrols/physics_trajectory_control.py": {
+      "base_sha256": null,
+      "runtime_sha256": "a6f0213a79401509f7a6a23f49d7d5c9aac5e4d6bb16f4fae799d95f99b41d46"
+    },
+    "scenario_runner/srunner/scenariomanager/scenarioatomics/atomic_behaviors.py": {
+      "base_sha256": "177dd81a8f128c67cc832af98170efa08528233ad439c88562f367277666c0a7",
+      "runtime_sha256": "1e19086acc73a7fa774ba6ddb6c315238e1195284e6a61d305f994b455ea3354"
+    },
+    "scenario_runner/srunner/scenariomanager/scenarioatomics/atomic_trigger_conditions.py": {
+      "base_sha256": "3aa783fa3c8b93fbf259a07d11261b64f3afd97a43ce0a12c35d3391fe26e3bc",
+      "runtime_sha256": "edb8e5c7bc1e6db0658ab3013536bccd495395605c448eb250eca72106ef94f6"
+    },
+    "scenario_runner/srunner/scenarios/open_scenario.py": {
+      "base_sha256": "e62808d2abf99b2d0dc20ae658b96c441240a5f10c65ecec96f89d160c2e7362",
+      "runtime_sha256": "6e5bb9bbac924edbcf42dd09514c717abb39cf54f4492e2b43ebc3ae2b372a25"
+    },
+    "scenario_runner/srunner/tools/openscenario_parser.py": {
+      "base_sha256": "2b5bc4e9f922c9785f2d7d7039a46721712a4ee9d35d349524468271d472a987",
+      "runtime_sha256": "0058789d3b75a985be6fe20eaf69afc05d31ba13813a212ec02ea44e8a75613c"
+    },
+    "scenario_runner/srunner/tools/scenario_helper.py": {
+      "base_sha256": "e875c6fab87ff2975273c801c1d56dfedad70b92c62774eb4ebdeb0cee71caf8",
+      "runtime_sha256": "f8b119223af5759951ff62b10a968ce8f3cfea658c9cd51e515a8b8f748e57e5"
+    }
+  }
+}

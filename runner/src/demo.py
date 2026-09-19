@@ -118,6 +118,10 @@ def parse_arguments():
     )
     parser.add_argument('--disable-traffic-lights', default=True, help='全局禁用红绿灯，统一冻结为绿灯')
     parser.add_argument('--collect-data', default=True, action='store_true', help='是否启用数据收集功能')
+    parser.add_argument('--continue-after-collision', action='store_true',
+                        help='保留多次碰撞序列，首个碰撞后继续到场景结束')
+    parser.add_argument('--collision-tail-seconds', type=float, default=2.0,
+                        help='物理碰撞后继续采集的仿真秒数，默认 2 秒')
     parser.add_argument('--data-output', default=None, help='数据输出文件路径（默认自动生成）')
     parser.add_argument(
         '--xodr',
@@ -813,6 +817,31 @@ def extract_actor_acquire_position_transforms(xml_tree, actor_name, carla_map=No
     return transforms
 
 
+def extract_actor_assigned_route_transforms(xml_tree, actor_name, carla_map=None):
+    """Read a concrete OSC route without replanning its junction choices."""
+    routes = []
+    for private in xml_tree.findall('.//Storyboard/Init/Actions/Private'):
+        if private.get('entityRef') == actor_name:
+            routes.extend(private.findall('.//AssignRouteAction/Route'))
+    for group in xml_tree.findall('.//ManeuverGroup'):
+        actors = group.find('Actors')
+        if actors is not None and any(ref.get('entityRef') == actor_name for ref in actors.findall('EntityRef')):
+            routes.extend(group.findall('.//AssignRouteAction/Route'))
+    if not routes:
+        return []
+    if len(routes) != 1:
+        raise ValueError(f'{actor_name} has multiple assigned routes; a static PCLA route cannot preserve their triggers')
+    transforms = []
+    for position in routes[0].findall('./Waypoint/Position'):
+        transform = _position_to_carla_transform(position, carla_map)
+        if transform is None:
+            raise ValueError(f'{actor_name} assigned route contains an unsupported waypoint position')
+        transforms.append(transform)
+    if len(transforms) < 2:
+        raise ValueError(f'{actor_name} assigned route needs at least two waypoints')
+    return transforms
+
+
 def _get_actor_vehicle_property(xml_tree, actor_name, property_name):
     for scenario_object in xml_tree.findall('.//Entities/ScenarioObject'):
         if scenario_object.attrib.get('name') != actor_name:
@@ -1097,6 +1126,11 @@ def build_pcla_sut_route_from_xosc(
     transforms = extract_actor_follow_trajectory_transforms(xml_tree, actor_name, carla_map)
     preserve_topology = False
     if len(transforms) < 2:
+        transforms = extract_actor_assigned_route_transforms(xml_tree, actor_name, carla_map)
+        if transforms:
+            preserve_topology = True
+            print(f'PCLA SUT route: preserving {len(transforms)} generated AssignRouteAction waypoints for {actor_name}.')
+    if len(transforms) < 2:
         init_transform = extract_actor_init_teleport_transform(xml_tree, actor_name, carla_map)
         acquire_transforms = extract_actor_acquire_position_transforms(xml_tree, actor_name, carla_map)
         if init_transform is not None and acquire_transforms:
@@ -1109,7 +1143,7 @@ def build_pcla_sut_route_from_xosc(
             print(f'PCLA SUT route fallback: 使用 {actor_name} 的 sut_start_waypoint_id -> sut_goal_waypoint_id 生成 route。')
     if len(transforms) < 2:
         raise ValueError(
-            f'{actor_name} 没有足够的 FollowTrajectory、AcquirePosition 或 waypoint property 顶点，'
+            f'{actor_name} 没有足够的 FollowTrajectory、AssignRoute、AcquirePosition 或 waypoint property 顶点，'
             '无法为 PCLA SUT 生成 route'
         )
     transforms = trim_transforms_by_distance(transforms, start_offset)
@@ -1121,7 +1155,10 @@ def build_pcla_sut_route_from_xosc(
         )
         transforms = lane_transforms if len(lane_transforms) >= 2 else [transforms[0], transforms[-1]]
     original_waypoint_count = len(transforms)
-    transforms = align_transforms_to_start_driving_lane(carla_map, transforms)
+    if route_mode == 'endpoints' and not preserve_topology:
+        transforms = align_transforms_to_start_driving_lane(carla_map, transforms)
+    else:
+        print('PCLA full route: preserving supplied start position, heading and route geometry.')
     transforms = densify_transforms_by_distance(transforms, route_spacing)
 
     write_route_from_transforms(transforms, output_file)
@@ -1517,6 +1554,8 @@ if __name__ == '__main__':
             record_video=args.record_video,
             video_fps=args.video_fps,
             video_frame_stride=args.video_frame_stride,
+            stop_on_collision=not args.continue_after_collision,
+            collision_tail_seconds=args.collision_tail_seconds,
         )
         print(f'数据收集器已创建，场景名称: {scenario_name}')
 

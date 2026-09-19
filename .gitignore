@@ -6,6 +6,11 @@ __pycache__/
 
 # Run artifacts
 runs/
+# This historical directory contains a source entry point as well as run data.
+!runner/src/runs/
+runner/src/runs/*
+!runner/src/runs/run_scene.py
+!runner/src/runs/__init__.py
 output/
 outputs/
 tmp/
@@ -25,3 +30,8 @@ tmp/
 .omc/
 **/.omc/
 .pytest_cache/
+
+# Local analysis state
+.mem-snapshot.txt
+.claude/
+.ruff_cache/

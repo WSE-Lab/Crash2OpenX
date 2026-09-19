@@ -9,12 +9,25 @@ of executable simulation artifacts — an OpenDRIVE 1.5 road network and a
 matching OpenSCENARIO 1.0 scene — and runs the pair in CARLA under an
 autonomous-driving agent loaded via PCLA.
 
+## Presentation and reproducibility
+
+The October presentation release contains a 16-slide paper presentation, Chinese
+speaker notes, a narrated demonstration and traceable simulation evidence.
+Download it from [the v0.2.0 release](https://github.com/WSE-Lab/Crash2OpenX/releases/tag/v0.2.0).
+For a clean setup, runtime patch installation and replay commands, see
+[Reproduce Crash2OpenX](docs/reproduce.md).
+
 ## Demo video
 
-A 5-minute walkthrough of the full pipeline on two contrasting cases (a
-curved-ramp rear-end collision from a DMV PDF, and a foggy-dawn crosswalk
-safe pass from a plain-text report):
-<https://www.modelcopilot.org/crash2openx.html>.
+The [3:51 narrated demonstration](https://github.com/WSE-Lab/Crash2OpenX/releases/download/v0.2.0/Crash2OpenX_demo_2026.mp4)
+walks through the paper's Case-165 input, seed models, OpenX artifacts and
+recorded CARLA execution, followed by four accident-inspired ADS test variants.
+The release includes source artifacts, raw recordings and measured outcomes.
+The variants use documented experimental parameters; they are not claims of
+exact accident reconstruction.
+
+The earlier two-case walkthrough remains available on the
+[project website](https://www.modelcopilot.org/crash2openx.html).
 
 ## Architecture
 
@@ -50,7 +63,7 @@ crash2openx/
 | Path | Project | Pin |
 |---|---|---|
 | `external/scenariogeneration` | [pyoscx/scenariogeneration](https://github.com/pyoscx/scenariogeneration) — OpenDRIVE/OpenSCENARIO generation backend | `debb300` (v0.16.5) |
-| `external/PCLA` | [MasoudJTehrani/PCLA](https://github.com/MasoudJTehrani/PCLA) — Pretrained CARLA Leaderboard Agents | latest |
+| `external/PCLA` | [MasoudJTehrani/PCLA](https://github.com/MasoudJTehrani/PCLA) — Pretrained CARLA Leaderboard Agents | `e3050bd` |
 | `external/scenario_runner` | [carla-simulator/scenario_runner](https://github.com/carla-simulator/scenario_runner) — OpenSCENARIO execution engine | `v0.9.16` |
 
 ## Installation
@@ -62,14 +75,13 @@ crash2openx/
 - For the execution layer: a **Linux x86_64 host with an NVIDIA GPU**,
   [Docker Engine](https://docs.docker.com/engine/install/) and the
   [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
-  (On a machine without a GPU — e.g. a macOS laptop — everything up to and
-  including XSD-valid XODR/XOSC compilation still works; only the CARLA
-  phases need the GPU host.)
+  (On a machine without a GPU — e.g. a macOS laptop — seed inference and road generation work locally. Full scene grounding
+  and execution connect to the GPU host.)
 
 ### 1. Clone with submodules
 
 ```bash
-git clone --recurse-submodules <repo-url> crash2openx
+git clone --recurse-submodules https://github.com/WSE-Lab/Crash2OpenX.git crash2openx
 cd crash2openx
 # or, after a plain clone:
 git submodule update --init --recursive
@@ -82,7 +94,7 @@ in `pyproject.toml`, locked in `uv.lock`, and installed into `.venv/`.
 `scenariogeneration` is installed editable from the pinned submodule.
 
 ```bash
-uv sync
+uv sync --locked --python 3.12
 ```
 
 Run anything with `uv run` (activates `.venv` and resolves `tools.*` imports):
@@ -94,11 +106,11 @@ uv run pytest            # static regression suite, no CARLA required
 ### 3. API key for the LLM/VLM front end
 
 Seed extraction and the QA judge call an OpenAI-compatible endpoint
-(default: OpenRouter; models are set per script via `--model`).
+(the current template uses DeepSeek; model and endpoint settings are in `.env.example`).
 
 ```bash
 cp .env.example .env.local
-# edit .env.local: OPENROUTER_API_KEY=sk-or-...
+# edit .env.local: DEEPSEEK_API_KEY=<your-key>
 ```
 
 ### 4. CARLA via Docker (same machine)
@@ -184,14 +196,20 @@ uv run python tools/carla_local.py run \
 # data/compiled) and collect execution-gate verdicts:
 uv run python tools/batch_run_medoids.py
 
-# Direct-LLM baseline (prompt the same model for raw XML, Sec. 5 of the paper):
+# Optional direct-LLM comparison utility:
 uv run python tools/baseline_direct_llm.py
 ```
 
-The legacy ssh driver for a remote CARLA host is still available with
+Build the isolated runtime described in [the reproduction guide](docs/reproduce.md)
+before execution. The SSH driver for a remote CARLA host is available with
 `CARLA_MODE=remote` (see `.env.example`).
 
 ## Validation layers
+
+For calibrated NPC actions triggered by the ADS's actual body clearance,
+see [ADS-relative stress variants](docs/ads-relative-stress.md). This includes
+a runnable cut-in example, preserved source/variant provenance, and RGB
+annotation that identifies the ADS and measures hazard onset.
 
 1. **OCL Table 1** — `tools/ocl_constraints.py`: I1–I9 per-model invariants at
    extraction return, P1–P6 pair rules before compilation; violations are fed
@@ -213,7 +231,7 @@ The legacy ssh driver for a remote CARLA host is still available with
 All gate regressions are covered by the static test suite:
 
 ```bash
-uv run pytest    # 43 tests, < 30 s, no CARLA and no API key needed
+uv run --locked python -m pytest -q    # no CARLA and no API key needed
 ```
 
 ## Troubleshooting

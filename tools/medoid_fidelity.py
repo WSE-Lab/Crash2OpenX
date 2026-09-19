@@ -54,6 +54,9 @@ JUDGE_SYSTEM = """你是事故场景 DSL 的 fidelity 评审。
 """
 
 
+from tools.model_transport import complete_chat_completion
+
+
 def _judge_one(client: OpenAI, model: str, cid: str,
                pdf_text: str, road: dict, scene: dict) -> dict:
     # Truncate PDF text to keep prompt manageable (3-5k chars is plenty)
@@ -79,7 +82,7 @@ def _judge_one(client: OpenAI, model: str, cid: str,
 
 按系统提示输出 JSON。"""
 
-    resp = client.chat.completions.create(
+    resp = complete_chat_completion(client,
         model=model,
         messages=[
             {"role": "system", "content": JUDGE_SYSTEM},
@@ -88,12 +91,8 @@ def _judge_one(client: OpenAI, model: str, cid: str,
         stream=False,
         temperature=0.0,
         max_tokens=2400,
-        # Disable DeepSeek's reasoning mode for this judging task — we want a
-        # short JSON object, not a chain-of-thought. With reasoning on, the
-        # response often spends the entire token budget on `<think>...</think>`
-        # and truncates before emitting the JSON object (observed 2026-06-26:
-        # 9/18 cases came back with empty content or partial '{\n "score'').
-        extra_body={"thinking": {"type": "disabled"}},
+        # Shared transport supplies high reasoning and thinking, with enough
+        # output budget and incomplete-response retries for native DeepSeek.
     )
     raw = (resp.choices[0].message.content or "").strip()
     # DeepSeek reasoning models occasionally emit a leading <thinking>…</thinking>
@@ -129,9 +128,9 @@ def main() -> int:
     ap.add_argument("--medoids", type=Path, default=ROOT / "paper/eval_medoids_n100.json")
     ap.add_argument("--out-json", type=Path, default=ROOT / "paper/medoid_fidelity.json")
     ap.add_argument("--out-md", type=Path, default=ROOT / "paper/medoid_fidelity.md")
-    ap.add_argument("--model", default="deepseek/deepseek-v4-pro")
-    ap.add_argument("--base-url", default="https://openrouter.ai/api/v1")
-    ap.add_argument("--api-key-env", default="OPENROUTER_API_KEY")
+    ap.add_argument("--model", default="deepseek-flash")
+    ap.add_argument("--base-url", default="https://api.deepseek.com")
+    ap.add_argument("--api-key-env", default="DEEPSEEK_API_KEY")
     ap.add_argument("--workers", type=int, default=4)
     args = ap.parse_args()
 

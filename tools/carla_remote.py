@@ -18,6 +18,7 @@ import os
 import shlex
 import shutil
 import subprocess
+import tarfile
 import tempfile
 import time
 import uuid
@@ -62,6 +63,9 @@ class RemoteCfg:
     runs_root: str = "/home/carla/crash2openx_runs"
     runner_path: str = "/home/carla/crash2openx_runs/runner.sh"
     rpc_port: int = 2000
+    keep_remote_runs: bool = True
+    compact_artifacts: bool = False
+    min_free_gib: float = 10.0
 
     @classmethod
     def from_env(cls) -> "RemoteCfg":
@@ -77,6 +81,9 @@ class RemoteCfg:
             runs_root=os.environ.get("CARLA_REMOTE_RUNS_ROOT", defaults.runs_root),
             runner_path=os.environ.get("CARLA_REMOTE_RUNNER", defaults.runner_path),
             rpc_port=int(os.environ.get("CARLA_REMOTE_RPC_PORT", defaults.rpc_port)),
+            keep_remote_runs=os.environ.get("CARLA_REMOTE_KEEP_RUNS", "1") == "1",
+            compact_artifacts=os.environ.get("CARLA_REMOTE_COMPACT", "0") == "1",
+            min_free_gib=float(os.environ.get("CARLA_REMOTE_MIN_FREE_GIB", defaults.min_free_gib)),
         )
 
 
@@ -163,7 +170,71 @@ class CarlaRemoteClient:
         if cp.returncode != 0:
             raise CarlaRemoteError(f"scp pull failed: {cp.stderr.strip()}")
 
+    def _pull_tree(self, remote_path: str, local_dir: Path) -> None:
+        """Transfer one directory in a single archive, avoiding SFTP per-frame latency."""
+        local_dir.mkdir(parents=True, exist_ok=True)
+        leaf = Path(remote_path).name
+        command = ["env", "COPYFILE_DISABLE=1", "tar", "-czf", "-", "-C", str(Path(remote_path).parent)]
+        if self.cfg.compact_artifacts:
+            command += ["--exclude=" + leaf + "/rgb_frames/frame_*.jpg",
+                        "--exclude=" + leaf + "/scene/out/rgb_frames/frame_*.jpg"]
+        command.append(leaf)
+        with tempfile.TemporaryDirectory(prefix=".carla_pull_", dir=local_dir) as staging:
+            archive = Path(staging) / "artifacts.tar.gz"
+            with archive.open("wb") as handle:
+                cp = subprocess.run(self._ssh_base() + [shlex.join(command)], stdout=handle,
+                                    stderr=subprocess.PIPE, timeout=900, check=False)
+            if cp.returncode:
+                raise CarlaRemoteError("archive pull failed: " + cp.stderr.decode(errors="replace").strip())
+            extracted = Path(staging) / "extracted"
+            extracted.mkdir()
+            with tarfile.open(archive, "r:gz") as bundle:
+                for member in bundle.getmembers():
+                    if Path(member.name).parts[0] != leaf:
+                        raise CarlaRemoteError("unexpected archive root: " + member.name)
+                bundle.extractall(extracted, filter="data")
+            destination = local_dir / leaf
+            if destination.exists():
+                raise CarlaRemoteError("refusing to merge a previous partial transfer: " + str(destination))
+            shutil.move(str(extracted / leaf), destination)
+
     # ---- runner deployment ---------------------------------------------------
+
+    def check_capacity(self, *, upload_bytes: int = 0) -> dict:
+        """Refuse remote writes when the run filesystem lacks reserved capacity.
+
+        Probe the nearest existing ancestor without creating directories. This
+        never removes files to recover space, including failed run evidence.
+        """
+        import math
+
+        if not math.isfinite(self.cfg.min_free_gib) or self.cfg.min_free_gib <= 0:
+            raise CarlaRemoteError("CARLA_REMOTE_MIN_FREE_GIB must be finite and positive")
+        probe = (
+            "import json,os,sys; from pathlib import Path; "
+            "p=Path(sys.argv[1]); "
+            "p=next(q for q in (p,*p.parents) if q.exists()); "
+            "s=os.statvfs(p); "
+            "print(json.dumps({'free_bytes':s.f_bavail*s.f_frsize,"
+            "'free_inodes':s.f_favail,'total_inodes':s.f_files}))"
+        )
+        command = " ".join(shlex.quote(arg) for arg in
+                           (self.cfg.python_bin, "-c", probe, self.cfg.runs_root))
+        cp = self._ssh(command, timeout=30)
+        try:
+            capacity = json.loads(cp.stdout) if cp.returncode == 0 else None
+            required = math.ceil(self.cfg.min_free_gib * 1024**3) + max(0, upload_bytes)
+            enough = (capacity is not None and capacity["free_bytes"] >= required
+                      and (capacity["total_inodes"] == 0 or capacity["free_inodes"] >= 1000))
+        except (ValueError, KeyError, TypeError) as exc:
+            raise CarlaRemoteError("Cannot verify remote disk capacity; no remote writes performed") from exc
+        if not enough:
+            raise CarlaRemoteError(
+                "Remote disk capacity is insufficient or unavailable; stopped before upload. "
+                "No files were deleted. Required reserve: "
+                f"{self.cfg.min_free_gib:g} GiB plus inputs."
+            )
+        return capacity
 
     def deploy_runner(self) -> None:
         runner_local = ROOT / "scripts" / "remote_legacy" / "runner.sh"
@@ -172,6 +243,7 @@ class CarlaRemoteClient:
             raise FileNotFoundError(runner_local)
         if not paper_renderer_local.is_file():
             raise FileNotFoundError(paper_renderer_local)
+        self.check_capacity(upload_bytes=runner_local.stat().st_size + paper_renderer_local.stat().st_size)
         self._ssh(f"mkdir -p {shlex.quote(self.cfg.runs_root)}").check_returncode()
         self._push(runner_local, self.cfg.runner_path)
         self._ssh(f"chmod +x {shlex.quote(self.cfg.runner_path)}").check_returncode()
@@ -222,6 +294,7 @@ class CarlaRemoteClient:
         remote_run_dir = f"{self.cfg.runs_root}/{run_id}"
 
         t0 = time.time()
+        self.check_capacity(upload_bytes=len(xodr_bytes))
         self._ssh(
             f"mkdir -p {shlex.quote(remote_run_dir)}/inputs {shlex.quote(remote_run_dir)}/outputs"
         ).check_returncode()
@@ -241,13 +314,14 @@ class CarlaRemoteClient:
 
         if local_dir.exists():
             subprocess.run(["rm", "-rf", str(local_dir)], check=False)
-        self._pull(f"{remote_run_dir}/outputs", local_dir.parent)
+        self._pull_tree(f"{remote_run_dir}/outputs", local_dir.parent)
         # scp -r outputs <parent> -> parent/outputs ; rename to <name>
         outputs_dir = local_dir.parent / "outputs"
         if outputs_dir.exists():
             outputs_dir.rename(local_dir)
 
-        self._ssh(f"rm -rf {shlex.quote(remote_run_dir)}", timeout=15)
+        if not self.cfg.keep_remote_runs:
+            self._ssh(f"rm -rf {shlex.quote(remote_run_dir)}", timeout=15)
 
         # Side-car cache key: byte-level hash of the local XODR we sent.
         # The script's manifest.xodr_sha256 hashes normalized text and won't match this.
@@ -368,6 +442,7 @@ class CarlaRemoteClient:
         remote_run_dir = f"{self.cfg.runs_root}/{run_id}"
 
         t0 = time.time()
+        self.check_capacity(upload_bytes=xodr_path.stat().st_size + xosc_path.stat().st_size)
         self._ssh(
             f"mkdir -p {shlex.quote(remote_run_dir)}/inputs {shlex.quote(remote_run_dir)}/outputs"
         ).check_returncode()
@@ -410,7 +485,7 @@ class CarlaRemoteClient:
             else:
                 failed_dir = local_dir.with_name(local_dir.name + "_FAILED")
             try:
-                self._pull(f"{remote_run_dir}/outputs", failed_dir.parent)
+                self._pull_tree(f"{remote_run_dir}/outputs", failed_dir.parent)
                 outputs_dir = failed_dir.parent / "outputs"
                 if outputs_dir.exists():
                     if failed_dir.exists():
@@ -421,14 +496,15 @@ class CarlaRemoteClient:
                 self._pull(f"{remote_run_dir}/runner.log", failed_dir)
             except CarlaRemoteError:
                 pass
-            self._ssh(f"rm -rf {shlex.quote(remote_run_dir)}", timeout=15)
+            if not self.cfg.keep_remote_runs:
+                self._ssh(f"rm -rf {shlex.quote(remote_run_dir)}", timeout=15)
             raise CarlaRemoteError(
                 f"remote run failed (rc={cp.returncode}); partial artifacts at {failed_dir}\n"
                 f"--- last stdout ---\n{cp.stdout[-2000:]}\n"
                 f"--- last stderr ---\n{cp.stderr[-2000:]}"
             )
 
-        self._pull(f"{remote_run_dir}/outputs", local_dir.parent)
+        self._pull_tree(f"{remote_run_dir}/outputs", local_dir.parent)
         outputs_dir = local_dir.parent / "outputs"
         if outputs_dir.exists():
             if merge_mode:
@@ -439,7 +515,21 @@ class CarlaRemoteClient:
             else:
                 outputs_dir.rename(local_dir)
 
-        self._ssh(f"rm -rf {shlex.quote(remote_run_dir)}", timeout=15)
+        self._pull(f"{remote_run_dir}/runner.log", local_dir)
+        (local_dir / "remote_run.json").write_text(json.dumps({
+            "host": self.cfg.host,
+            "run_directory": remote_run_dir,
+            "retained": self.cfg.keep_remote_runs,
+            "xodr_sha256": xodr_sha,
+            "xosc_sha256": xosc_sha,
+            "pcla_agent": pcla_agent if sut_actor else None,
+            "sut_actor": sut_actor,
+            "execution_mode": "pcla_autonomous_sut" if sut_actor else "scripted_reconstruction",
+            "compact_local_artifacts": self.cfg.compact_artifacts,
+            "raw_rgb_frames_retained_remotely": self.cfg.compact_artifacts and self.cfg.keep_remote_runs,
+        }, indent=2), encoding="utf-8")
+        if not self.cfg.keep_remote_runs:
+            self._ssh(f"rm -rf {shlex.quote(remote_run_dir)}", timeout=15)
 
         if paper_meta_payload is not None:
             (local_dir / "paper_meta.json").write_text(
@@ -449,7 +539,25 @@ class CarlaRemoteClient:
         # render the road background without reaching back to opendrive_seed/.
         shutil.copy2(xodr_path, local_dir / "map.xodr")
 
+        # Keep the raw experiment artifact; present a separate ADS identity view
+        # when synchronized RGB and actor geometry are available.
+        review_inputs = ['carla_rgb.mp4', 'rgb_frames/camera.json', 'rgb_frames/timestamps.jsonl',
+                         'sim_trace_raw.jsonl', 'events.jsonl', 'summary.json']
+        previous_review = local_dir / 'ads_review'
+        if previous_review.exists():
+            previous_review.rename(local_dir / ('ads_review_previous_' + uuid.uuid4().hex[:8]))
+        if sut_actor and all((local_dir / item).is_file() for item in review_inputs):
+            try:
+                from tools.review_ads_stress import review_run
+                review_run(local_dir, xosc_path, local_dir / 'ads_review', video=True,
+                           title=f'ADS: {sut_actor} / {pcla_agent} | measured interaction')
+            except Exception as exc:
+                # An unavailable annotation is not a failed CARLA experiment.
+                (local_dir / 'ads_review_error.json').write_text(json.dumps({'error': str(exc)}))
+
         files = {p.name: p for p in local_dir.iterdir() if p.is_file()}
+        if (local_dir / 'ads_review/review.json').is_file():
+            files['ads_review_video'] = local_dir / 'ads_review/ads_review.mp4'
         summary = _load_json(files.get("summary.json"))
 
         # Layer-3 behavior-vs-intent gate. When the caller passes scene_seed (or
@@ -567,7 +675,9 @@ def _load_extract_cache(local_dir: Path, xodr_sha: str, xodr_path: Path) -> Extr
     if not sha_file.is_file() or sha_file.read_text().strip() != xodr_sha:
         return None
     selfcheck = _load_json(local_dir / "roadgraph_selfcheck.json")
-    if not selfcheck or not selfcheck.get("continuity_pass", False):
+    if (not selfcheck or not selfcheck.get("continuity_pass", False)
+            or selfcheck.get("geometry_check_version") != 1
+            or not selfcheck.get("geometry_consistency_pass", False)):
         return None
     files = {p.name: p for p in local_dir.iterdir() if p.is_file()}
     return ExtractResult(

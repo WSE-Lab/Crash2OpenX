@@ -376,7 +376,7 @@ class OpenScenario(BasicScenario):
                     policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE, name="StartConditions Group")
 
                 parallel_behavior = py_trees.composites.Parallel(
-                    policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ALL, name="Maneuver + EndConditions Group")
+                    policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE, name="Maneuver + EndConditions Group")
 
                 parallel_sequences = py_trees.composites.Parallel(
                     policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ALL, name="Maneuvers")
@@ -491,7 +491,7 @@ class OpenScenario(BasicScenario):
                 if end_triggers is not None and list(end_triggers) is not None:
                     for end_condition in end_triggers:
                         parallel_end_criteria = self._create_condition_container(
-                            end_condition, story, "EndConditions", success_on_all=False)
+                            end_condition, story, "EndConditions", success_on_all=True)
                         if parallel_end_criteria.children:
                             parallel_behavior.add_child(parallel_end_criteria)
 
@@ -545,6 +545,12 @@ class OpenScenario(BasicScenario):
                                                                  policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
 
         for condition_group in node.iter("ConditionGroup"):
+            from ads_conditions import live_ads_condition_group
+            live = live_ads_condition_group(condition_group, lambda condition:
+                OpenScenarioParser.convert_condition_to_atomic(condition, self.other_actors + self.ego_vehicles))
+            if live is not None:
+                parallel_condition_groups.add_child(live)
+                continue
             if success_on_all:
                 condition_group_sequence = py_trees.composites.Parallel(
                     name="Condition Group", policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ALL)

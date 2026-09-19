@@ -1,0 +1,6 @@
+{
+  "road": {
+    "topology": "straight", "type": "town",
+    "lanes": {"forward": 2, "backward": 1}, "center_line": "broken"
+  }
+}

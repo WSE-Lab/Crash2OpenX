@@ -38,7 +38,7 @@ if str(REPO_ROOT) not in sys.path:
 from tools.api_infer_road_seed import call_model as road_call, normalize_output as road_normalize
 from tools.api_infer_scene_seed_v2 import call_model as scene_call, normalize as scene_normalize
 from tools.build_road_seed_opendrive import build as build_road, read_seed
-from tools.extract_source import extract_any
+from tools.extract_source import extract_any, load_extraction_checkpoint, pdf_narrative_coverage
 from tools.ocl_constraints import violations as ocl_check
 from tools.qa_agent import run_qa
 from tools.scene_outcome import check_scene_outcome as _shared_check_scene_outcome
@@ -169,8 +169,21 @@ def _infer_road(args: SimpleNamespace, doc: dict[str, Any], src_path: Path, mode
 
 
 def _infer_scene(args: SimpleNamespace, doc: dict[str, Any], src_path: Path, model: str) -> dict[str, Any]:
-    raw = scene_call(args, doc)
-    return scene_normalize(raw, src_path, model, source_context=doc)
+    args.normalization_attempts = []
+    initial_hint = getattr(args, 'fix_hint', '') or ''
+    for attempt in range(2):
+        raw = scene_call(args, doc)
+        record = {'attempt': attempt + 1, 'raw_output': raw}
+        args.normalization_attempts.append(record)
+        try:
+            return scene_normalize(raw, src_path, model, source_context=doc)
+        except ValueError as exc:
+            record['normalization_error'] = str(exc)
+            if attempt == 1:
+                raise
+            args.fix_hint = (initial_hint + '\n上次输出未通过词汇/结构验证：' + str(exc)
+                             + '\n请根据原文重新推理，保留所有阶段；若词汇无法表达须needs_extension。'
+                             + '\n上次输出：' + json.dumps(raw, ensure_ascii=False))
 
 
 def _run_one_round(
@@ -195,6 +208,11 @@ def _run_one_round(
     errors: dict[str, str] = {}
     road_seed: dict[str, Any] | None = None
     scene_seed: dict[str, Any] | None = None
+    # A failed retry must not leave the preceding round's compiled map looking
+    # like its output. Callers may archive prior rounds before starting another.
+    for filename in ("road_seed.json", "scene_seed.json", "road_generation.json", "scene_inference_attempts.json",
+                     f"{name}.xodr", f"{name}.html", f"{name}.xosc"):
+        (run_dir / filename).unlink(missing_ok=True)
 
     args_road = make_args(model, base_url, api_key_env, fix_hint=fix_hint_road)
     args_scene = make_args(model, base_url, api_key_env, fix_hint=fix_hint_scene)
@@ -209,6 +227,9 @@ def _run_one_round(
             scene_seed = f_scene.result()
         except Exception as exc:  # noqa: BLE001
             errors["scene"] = f"{type(exc).__name__}: {exc}"
+
+    if getattr(args_scene, 'normalization_attempts', None):
+        write_json(run_dir / 'scene_inference_attempts.json', args_scene.normalization_attempts)
 
     if road_seed is not None:
         _attach_provenance(road_seed, stage="road_seed", args=args_road, src_path=src_path)
@@ -230,6 +251,7 @@ def _run_one_round(
     else:
         xodr_path_candidate = run_dir / f"{name}.xodr"
         html_path_candidate = run_dir / f"{name}.html"
+        compile_started = datetime.now(timezone.utc).isoformat()
         try:
             br = build_road(read_seed(run_dir / "road_seed.json"),
                             xodr_path_candidate, html_path_candidate, xsd_path)
@@ -240,6 +262,19 @@ def _run_one_round(
                 "road_count", "junction_count", "connection_count",
                 "lane_link_count", "driving_lanes_per_direction",
                 "total_driving_lanes_on_approach")}
+            write_json(run_dir / "road_generation.json", {
+                "operation": "build_road_seed_opendrive.build",
+                "started_at": compile_started,
+                "completed_at": datetime.now(timezone.utc).isoformat(),
+                "seed_path": str(run_dir / "road_seed.json"),
+                "seed_sha256": hashlib.sha256((run_dir / "road_seed.json").read_bytes()).hexdigest(),
+                "xodr_path": str(xodr_path),
+                "xodr_sha256": hashlib.sha256(xodr_path.read_bytes()).hexdigest(),
+                "compiler_sha256": hashlib.sha256(
+                    (REPO_ROOT / "tools/build_road_seed_opendrive.py").read_bytes()
+                ).hexdigest(),
+                "existing_xodr_used": False,
+            })
         except Exception as exc:  # noqa: BLE001 - e.g. NotImplementedError topology
             errors["compile"] = f"{type(exc).__name__}: {exc}"
             road_skipped = f"compile failed: {exc}"
@@ -324,10 +359,10 @@ def dispatch(
     name: str,
     out_root: Path = DEFAULT_OUT_ROOT,
     *,
-    model: str = "deepseek/deepseek-v4-pro",
-    base_url: str = "https://openrouter.ai/api/v1",
-    api_key_env: str = "OPENROUTER_API_KEY",
-    vlm_model: str = "xiaomi/mimo-v2.5",
+    model: str | None = None,
+    base_url: str | None = None,
+    api_key_env: str | None = None,
+    vlm_model: str | None = None,
     xsd_path: Path = DEFAULT_XSD,
     qa_max_retries: int = DEFAULT_QA_MAX_RETRIES,
 ) -> dict[str, Any]:
@@ -339,6 +374,10 @@ def dispatch(
     scene schematic, composite, report) live in ``run_dir/qa/r{N}/`` and the
     full per-round history is on result["qa"]["rounds"].
     """
+    from tools.model_transport import model_settings
+    defaults = model_settings()
+    model, vlm_model = model or defaults["model"], vlm_model or defaults["vlm_model"]
+    base_url, api_key_env = base_url or defaults["base_url"], api_key_env or defaults["api_key_env"]
     text = extract_any(
         source,
         vlm_model=vlm_model,
@@ -459,10 +498,9 @@ def _format_extract_failure_hint(err: str, xodr_text: str | None = None) -> str:
             "解析器直接 segfault。这意味着 planView 中至少一段 geometry 的"
             "累积 s 超过其声明的 road length，常见原因：相邻 spiral/arc 段的"
             "curvature 端点 (curvStart/curvEnd) 不连续、length 字段对不上几何累计长度、"
-            "或 junction connector 起止点没贴在主路上。请：(1) 收紧 road.geometry "
-            "里 segment 长度声明与几何端点的一致性；(2) 优先生成 line-only 直线 road，"
-            "避免 spiral/arc 段的连续性陷阱；(3) 如必须有路口，确保 connector 入口"
-            "点严格贴在 incoming road 末端。"
+            "或 junction connector 起止点没贴在主路上。请保留原报告的道路拓扑，"
+            "检查编译器生成的 geometry 长度与连接端点；不要通过把弯道改成直路、"
+            "删除路口或编造 road_seed schema 之外的字段来掩盖编译问题。"
         )
     if "invalid lane connection" in err_lower or "lane_link" in err_lower:
         return (
@@ -475,8 +513,8 @@ def _format_extract_failure_hint(err: str, xodr_text: str | None = None) -> str:
     snippet = err.strip().splitlines()[-1] if err.strip() else "(empty)"
     return (
         f"CARLA 加载 XODR 失败（远端 runner 退出非零，最后一行：'{snippet[:200]}'）。"
-        "下一轮请生成一个几何更保守的 road_seed：优先单段 line、避免 spiral/arc 串联、"
-        "junction 拓扑尽量简化。"
+        "保留原报告支持的拓扑、车道方向与数量。只修正有原文依据的 seed 错误；"
+        "编译器或运行环境问题应保留失败记录，不得把事故改为更简单的道路。"
     )
 
 
@@ -486,22 +524,23 @@ def _format_xosc_failure_hint(err: str) -> str:
     if "BlockUnsupported" in err_str:
         return (
             f"osc_blocks 不支持当前 scene 形态：{err_str[:300]}。"
-            "scene_seed 里某个块（block）类型 / 触发条件 / 控制器 osc_blocks 还没接，"
-            "请下一轮把 scene 改成 rear_end / cut_in / vru_cross 等已支持的基本块组合。"
+            "请保留原文的参与者、方向、动作次序和碰撞关系。只有与原文等价的块组合才可采用；"
+            "若编译器尚不能表达，应保留 unsupported，不得改写事故类型以求通过。"
         )
     if "no routes in roadgraph for ego" in err_str:
         return (
             "Ego 在 XODR 中找不到 maneuver 对应的 route。"
-            "请把 scene_seed.sut.maneuver 改成 'straight'（直行），并确保 road 端点延伸足够长。"
+            "请检查生成路网是否包含原文机动所需的连接；不得把原文的转弯改为直行。"
         )
     if "junction scene needs roadgraph_map_cache" in err_str:
         return (
             "scene 需要 junction roadgraph 但 cache 未就绪 — 通常是 XODR 里的 junction 在 CARLA "
-            "extract 阶段没解析出来。下一轮把 scene 改成不带路口的直线场景（rear_end / lane_change）。"
+            "extract 阶段没解析出来。应修复路网提取或编译，不得删除原文中的路口。"
         )
     return (
         f"XOSC 编译失败：{err_str[:400]}。"
-        "下一轮请简化 scene_seed：尽量用已知 supported 块、避免太多 NPC、避免复杂触发条件。"
+        "只修正有原文依据的字段错误，保留参与者与完整事故动作；"
+        "不能表达时明确报告限制，不得删除参与者或动作来获得通过。"
     )
 
 
@@ -510,10 +549,10 @@ def dispatch_full(
     name: str,
     out_root: Path = DEFAULT_OUT_ROOT,
     *,
-    model: str = "deepseek/deepseek-v4-pro",
-    base_url: str = "https://openrouter.ai/api/v1",
-    api_key_env: str = "OPENROUTER_API_KEY",
-    vlm_model: str = "xiaomi/mimo-v2.5",
+    model: str | None = None,
+    base_url: str | None = None,
+    api_key_env: str | None = None,
+    vlm_model: str | None = None,
     xsd_path: Path = DEFAULT_XSD,
     qa_max_retries: int = DEFAULT_QA_MAX_RETRIES,
     carla_enabled: bool = True,
@@ -521,6 +560,9 @@ def dispatch_full(
     carla_max_seconds: int = 60,
     carla_timeout: float = 1800.0,
     progress=None,
+    carla_client=None,
+    generation_only: bool = False,
+    extraction_checkpoint: Path | None = None,
 ) -> dict[str, Any]:
     """End-to-end orchestrator with downstream-feedback fix loop.
 
@@ -548,6 +590,10 @@ def dispatch_full(
     """
     from tools import osc_blocks
     from tools.carla_client import get_carla_client, CarlaRemoteClient, CarlaRemoteError
+    from tools.model_transport import model_settings
+    defaults = model_settings()
+    model, vlm_model = model or defaults["model"], vlm_model or defaults["vlm_model"]
+    base_url, api_key_env = base_url or defaults["base_url"], api_key_env or defaults["api_key_env"]
 
     # Master wall-clock so every phase timing can be plotted on a single
     # 0..N seconds axis. Each entry: {phase, round, t_start, t_end, duration_s, status}.
@@ -596,17 +642,31 @@ def dispatch_full(
     # --- phase: input ---
     _emit("phase_start", {"phase": "input"})
     t = time.time()
-    text = extract_any(
-        source,
-        vlm_model=vlm_model,
-        vlm_base_url=base_url,
-        vlm_api_key_env=api_key_env,
-    )
     src_label = str(source) if isinstance(source, (str, Path)) else name
     src_path = Path(src_label) if os.sep in str(src_label) else Path(f"{name}.txt")
+    extraction_record = None
+    if extraction_checkpoint is not None:
+        text, extraction_record = load_extraction_checkpoint(
+            Path(source), extraction_checkpoint, model=vlm_model, base_url=base_url)
+        extraction_record = {**extraction_record, "source": src_label,
+            "resumed_from": str(extraction_checkpoint.resolve()),
+            "resumed_at": datetime.now(timezone.utc).isoformat()}
+    else:
+        text = extract_any(source, vlm_model=vlm_model, vlm_base_url=base_url,
+                           vlm_api_key_env=api_key_env)
     doc = {"event_description": text, "metadata": {"source": src_label, "name": name}}
     run_dir = out_root / name
     run_dir.mkdir(parents=True, exist_ok=True)
+    (run_dir / "source_text.txt").write_text(text, encoding="utf-8")
+    write_json(run_dir / "source_extraction.json", extraction_record or {
+        "source": src_label,
+        "source_sha256": hashlib.sha256(src_path.read_bytes()).hexdigest() if src_path.is_file() else None,
+        "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
+        "pdf_narrative_coverage": pdf_narrative_coverage(src_path, text) if src_path.is_file() else None,
+        "vlm_model": vlm_model,
+        "base_url": base_url,
+        "extracted_at": datetime.now(timezone.utc).isoformat(),
+    })
     _emit("phase_done", {"phase": "input", "duration_s": round(time.time() - t, 2),
                           "text_chars": len(text)})
 
@@ -617,7 +677,6 @@ def dispatch_full(
     round_result: dict[str, Any] = {}
     qa_final: dict[str, Any] | None = None
     total_rounds = qa_max_retries + 1
-    carla_client: CarlaRemoteClient | None = None
 
     # Per-round state that bubbles out at the end:
     roadgraph_status: str = "pending"
@@ -662,6 +721,14 @@ def dispatch_full(
         # --- phase: ocl (Table 1: I1–I9 per-model at extraction return,
         # P1–P6 on the SeedPair before compilation; violations go back to the
         # extraction step as textual hints, exactly like a QA fail) ---
+        if any((round_result.get(key) or {}).get('status') in {'unsupported', 'needs_extension', 'skipped'}
+               for key in ('road_seed', 'scene_seed')):
+            ocl_status = 'skipped_unsupported_seed'
+            qa_history.append({'round': round_idx, 'verdict': 'skipped',
+                               'reason': 'source requires an unsupported seed vocabulary or is outside scope'})
+            _emit('phase_done', {'phase': 'ocl', 'round': round_idx, 'status': ocl_status})
+            _emit('phase_done', {'phase': 'qa', 'round': round_idx, 'verdict': 'skipped'})
+            break
         if round_result.get("road_seed") and round_result.get("scene_seed"):
             _emit("phase_start", {"phase": "ocl", "round": round_idx})
             _road_m = (round_result["road_seed"] or {}).get("road") or round_result["road_seed"] or {}
@@ -793,6 +860,11 @@ def dispatch_full(
             retry_reason = f"qa verdict={qa['verdict']}"
             continue
 
+        if generation_only:
+            roadgraph_status = "deferred"
+            xosc_status = "deferred"
+            break
+
         # --- phase: roadgraph (CARLA extract — validates XODR) ---
         _emit("phase_start", {"phase": "roadgraph", "round": round_idx})
         t = time.time()
@@ -916,6 +988,9 @@ def dispatch_full(
             _emit("phase_done", {"phase": "xosc", "status": "skipped_by_qa"})
         result["carla_status"] = "skipped_by_qa"
         _emit("phase_done", {"phase": "carla", "status": "skipped_by_qa"})
+    elif generation_only:
+        result["carla_status"] = "deferred_generation_only"
+        _emit("phase_done", {"phase": "carla", "status": "deferred_generation_only"})
     elif roadgraph_status != "ok":
         if xosc_status == "pending":
             result["xosc_status"] = "skipped_roadgraph_failed"
@@ -987,10 +1062,10 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--name", help="run name / output stem (default: input stem or 'run')")
     ap.add_argument("--out-root", type=Path, default=DEFAULT_OUT_ROOT)
     ap.add_argument("--env", type=Path, default=DEFAULT_ENV)
-    ap.add_argument("--model", default="deepseek/deepseek-v4-pro")
-    ap.add_argument("--base-url", default="https://openrouter.ai/api/v1")
-    ap.add_argument("--api-key-env", default="OPENROUTER_API_KEY")
-    ap.add_argument("--vlm-model", default="xiaomi/mimo-v2.5",
+    ap.add_argument("--model", default=None)
+    ap.add_argument("--base-url", default=None)
+    ap.add_argument("--api-key-env", default=None)
+    ap.add_argument("--vlm-model", default=None,
                     help="Vision model used to read PDF pages (image-in -> text)")
     ap.add_argument("--qa-max-retries", type=int, default=DEFAULT_QA_MAX_RETRIES,
                     help="Extra retry rounds after the initial pass when QA verdict=fail "

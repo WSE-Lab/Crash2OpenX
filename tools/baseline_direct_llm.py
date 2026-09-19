@@ -88,12 +88,15 @@ Output ONLY the JSON object. No markdown fences. No explanation.
 """
 
 
+from tools.model_transport import complete_chat_completion
+
+
 def call_llm(text: str, model: str, base_url: str, api_key_env: str) -> dict:
     api_key = os.environ.get(api_key_env)
     if not api_key:
         raise RuntimeError(f"Missing {api_key_env}")
     client = OpenAI(api_key=api_key, base_url=base_url)
-    resp = client.chat.completions.create(
+    resp = complete_chat_completion(client,
         model=model, temperature=0.0, max_tokens=16000, stream=False,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
@@ -152,9 +155,9 @@ def collect_inputs() -> list[dict]:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model", default="deepseek/deepseek-v4-pro")
-    ap.add_argument("--base-url", default="https://openrouter.ai/api/v1")
-    ap.add_argument("--api-key-env", default="OPENROUTER_API_KEY")
+    ap.add_argument("--model", default="deepseek-flash")
+    ap.add_argument("--base-url", default="https://api.deepseek.com")
+    ap.add_argument("--api-key-env", default="DEEPSEEK_API_KEY")
     ap.add_argument("--out-root", type=Path, default=ROOT / "outputs" / "baseline")
     ap.add_argument("--limit", type=int, default=0, help="cap N inputs (0 = no cap)")
     args = ap.parse_args()

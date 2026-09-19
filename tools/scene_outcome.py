@@ -19,6 +19,7 @@ import json
 from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
+from tools.scene_contacts import evaluate_contact_sequence, runtime_contacts
 
 
 # This metric is lane-center excess, not departure from the paved road. Allow a
@@ -96,7 +97,8 @@ def check_scene_outcome(scene_seed: dict | None,
         "off_road_time": None, "max_lateral_excess_m": None,
         "off_road_before_collision_s": None, "trajectory_quality": None,
     }
-    expected = ((scene_seed or {}).get("scene") or {}).get("collision") or {}
+    scene = (scene_seed or {}).get("scene") or {}
+    expected = scene.get("collision") or {}
     if expected.get("a") and expected.get("b"):
         # scene_seed uses 'ego'; the xosc/sim_feedback layer renames to 'hero'.
         def _canon(a: str) -> str:
@@ -128,7 +130,25 @@ def check_scene_outcome(scene_seed: dict | None,
     )
 
     issues: list[str] = []
-    if out["expected_collision"]:
+    if scene.get('collisions'):
+        event_path = sim_feedback_path.parent/'events.jsonl'
+        events = [json.loads(line) for line in event_path.read_text().splitlines()] if event_path.is_file() else []
+        sequence = evaluate_contact_sequence(runtime_contacts(scene), events)
+        out['contact_sequence'] = sequence
+        trace_path = sim_feedback_path.parent/'sim_trace_raw.jsonl'
+        if sequence['physical_separation_requires_trace_review'] and trace_path.is_file():
+            from tools.repeated_contact_review import review_repeated_contacts
+            rows = [json.loads(line) for line in trace_path.read_text().splitlines()]
+            out['repeated_contact_phase_review'] = review_repeated_contacts(scene, events, rows)
+        if not sequence['sensor_sequence_pass']:
+            issues.append('complete ordered contact sequence was not observed by CARLA sensors')
+        if sequence['physical_separation_requires_trace_review']:
+            review = out.get('repeated_contact_phase_review') or {}
+            if not review.get('separation_and_restart_motion_pass'):
+                issues.append('repeated contact still requires measured separation and intermediate-motion validation')
+            else:
+                issues.append('repeat-impact separation and restart verified; sustained contact and source impact locations still require review')
+    elif out["expected_collision"]:
         if not fsum.get("collision_detected"):
             issues.append("expected collision but none occurred")
         elif actors and actors != out["expected_collision"]:
@@ -143,7 +163,23 @@ def check_scene_outcome(scene_seed: dict | None,
     if 0 < (out["lane_invasion_count"] or 0) <= 2:
         warnings.append(f"minor lane-boundary contacts ({out['lane_invasion_count']})")
     off_road_time = float(out["off_road_time"] or 0.0)
+    projection_conflict = False
     if off_road_time > 0:
+        run_dir = sim_feedback_path.parent
+        if (run_dir/'map.xodr').is_file() and (run_dir/'sim_trace_raw.jsonl').is_file():
+            try:
+                from tools.xodr_corridor_review import review_trace
+                rows = [json.loads(line) for line in (run_dir/'sim_trace_raw.jsonl').read_text().splitlines()]
+                review = review_trace(run_dir/'map.xodr', rows)
+                out['lane_corridor_review'] = review
+                projection_conflict = (review['samples'] > 0 and not review['missing_actor_samples']
+                    and not review['unsupported'] and review['inside_samples'] == review['samples'])
+            except (ImportError, OSError, KeyError, ValueError, TypeError, ET.ParseError) as exc:
+                out['lane_corridor_review'] = {'status': 'unavailable', 'reason': str(exc)}
+        if projection_conflict:
+            warnings.append(f'raw CARLA off-road time {off_road_time:.2f} s conflicts with '
+                            'complete analytic centre-in-driving-lane trace; raw metrics retained')
+    if off_road_time > 0 and not projection_conflict:
         excess = out["max_lateral_excess_m"]
         pre_impact = out["off_road_before_collision_s"]
         if excess is None:
